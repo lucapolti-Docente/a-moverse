@@ -165,7 +165,18 @@ export const FREE2 = {id:'libre2', name:'Modo libre', short:'Libre', mode:'free'
   palette:['flag','key','cx','cy','goto','say','forever','if','stop','keyp','touchc'], colors:['wall','lava','goal','ice','mud'], resetOnFlag:true,
   start:{x:-200,y:-150}, stars:[], map:MAP_L6, program:() => [MOVE_S()]};
 
-export const PARTE = {n:2, name:'Choques y metas', desc:'Tocar colores: meta, lava y paredes', levels:LEVELS2, free:FREE2,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{alCargar:'movimientoArmado', avisarSiAfuera:true, avisarPorSiempreVacio:true, avisarDetuvoAntes:true, portada:'choques'}, name:'Choques y metas', desc:'Tocar colores: meta, lava y paredes', levels:LEVELS2, free:FREE2,
    tag:'El movimiento ya está. Ahora el juego pregunta qué estás tocando.',
    teach:[
      ['La clase', '<p>Núcleo en 4.º y 5.º; también 6.º y 7.º. Una clase de 40 a 60 minutos. El movimiento llega armado: se trabaja el condicional adentro de la repetitiva y el sensor “¿tocando el color?”.</p><p>Indicador de 5.º: “Identifica errores y corrige secuencias simples de programación para la mejora de resultados”. Se ve en los niveles 5 y 6, cuando descubren que la pregunta del gris tiene que ir adentro de cada flecha. Después, barro y hielo muestran que tocar un color también puede cambiar la velocidad.</p>'],

@@ -1,4 +1,5 @@
 import { S } from '../estado.js';
+import { UI } from '../datos/textos.js';
 import { $ } from './dom.js';
 import { go, showParts } from './menu.js';
 import { programView } from './vista-bloques.js';
@@ -8,8 +9,8 @@ export function showWin(){
   $('#winText').textContent = typeof S.L.learn === 'function' ? S.L.learn() : S.L.learn;
   $('#winExtra').hidden = !S.L.extra; $('#winExtra').textContent = S.L.extra || '';
   const last = S.li === S.P.levels.length - 1;
-  $('#winNext').textContent = last ? 'Volver al menú' : 'Siguiente nivel';
-  $('#winTitle').textContent = last ? `¡Terminaste la parte ${S.P.n}!` : '¡Lo lograste!';
+  $('#winNext').textContent = last ? UI.volverAlMenu : UI.siguienteNivel;
+  $('#winTitle').textContent = last ? UI.terminaste(S.P.n) : UI.loLograste;
   $('#winModal').hidden = false; $('#winNext').focus();
 }
 

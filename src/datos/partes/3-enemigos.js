@@ -139,7 +139,18 @@ export const FREE3 = {id:'libre3', name:'Modo libre', short:'Libre', mode:'free'
   palette:['flag','forever','if','keyp','toucho','or','cx','cy','move','bounce','pointdir','pointto','goto','say','wait','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[],
   sprites:[BUG(-190,-140, () => [MOVE_S(), LOSE_S(['Avispa','Avispa 2'])]), WASP('Avispa', -150, 60, () => [PATROL(4)]), WASP('Avispa 2', 190, 140, () => [hatFlag(fe())], 90, '#C2410C')]};
 
-export const PARTE = {n:3, name:'Enemigos', desc:'Personajes que se mueven solos y te persiguen', levels:LEVELS3, free:FREE3,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{alCargar:'pestanas', avisarSiAfuera:true, avisarDetuvoAntes:true, avisoAtrapo:true, portada:'enemigos'}, name:'Enemigos', desc:'Personajes que se mueven solos y te persiguen', levels:LEVELS3, free:FREE3,
    tag:'Aparece otro personaje, con sus propios programas.',
    teach:[
      ['La clase', '<p>Núcleo en 5.º, 6.º y 7.º. Una clase de 40 a 60 minutos. Cada personaje tiene sus programas, como los objetos de Scratch. Se trabajan dirección, rebote, persecución y espera.</p><p>Diseño Curricular: “Problemas de programación … que impliquen la interpretación de representaciones de objetos o situaciones desde diferentes puntos de vista”.</p>'],

@@ -1,5 +1,6 @@
 /* Conecta los avisos del motor con la pantalla: mensajes, sonidos, chispas, botones y ventanas. */
 import { S } from '../estado.js';
+import { UI } from '../datos/textos.js';
 import { avisos } from '../motor/avisos.js';
 import { mensajeAlCargar } from '../motor/partida.js';
 import { burst, monitorPulse, updateXY } from '../dibujo/escenario.js';
@@ -17,8 +18,8 @@ function mostrarNivel(){
   fixSel();
   const inPart = S.li >= 0;
   const n = S.P.levels.filter(l => l.mode !== 'cierre').length;
-  $('#lvlNum').textContent = !inPart ? `Parte ${S.P.n} · Libre` : S.L.mode === 'cierre' ? `Parte ${S.P.n} · Cierre` : `Parte ${S.P.n} · ${S.li + 1} / ${n}`;
-  $('#lvlName').textContent = S.L.mode === 'cierre' ? S.L.name.replace('Cierre: ','') : S.L.name;
+  $('#lvlNum').textContent = !inPart ? UI.barraLibre(S.P.n) : S.L.mode === 'cierre' ? UI.barraCierre(S.P.n) : UI.barraNivel(S.P.n, S.li + 1, n);
+  $('#lvlName').textContent = S.L.mode === 'cierre' ? S.L.name.replace(UI.prefijoCierre, '') : S.L.name;
   $('#prev').disabled = !inPart || S.li === 0; $('#next').disabled = !inPart || S.li === S.P.levels.length - 1;
   $('#goalText').textContent = S.L.goal;
   $('#pad').classList.toggle('off', S.L.mode === 'explore');

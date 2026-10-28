@@ -1,4 +1,5 @@
 import { S } from '../estado.js';
+import { UI } from '../datos/textos.js';
 import { say } from './aviso.js';
 import { $ } from './dom.js';
 import { renderExplore } from './explorar-cierre.js';
@@ -40,9 +41,9 @@ export function setPadMode(m){
 document.querySelectorAll('#pad button').forEach(b => {
     if (!b.dataset.svg) b.dataset.svg = b.innerHTML;
     b.innerHTML = m === 'wasd' ? `<span class="padl">${padKey(b.dataset.k).toUpperCase()}</span>` : b.dataset.svg;
-    b.setAttribute('aria-label', m === 'wasd' ? 'Tecla ' + padKey(b.dataset.k).toUpperCase() : 'Flecha ' + {up:'arriba', left:'izquierda', down:'abajo', right:'derecha'}[b.dataset.k]);
+    b.setAttribute('aria-label', m === 'wasd' ? UI.ariaTecla(padKey(b.dataset.k).toUpperCase()) : UI.ariaFlecha[b.dataset.k]);
   });
-  const t = $('#padMode'); t.textContent = m === 'wasd' ? 'Pad: W A S D' : 'Pad: flechas';
+  const t = $('#padMode'); t.textContent = m === 'wasd' ? UI.padWasd : UI.padFlechas;
   padSync();
 }
 
@@ -51,8 +52,8 @@ export function padSync(){ document.querySelectorAll('#pad button').forEach(b =>
 export function applyRef(){
   const b = $('#refBtn');
   b.setAttribute('aria-pressed', String(S.showRef));
-  b.setAttribute('aria-label', S.showRef ? 'Ocultar referencias (reglas y flechitas)' : 'Mostrar referencias (reglas y flechitas)');
-  b.title = S.showRef ? 'Ocultar reglas y flechitas' : 'Mostrar reglas y flechitas';
+  b.setAttribute('aria-label', S.showRef ? UI.ariaRefOcultar : UI.ariaRefMostrar);
+  b.title = S.showRef ? UI.tituloRefOcultar : UI.tituloRefMostrar;
   document.body.classList.toggle('noref', !S.showRef);
 }
 
@@ -93,8 +94,8 @@ export function iniciarControles(){
   $('#refBtn').onclick = () => {
     S.showRef = !S.showRef; applyRef(); SND.pop();
     guardarRef(S.showRef);
-    say(S.showRef ? 'Referencias prendidas: reglas y flechitas.' : 'Referencias apagadas. Las prendés con el botón “Reglas”.');
+    say(S.showRef ? UI.refPrendidas : UI.refApagadas);
   };
   applyRef();
-  $('#snd').onclick = () => { S.muted = !S.muted; $('#sndWave').style.display = S.muted ? 'none' : ''; $('#snd').setAttribute('aria-label', S.muted ? 'Sonido apagado' : 'Sonido'); };
+  $('#snd').onclick = () => { S.muted = !S.muted; $('#sndWave').style.display = S.muted ? 'none' : ''; $('#snd').setAttribute('aria-label', S.muted ? UI.sonidoApagado : UI.sonido); };
 }

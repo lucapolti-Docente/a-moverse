@@ -102,7 +102,18 @@ export const FREE7 = {id:'libre7', name:'Modo libre', short:'Libre', mode:'free'
   goal:'Animá al bichito como quieras.', palette:['flag','key','forever','repeat','if','keyp','toucho','or','nextcos','setcos','hide','show','say','wait','move','cx','cy'], resetOnFlag:true, start:{x:0,y:-60}, stars:[], showCostumes:true, noGhost:true,
   sprites:[BUGC(0, -60, () => [MOVE_S(), WALK_S()]), WASP('Avispa', 60, 60, () => [PATROL(3)])]};
 
-export const PARTE = {n:7, name:'Animaciones', desc:'Disfraces, caminar, daño y festejo', levels:LEVELS7, free:FREE7,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{avisarSiAfuera:true, animaciones:true, portada:'animaciones'}, name:'Animaciones', desc:'Disfraces, caminar, daño y festejo', levels:LEVELS7, free:FREE7,
    tag:'Que el bichito camine, se duela y festeje.',
    teach:[
      ['La clase', '<p>Para todos los grados, de 4.º a 7.º. Una clase. Disfraces, “siguiente disfraz”, “cambiar disfraz a”, animar con esperas y el bloque “repetir”.</p>'],

@@ -119,7 +119,18 @@ export const LEVELS1 = [
 export const FREE1 = {id:'libre1', name:'Modo libre', short:'Libre', mode:'free', intro:{title:'Modo libre', text:'Podés usar todos los bloques. Probá armar el movimiento con “por siempre + si”.'}, goal:'Armá tu programa con todos los bloques y juntá las estrellas.',
   palette:['flag','key','move','cx','cy','forever','if','keyp'], axes:true, start:{x:0,y:0}, stars:[], program:() => []};
 
-export const PARTE = {n:1, name:'Movimiento', desc:'Eventos, x e y, por siempre + si', levels:LEVELS1, free:FREE1,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{avisarDetuvoAntes:true}, name:'Movimiento', desc:'Eventos, x e y, por siempre + si', levels:LEVELS1, free:FREE1,
    tag:'De la banderita a moverse suave y en diagonal.',
    teach:[
      ['La clase', '<p>Núcleo en 4.º y 5.º. Sirve en 3.º con ayuda y en 6.º y 7.º como repaso antes de Scratch. Una clase de 40 a 60 minutos. Se juega con las flechas del teclado o con el pad en pantalla.</p><p>Diseño Curricular CABA, Tecnologías, Diseño y Programación: eventos que inician acciones, estructuras de control, entrada y salida.</p>'],

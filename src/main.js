@@ -1,5 +1,6 @@
 import './estilos/estilos.css';
 import { conectarMotor } from './interfaz/conectar.js';
+import { ponerTextos } from './interfaz/textos-pantalla.js';
 import { iniciarGuardado } from './guardado.js';
 import { iniciarPartida } from './motor/partida.js';
 import { iniciarAviso } from './interfaz/aviso.js';
@@ -16,6 +17,7 @@ import { loop } from './interfaz/bucle.js';
 import { go, showPart, showParts } from './interfaz/menu.js';
 import { loadLevel } from './motor/partida.js';
 
+ponerTextos();
 conectarMotor();
 iniciarGuardado();
 iniciarPartida();

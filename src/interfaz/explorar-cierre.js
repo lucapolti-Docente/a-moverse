@@ -3,40 +3,39 @@ import { burst } from '../dibujo/escenario.js';
 import { say } from './aviso.js';
 import { $, el, txt } from './dom.js';
 import { programView } from './vista-bloques.js';
-import { checkWin } from '../motor/partida.js';
+import { adivinar, responder } from '../motor/partida.js';
+import { CIERRE, EXPLORAR } from '../datos/textos.js';
 import { SND, ac } from '../sonido.js';
 
 export function renderExplore(){
   const root = $('#program'); root.innerHTML = '';
   const box = el('div','explore');
-  if (S.exploreIdx >= S.L.stars.length){ box.append(el('p',null,'¡Encontraste las dos estrellas!')); root.append(box); return; }
-  box.append(el('p',null, S.exploreIdx ? `¡Ya encontraste una! Falta ${S.L.stars.length - S.exploreIdx}. ¿En qué x y en qué y está?` : 'Elegí cualquier estrella, la que quieras. ¿En qué x y en qué y está?'));
-  box.append(el('p','hintline','Pista: llevá al bichito arriba de la estrella y mirá los números de arriba a la izquierda.'));
+  if (S.exploreIdx >= S.L.stars.length){ box.append(el('p',null,EXPLORAR.todas)); root.append(box); return; }
+  box.append(el('p',null, S.exploreIdx ? EXPLORAR.falta(S.L.stars.length - S.exploreIdx) : EXPLORAR.elegi));
+  box.append(el('p','hintline',EXPLORAR.pista));
   for (const ax of ['x','y']){
     const r = el('div','ex-row'); const lab = el('label', null, ax); lab.htmlFor = 'g' + ax;
     const minus = el('button','step','−10'), plus = el('button','step','+10'), inp = el('input'); inp.type = 'number'; inp.id = 'g' + ax; inp.value = 0; inp.step = 10;
     minus.onclick = () => inp.value = (Number(inp.value) || 0) - 10; plus.onclick = () => inp.value = (Number(inp.value) || 0) + 10;
     r.append(lab, minus, inp, plus); box.append(r);
   }
-  const ok = el('button','primary','Comprobar'); ok.onclick = checkGuess; box.append(ok);
+  const ok = el('button','primary',EXPLORAR.comprobar); ok.onclick = checkGuess; box.append(ok);
   root.append(box);
 }
 
 export function checkGuess(){
   ac();
   const gx = Number($('#gx').value) || 0, gy = Number($('#gy').value) || 0;
-  const left = S.stars.filter(st => !st.got);
-  const s = left.reduce((a, b) => Math.hypot(b.x - gx, b.y - gy) < Math.hypot(a.x - gx, a.y - gy) ? b : a);
-  const okx = Math.abs(gx - s.x) <= 20, oky = Math.abs(gy - s.y) <= 20;
+  const { estrella: s, okx, oky } = adivinar(gx, gy);
   if (okx && oky){
-    s.got = true; burst(s.x, s.y); SND.star();
-    say(`¡Sí! Está en x: ${s.x}, y: ${s.y}.`, true);
-    S.exploreIdx++; renderExplore(); checkWin(); return;
+    burst(s.x, s.y); SND.star();
+    say(EXPLORAR.si(s.x, s.y), true);
+    renderExplore(); return;
   }
   SND.oops();
-  if (!okx && !oky) say('Todavía no. Mirá: ¿la estrella está a la derecha (más) o a la izquierda (menos) del centro?');
-  else if (!okx) say('La y está bien. La x no: x es para los costados. Derecha es más, izquierda es menos.');
-  else say('La x está bien. La y no: y es arriba y abajo. Arriba es más, abajo es menos.');
+  if (!okx && !oky) say(EXPLORAR.ningunaBien);
+  else if (!okx) say(EXPLORAR.xMal);
+  else say(EXPLORAR.yMal);
 }
 
 export function renderCierre(){
@@ -52,12 +51,12 @@ export function renderCierre(){
   S.L.quiz.forEach((Q, qi) => {
     const q = el('div','q'); q.append(el('p', null, Q.q));
     const why = el('p','why'); why.hidden = true;
-    Q.opts.forEach(([t, right, exp]) => {
+    Q.opts.forEach(([t, right, exp], oi) => {
       const b = el('button', S.quiz[qi] && right ? 'yes' : '', t);
       b.onclick = () => {
         ac();
-        if (right){ S.quiz[qi] = true; b.className = 'yes'; why.textContent = exp; why.hidden = false; SND.star(); checkWin(); }
-        else { b.className = 'no'; SND.oops(); say('Mmm, no. Mirá el programa y probá otra.'); }
+        if (responder(qi, oi)){ b.className = 'yes'; why.textContent = exp; why.hidden = false; SND.star(); }
+        else { b.className = 'no'; SND.oops(); say(CIERRE.mal); }
       };
       q.append(b);
     });

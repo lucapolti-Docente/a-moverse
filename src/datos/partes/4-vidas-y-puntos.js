@@ -207,7 +207,18 @@ export const FREE4 = {id:'libre4', name:'Modo libre', short:'Libre', mode:'free'
   sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), OVER_S()]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(2), fe(ptoB('Bichito'), mv(3)))]),
     COIN(60, -60, () => [COIN_S(true, true)]), HEART(-60, 110, () => [hatFlag(fe())])]};
 
-export const PARTE = {n:4, name:'Vidas y puntos', desc:'Objetos, variables, ganar y perder', levels:LEVELS4, free:FREE4,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{avisarSiAfuera:true, avisarDetuvoAntes:true, finPorVariables:true, portada:'variables'}, name:'Vidas y puntos', desc:'Objetos, variables, ganar y perder', levels:LEVELS4, free:FREE4,
    tag:'Monedas, corazones y una cajita que cuenta.',
    teach:[
      ['La clase', '<p>Núcleo en 5.º, 6.º y 7.º. Una clase de 40 a 60 minutos. Primero, la idea de que todo lo del escenario es un objeto con programas. Después, variables: dar un valor, sumar, restar y comparar con “=”.</p>'],

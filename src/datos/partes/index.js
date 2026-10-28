@@ -9,3 +9,4 @@ import { PARTE as P8 } from './8-crea-tu-juego.js';
 
 /* Las partes del juego, en orden. Para sumar una parte: crear su archivo y agregarla a esta lista. */
 export const PARTS = [P1, P2, P3, P4, P5, P6, P7, P8];
+PARTS.forEach((p, i) => { p.n = i + 1; });

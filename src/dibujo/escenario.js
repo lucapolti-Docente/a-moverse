@@ -3,6 +3,7 @@ import { COLORS } from '../datos/fondos.js';
 import { $ } from '../interfaz/dom.js';
 import { varNames } from '../motor/nombres.js';
 import { walk } from '../motor/recorrer.js';
+import { ESCENARIO } from '../datos/textos.js';
 
 export const cv = $('#cv'), ctx = cv.getContext('2d');
 
@@ -127,7 +128,7 @@ export function drawMonitors(c){
   let y = LS(38, 34);
   const keys = varNames().filter(k => k in S.VARS);
   for (const k of keys){
-    const v = S.VARS[k], label = k === 'tiempo' ? '⏱ tiempo' : k, val = k === 'vidas' && v >= 0 && v <= 6 ? (v ? '❤'.repeat(v) : '0') : String(v);
+    const v = S.VARS[k], label = k === 'tiempo' ? ESCENARIO.tiempo : k, val = k === 'vidas' && v >= 0 && v <= 6 ? (v ? '❤'.repeat(v) : '0') : String(v);
     c.save(); c.font = `700 ${LS(12, 12)}px ${FONT()}`; c.textBaseline = 'middle';
     const lw = c.measureText(label).width, vw = Math.max(c.measureText(val).width, 16*DPR), h = LS(24, 22), pad = 8*DPR;
     const w = lw + vw + pad*3 + 6*DPR, x = 8*DPR;
@@ -147,7 +148,7 @@ export function drawMonitors(c){
   for (const q of qs.slice(0, 3)){
     const val = Number(S.VARS[q.v] ?? 0), n = Number(q.n);
     const yes = q.type === 'eq' ? val === n : q.type === 'gt' ? val > n : val < n;
-    const text = `¿${q.v} ${q.type === 'eq' ? '=' : q.type === 'gt' ? '>' : '<'} ${n}?`, ans = yes ? 'SÍ' : 'NO';
+    const text = `¿${q.v} ${q.type === 'eq' ? '=' : q.type === 'gt' ? '>' : '<'} ${n}?`, ans = yes ? ESCENARIO.si : ESCENARIO.no;
     c.save(); c.font = `700 ${LS(12, 12)}px ${FONT()}`; c.textBaseline = 'middle';
     const tw = c.measureText(text).width, aw = c.measureText(ans).width, h = LS(24, 22), pad = 8*DPR;
     const w = tw + aw + pad*4, x = 8*DPR;
@@ -309,13 +310,13 @@ export function drawRulerX(c, g, mark){
     c.lineWidth = (x % 100 === 0 ? 1.6 : 1) * DPR; c.beginPath(); c.moveTo(X, g.yB); c.lineTo(X, g.yB + g.hB*len); c.stroke();
   }
   c.fillStyle = '#2B66BF'; c.font = `700 ${LS(10, 10)}px ${font}`; c.textBaseline = 'bottom'; c.textAlign = 'center';
-  const lw = c.measureText('◀ menos').width + 10*DPR, rw = c.measureText('más ▶').width + 10*DPR;
+  const lw = c.measureText(ESCENARIO.menosX).width + 10*DPR, rw = c.measureText(ESCENARIO.masX).width + 10*DPR;
   for (const x of [-100, 0, 100]){
     const half = c.measureText(String(x)).width / 2 + 3*DPR, X = SX(x);
     if (X - half > lw && X + half < g.xR - rw) c.fillText(String(x), X, CH - 2*DPR);
   }
-  c.textAlign = 'left'; c.fillText('◀ menos', 4*DPR, CH - 2*DPR);
-  c.textAlign = 'right'; c.fillText('más ▶', g.xR - 4*DPR, CH - 2*DPR);
+  c.textAlign = 'left'; c.fillText(ESCENARIO.menosX, 4*DPR, CH - 2*DPR);
+  c.textAlign = 'right'; c.fillText(ESCENARIO.masX, g.xR - 4*DPR, CH - 2*DPR);
   c.restore();
 }
 
@@ -331,8 +332,8 @@ export function drawRulerY(c, g){
   }
   c.fillStyle = '#B2341F'; c.font = `700 ${LS(10, 10)}px ${font}`; c.textBaseline = 'middle'; c.textAlign = 'right';
   for (const y of [-100, 0, 100]) c.fillText(String(y), CW - 3*DPR, SY(y));
-  c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText('▲', g.xR + g.wR/2, 3*DPR); c.fillText('más', g.xR + g.wR/2, 3*DPR + LS(11, 11));
-  c.textBaseline = 'bottom'; c.fillText('menos', g.xR + g.wR/2, CH - 3*DPR - LS(11, 11)); c.fillText('▼', g.xR + g.wR/2, CH - 3*DPR);
+  c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText('▲', g.xR + g.wR/2, 3*DPR); c.fillText(ESCENARIO.mas, g.xR + g.wR/2, 3*DPR + LS(11, 11));
+  c.textBaseline = 'bottom'; c.fillText(ESCENARIO.menos, g.xR + g.wR/2, CH - 3*DPR - LS(11, 11)); c.fillText('▼', g.xR + g.wR/2, CH - 3*DPR);
   c.restore();
 }
 
@@ -389,8 +390,8 @@ export function draw(t){
   if (bd){
     c.fillStyle = bd.dot; for (let x = -220; x <= 220; x += 40) for (let y = -160; y <= 160; y += 40){ c.beginPath(); c.arc(SX(x), SY(y), (bd.dark ? 1.2 : 2)*K, 0, Math.PI*2); c.fill(); }
     if (bd.dark){ c.fillStyle = '#FDE68A'; for (let i = 0; i < 14; i++){ const sx = (i*97 % 470) - 235, sy = (i*61 % 340) - 170; c.beginPath(); c.arc(SX(sx), SY(sy), 1.4*K, 0, Math.PI*2); c.fill(); } }
-    c.save(); c.font = `700 ${LS(11.5, 11)}px ${FONT()}`; const fw = c.measureText('🖼 fondo: ' + S.BACKDROP).width + LS(14, 12); c.restore();
-    pill(c, '🖼 fondo: ' + S.BACKDROP, CW/2 - fw/2, LS(18, 16), bd.dark ? '#475569' : '#64748B', 'left');
+    c.save(); c.font = `700 ${LS(11.5, 11)}px ${FONT()}`; const fw = c.measureText(ESCENARIO.fondo(S.BACKDROP)).width + LS(14, 12); c.restore();
+    pill(c, ESCENARIO.fondo(S.BACKDROP), CW/2 - fw/2, LS(18, 16), bd.dark ? '#475569' : '#64748B', 'left');
   }
   if (S.L.axes) drawAxes(c);
   else if (bd){}
@@ -405,7 +406,7 @@ export function draw(t){
   if (S.L.rocks) for (const r of S.L.rocks) drawRock(c, SX(r.x), SY(r.y), K);
   if (S.L.timeLimit){
     const left = S.R.stopOnGoal ? Math.max(0, S.L.timeLimit - (S.R.tEnd || 0)) : S.R.tStart == null ? S.L.timeLimit : Math.max(0, S.L.timeLimit - (S.engine.time - S.R.tStart));
-    pill(c, '⏱ ' + (left/1000).toFixed(1) + ' s', CW/2 - LS(36, 34), LS(22, 20), left < 350 ? '#C8332F' : '#13202B', 'left');
+    pill(c, ESCENARIO.segundos((left/1000).toFixed(1)), CW/2 - LS(36, 34), LS(22, 20), left < 350 ? '#C8332F' : '#13202B', 'left');
   }
   if (S.showRef && S.L.measure && !S.L.axes) drawMeasure(c);
   if (S.showRef && S.L.axes) drawAxesRulers(c);
@@ -434,7 +435,7 @@ export function draw(t){
       if (s.kind === 'wasp') drawWasp(c, SX(px), SY(py), K, s.color, s.dir, t); else drawBug(c, SX(px), SY(py), K, s.color, s.face, t, false, s.costume);
       c.restore();
       c.save(); c.font = `700 ${LS(10, 10)}px ${FONT()}`; c.textAlign = 'center'; c.textBaseline = 'top'; c.fillStyle = '#43535F';
-      c.fillText(s.name + ' (escondida)', SX(px), SY(py) + 22*K); c.restore();
+      c.fillText(ESCENARIO.escondida(s.name), SX(px), SY(py) + 22*K); c.restore();
       continue;
     }
     if (s.kind === 'seed'){ drawSeed(c, SX(px), SY(py), K, s.dir); continue; }

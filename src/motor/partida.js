@@ -46,9 +46,9 @@ export function loadLevel(level){
 export function mensajeAlCargar(){
   if (S.L.mode === 'explore') return AL_CARGAR.explore;
   if (S.L.mode === 'sandbox') return AL_CARGAR.sandbox;
-  if (S.L.mode === 'free') return S.P.n === 7 ? AL_CARGAR.libreAnimar : AL_CARGAR.libre;
-  if (S.P.n === 2 && S.L.mode !== 'cierre') return AL_CARGAR.movimientoArmado;
-  if (S.P.n === 3 && S.L.mode !== 'cierre' && S.sprites.length > 1) return AL_CARGAR.pestanas;
+  if (S.L.mode === 'free') return S.P.rasgos.animaciones ? AL_CARGAR.libreAnimar : AL_CARGAR.libre;
+  if (S.P.rasgos.alCargar === 'movimientoArmado' && S.L.mode !== 'cierre') return AL_CARGAR.movimientoArmado;
+  if (S.P.rasgos.alCargar === 'pestanas' && S.L.mode !== 'cierre' && S.sprites.length > 1) return AL_CARGAR.pestanas;
   return '';
 }
 
@@ -189,15 +189,15 @@ export const hooks = {
   goto(t){ if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },
   say(t){ if (S.L.id === 'p5-mayor'){ if ((S.VARS.semillas ?? 0) > 3) S.R.saidGt = true; if ((S.VARS.semillas ?? 0) < 1) S.R.saidLt = true; } if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')) S.R.saidOnGoal = true; if (S.L.id === 'p4-igual' && S.VARS.puntos === 5) S.R.said5 = true; },
   stop(t){
-    if (S.P.n === 6){ S.R.stopNivel = S.VARS.nivel ?? null; if (S.R.stopNivel == null) S.R.stopNivel = 0; }
+    if (S.P.rasgos.finPorNivel){ S.R.stopNivel = S.VARS.nivel ?? null; if (S.R.stopNivel == null) S.R.stopNivel = 0; }
     if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')){ S.R.stopOnGoal = true; S.R.goalBd = S.BACKDROP; if (S.R.tStart != null) S.R.tEnd = S.engine.time - S.R.tStart; }
     else if (S.L.id === 'p4-regresiva' && (S.VARS.tiempo ?? 1) <= 0 && (S.VARS.puntos ?? 0) < 8){ S.R.timeUp = true; S.R.stopPts = S.VARS.puntos; SND.oops(); say(MSJ.seAcaboTiempo); }
-    else if (S.L.id === 'p4-reloj' || S.L.id === 'p4-regresiva' || S.P.n === 5){ S.R.stopPts = S.VARS.puntos ?? 0; }
-    else if (S.P.n === 4 && S.L.vars && (S.VARS.vidas ?? 1) <= 0){ S.R.gameOver = true; SND.oops(); if (S.L.id !== 'p4-over') say(MSJ.sinVidas); }
-    else if (S.P.n === 4 && S.L.vars && (S.VARS.puntos ?? 0) >= 10){ S.R.wonByPoints = true; }
+    else if (S.L.id === 'p4-reloj' || S.L.id === 'p4-regresiva' || S.P.rasgos.puntosAlDetener){ S.R.stopPts = S.VARS.puntos ?? 0; }
+    else if (S.P.rasgos.finPorVariables && S.L.vars && (S.VARS.vidas ?? 1) <= 0){ S.R.gameOver = true; SND.oops(); if (S.L.id !== 'p4-over') say(MSJ.sinVidas); }
+    else if (S.P.rasgos.finPorVariables && S.L.vars && (S.VARS.puntos ?? 0) >= 10){ S.R.wonByPoints = true; }
     else if (S.L.loseMsg){ SND.bump(); say(S.L.loseMsg()); }
-    else if (S.P.n === 3 && S.L.mode !== 'cierre'){ SND.bump(); say(MSJ.atrapo); }
-    else if (S.L.mode !== 'cierre' && S.L.mode !== 'sandbox' && S.P.n < 6) say(MSJ.detuvoAntes);
+    else if (S.P.rasgos.avisoAtrapo && S.L.mode !== 'cierre'){ SND.bump(); say(MSJ.atrapo); }
+    else if (S.L.mode !== 'cierre' && S.L.mode !== 'sandbox' && S.P.rasgos.avisarDetuvoAntes) say(MSJ.detuvoAntes);
   },
   emptyCond(){ say(MSJ.siSinPregunta); },
 };
@@ -210,7 +210,7 @@ export function wallMsg(s){
 }
 
 export function afterStep(){
-  if (S.P.n === 7 && S.engine.alive()){
+  if (S.P.rasgos.animaciones && S.engine.alive()){
     const b = S.sprites[0];
     S.R.hurtTicks = b.costume === 'dolor' ? (S.R.hurtTicks || 0) + 1 : 0;
     if (S.R.hurtTicks > 75) S.R.hurtLong = true;
@@ -219,11 +219,11 @@ export function afterStep(){
     const s = S.sprites[0];
     const inWall = touchAt(s.x, s.y, BODY_R, 'wall');
     S.R.wallTicks = inWall ? S.R.wallTicks + 1 : 0;
-    if (S.R.wallTicks === 2){ S.R.inside = true; S.insideCount++; if (S.P.n !== 6){ SND.bump(); say(wallMsg(s)); } }
+    if (S.R.wallTicks === 2){ S.R.inside = true; S.insideCount++; if (!S.P.rasgos.mapaCallado){ SND.bump(); say(wallMsg(s)); } }
     if (inWall && S.R.wallTicks === 1) SND.thud();
     const inLava = touchAt(s.x, s.y, BODY_R, 'lava');
     S.R.lavaTicks = inLava ? S.R.lavaTicks + 1 : 0;
-    if (S.R.lavaTicks === 2){ S.R.lavaIgnored = true; if (S.P.n !== 6 || S.L.id === 'p6-juego'){ SND.oops(); say(S.L.id === 'p6-juego' ? MSJ.lavaConVidas : MSJ.lava); } }
+    if (S.R.lavaTicks === 2){ S.R.lavaIgnored = true; if (!S.P.rasgos.mapaCallado || S.L.id === 'p6-juego'){ SND.oops(); say(S.L.id === 'p6-juego' ? MSJ.lavaConVidas : MSJ.lava); } }
     if (S.L.timeLimit){
       if (S.R.tStart == null && (s.x !== s.sx || s.y !== s.sy)) S.R.tStart = S.engine.time;
       if (S.R.tStart != null && !S.R.stopOnGoal && S.engine.time - S.R.tStart > S.L.timeLimit){
@@ -255,7 +255,7 @@ export function afterStep(){
     if (S.L.id === 'p6-pasar' && S.BACKDROP === 'arena' && S.R.inside && !S.R.stuckHint && !scan(progOf('Bichito'), b => b.type === 'goto')){ S.R.stuckHint = true; say(MSJ.paredNivelNuevo); }
     if (S.L.id === 'p6-inicio' && S.BACKDROP === 'noche' && !S.R.ncHint && S.engine.time > 1200){ S.R.ncHint = true; say(MSJ.nocheVieja); }
   }
-  if (S.L.sprites && S.L.mode !== 'cierre' && S.P.n === 5){
+  if (S.L.sprites && S.L.mode !== 'cierre' && S.P.rasgos.seguirClones){
     S.R.maxClones = Math.max(S.R.maxClones || 0, S.sprites.filter(o => o.isClone && o.kind === 'coin' && !o.hidden).length);
     const flying = S.sprites.filter(o => o.kind === 'seed' && !o.hidden && o.y < 150).length;
     S.R.maxSeeds = Math.max(S.R.maxSeeds || 0, flying);
@@ -328,8 +328,8 @@ export function flagPressed(){
     if (!S.L.sprites && !S.prog.length) say(MSJ.programaVacio);
     else if (!S.L.sprites && !S.prog.some(s => s.hat === 'flag')) say(S.L.palette.includes('flag') ? MSJ.sinBanderita : MSJ.sinBanderitaTeclas);
     else if (!S.L.sprites && S.prog.filter(s => s.hat === 'flag').every(s => !s.body.length)) say(MSJ.banderitaVacia);
-    else if (S.P.n >= 2 && S.prog.some(s => s.hat === 'flag' && ifOutsideForever(s.body))) say(MSJ.siAfuera);
-    else if (S.P.n === 2 && S.prog.some(s => s.hat === 'flag' && s.body.some(b => b.type === 'forever' && !b.body.length) && s !== S.prog[0])) say(MSJ.porSiempreVacio);
+    else if (S.P.rasgos.avisarSiAfuera && S.prog.some(s => s.hat === 'flag' && ifOutsideForever(s.body))) say(MSJ.siAfuera);
+    else if (S.P.rasgos.avisarPorSiempreVacio && S.prog.some(s => s.hat === 'flag' && s.body.some(b => b.type === 'forever' && !b.body.length) && s !== S.prog[0])) say(MSJ.porSiempreVacio);
   }
   if (S.L.needReset && !scan(progOf('Moneda'), b => b.type === 'setvar' && b.v === 'puntos')) say(MSJ.puntosArrancan(S.VARS.puntos));
   if (S.L.resetOnFlag){
@@ -366,4 +366,20 @@ export function keyUp(k){ S.engine.keyUp(k); avisos.teclas(); }
 
 export function iniciarPartida(){
   newRun();
+}
+
+/* Nivel de explorar: ¿la x y la y que dijo el chico son las de alguna estrella? (20 de tolerancia) */
+export function adivinar(gx, gy){
+  const left = S.stars.filter(st => !st.got);
+  const s = left.reduce((a, b) => Math.hypot(b.x - gx, b.y - gy) < Math.hypot(a.x - gx, a.y - gy) ? b : a);
+  const okx = Math.abs(gx - s.x) <= 20, oky = Math.abs(gy - s.y) <= 20;
+  if (okx && oky){ s.got = true; S.exploreIdx++; checkWin(); }
+  return { estrella: s, okx, oky };
+}
+
+/* Cierre: contestar una pregunta. Devuelve si estuvo bien. */
+export function responder(qi, opcion){
+  const bien = !!S.L.quiz[qi].opts[opcion][1];
+  if (bien){ S.quiz[qi] = true; checkWin(); }
+  return bien;
 }

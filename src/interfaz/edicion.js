@@ -1,4 +1,5 @@
 import { S } from '../estado.js';
+import { UI } from '../datos/textos.js';
 import { COND_TYPES, PAL } from '../datos/bloques.js';
 import { say } from './aviso.js';
 import { renderProgram } from './editor.js';
@@ -43,12 +44,12 @@ export function insert(t){
     const sc = Pb.make(); S.prog.push(sc); S.sel = {owner:sc.id, index:0}; SND.pop(); renderProgram(); return;
   }
   if (t === 'or' || t === 'and'){
-    const nm = t === 'or' ? '“o”' : '“y”', isOp = c => c && (c.type === 'or' || c.type === 'and');
+    const nm = t === 'or' ? UI.bloqueO : UI.bloqueY, isOp = c => c && (c.type === 'or' || c.type === 'and');
     let target = S.sel && S.sel.cond ? findBlock(S.sel.cond) : null;
     if (!target && S.sel && S.sel.owner){ const ob = findBlock(S.sel.owner); if (ob && ob.type === 'if') target = ob; }
     if (!target) target = allBlocks().reverse().find(b => b.type === 'if' && !isOp(b.cond));
-    if (!target){ say('El bloque ' + nm + ' va en el hueco de un “si”. Primero poné un “si”.'); SND.oops(); return; }
-    if (isOp(target.cond)){ say('Ese “si” ya tiene un ' + (target.cond.type === 'or' ? '“o”' : '“y”') + '. Tocá otra pregunta celeste.'); SND.oops(); return; }
+    if (!target){ say(UI.operadorSinSi(nm)); SND.oops(); return; }
+    if (isOp(target.cond)){ say(UI.siYaTiene(target.cond.type === 'or' ? UI.bloqueO : UI.bloqueY)); SND.oops(); return; }
     const o = Pb.make(); o.a = target.cond || null; target.cond = o;
     S.sel = {orSlot:o.id, side:o.a ? 'b' : 'a'}; SND.pop(); renderProgram(); return;
   }
@@ -67,12 +68,12 @@ export function insert(t){
     let target = S.sel && S.sel.cond ? findBlock(S.sel.cond) : null;
     if (!target && S.sel && S.sel.owner){ const ob = findBlock(S.sel.owner); if (ob && ob.type === 'if' && !ob.cond) target = ob; }
     if (!target) target = allBlocks().reverse().find(b => b.type === 'if' && !b.cond);
-    if (!target){ say('Los bloques celestes van en el hueco de un “si”. Primero poné un “si”.'); SND.oops(); return; }
+    if (!target){ say(UI.sensorSinSi); SND.oops(); return; }
     target.cond = Pb.make(); S.sel = {owner:target.id, index:target.body.length}; SND.pop(); renderProgram(); return;
   }
-  if (!S.prog.length){ say('Primero poné un evento amarillo: el programa necesita saber cuándo arrancar.'); SND.oops(); return; }
+  if (!S.prog.length){ say(UI.primeroEvento); SND.oops(); return; }
   fixSel();
-  if (!S.sel){ say('Empezá un programa nuevo: tocá “al hacer clic en bandera”.'); SND.oops(); return; }
+  if (!S.sel){ say(UI.empezaPrograma); SND.oops(); return; }
   let list, index, owner;
   if (S.sel.cond){ const ib = findBlock(S.sel.cond); list = ib.body; index = list.length; owner = ib.id; }
   else { list = findList(S.sel.owner); index = Math.min(S.sel.index, list.length); owner = S.sel.owner; }

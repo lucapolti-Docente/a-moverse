@@ -86,3 +86,157 @@ export const MSJ = {
   eventoVacio: k => `Tu evento de la ${KEYS[k]} está vacío. Ponele un bloque azul abajo.`,
   teclaSinSi: (k, esLetra) => `Apretaste ${esLetra ? 'la ' + k.toUpperCase() : 'la ' + KEYS[k]}, pero ningún “si” pregunta por esa tecla. Cambiala en el bloque celeste ▾.`
 };
+
+/* Nivel de explorar (adivinar x e y) y preguntas de cierre. */
+export const EXPLORAR = {
+  todas: '¡Encontraste las dos estrellas!',
+  falta: n => `¡Ya encontraste una! Falta ${n}. ¿En qué x y en qué y está?`,
+  elegi: 'Elegí cualquier estrella, la que quieras. ¿En qué x y en qué y está?',
+  pista: 'Pista: llevá al bichito arriba de la estrella y mirá los números de arriba a la izquierda.',
+  comprobar: 'Comprobar',
+  si: (x, y) => `¡Sí! Está en x: ${x}, y: ${y}.`,
+  ningunaBien: 'Todavía no. Mirá: ¿la estrella está a la derecha (más) o a la izquierda (menos) del centro?',
+  xMal: 'La y está bien. La x no: x es para los costados. Derecha es más, izquierda es menos.',
+  yMal: 'La x está bien. La y no: y es arriba y abajo. Arriba es más, abajo es menos.'
+};
+export const CIERRE = { mal: 'Mmm, no. Mirá el programa y probá otra.' };
+
+/* Textos fijos de la pantalla (index.html los toma de acá: data-t, data-ta para aria-label, data-tt para title). */
+export const PANTALLA = {
+  ariaInicio: 'Volver al menú de la parte',
+  ariaAnterior: 'Nivel anterior',
+  ariaSiguiente: 'Nivel siguiente',
+  ariaSonido: 'Sonido',
+  ariaEscenario: 'Escenario',
+  ariaBanderita: 'Banderita: arrancar el programa',
+  ariaParar: 'Parar',
+  ariaReiniciar: 'Volver a empezar el nivel',
+  ariaPad: 'Flechas',
+  ariaBloques: 'Bloques',
+  ariaPrograma: 'Programa',
+  ariaEspacio: 'Tecla espacio',
+  espacio: 'espacio',
+  ariaFlechaArriba: 'Flecha arriba',
+  ariaFlechaIzquierda: 'Flecha izquierda',
+  ariaFlechaAbajo: 'Flecha abajo',
+  ariaFlechaDerecha: 'Flecha derecha',
+  tituloReglas: 'Referencias: reglas y flechitas',
+  reglas: 'Reglas',
+  desafio: 'Desafío',
+  pista: '💡 Pista',
+  padFlechas: 'Pad: flechas',
+  banderita: 'Banderita',
+  parar: 'Parar',
+  lema: 'Cada idea funciona… hasta que un desafío la rompe.',
+  elegiParte: 'Elegí una parte',
+  lemaPartes: 'Paso a paso armamos un juego de verdad.',
+  partes: 'Partes',
+  pasoAPaso: 'Paso a paso',
+  libre: 'Libre',
+  todosLosBloques: 'Todos los bloques',
+  elegiNivel: 'Elegí un nivel',
+  paraDocente: 'Para el docente',
+  pistaTitulo: 'Pista',
+  ejemplo: 'Ejemplo',
+  entendido: 'Entendido',
+  loLograste: '¡Lo lograste!',
+  queDescubriste: 'Qué descubriste',
+  quedarme: 'Quedarme acá',
+  siguienteNivel: 'Siguiente nivel'
+};
+
+/* Textos de la interfaz que arma el juego (menú, ventanas, editor, controles). */
+export const UI = {
+  // menú de partes y niveles
+  parte: n => 'Parte ' + n,
+  ariaParte: (n, nombre) => `Parte ${n}: ${nombre}`,
+  proximamente: 'Próximamente',
+  nivelesYCierre: n => `${n} niveles y un cierre`,
+  ariaNivel: i => `Nivel ${i}: `,
+  hecho: ' (hecho)',
+  // barra de arriba
+  barraLibre: p => `Parte ${p} · Libre`,
+  barraCierre: p => `Parte ${p} · Cierre`,
+  barraNivel: (p, i, n) => `Parte ${p} · ${i} / ${n}`,
+  prefijoCierre: 'Cierre: ',
+  // ventana de victoria
+  loLograste: '¡Lo lograste!',
+  terminaste: p => `¡Terminaste la parte ${p}!`,
+  siguienteNivel: 'Siguiente nivel',
+  volverAlMenu: 'Volver al menú',
+  // controles
+  padWasd: 'Pad: W A S D',
+  padFlechas: 'Pad: flechas',
+  ariaTecla: k => 'Tecla ' + k,
+  ariaFlecha: {up:'Flecha arriba', left:'Flecha izquierda', down:'Flecha abajo', right:'Flecha derecha'},
+  ariaRefOcultar: 'Ocultar referencias (reglas y flechitas)',
+  ariaRefMostrar: 'Mostrar referencias (reglas y flechitas)',
+  tituloRefOcultar: 'Ocultar reglas y flechitas',
+  tituloRefMostrar: 'Mostrar reglas y flechitas',
+  refPrendidas: 'Referencias prendidas: reglas y flechitas.',
+  refApagadas: 'Referencias apagadas. Las prendés con el botón “Reglas”.',
+  sonido: 'Sonido',
+  sonidoApagado: 'Sonido apagado',
+  // editor
+  tuPrograma: 'Tu programa',
+  programasDe: nombre => 'Programas de ' + nombre,
+  volverComoEstaba: 'Volver a como estaba',
+  programaVacio: 'Tocá un bloque amarillo de Eventos para empezar. Los bloques que toques aparecen acá.',
+  paletaTitulo: 'Bloques (tocá para sumar)',
+  crearVariable: 'Crear una variable',
+  nuevaVariable: { titulo: 'Nueva variable', nombre: 'Nombre de la variable:', ejemplo: 'por ejemplo: monedas', todos: '● Para todos los objetos', este: '○ Solo para este objeto', cancelar: 'Cancelar', aceptar: 'Aceptar' },
+  varSinNombre: 'Escribí un nombre. Por ejemplo: monedas.',
+  varRepetida: 'Ya hay una variable con ese nombre.',
+  varCreada: n => `¡Creaste la variable “${n}”! Ya aparece el cartel en el escenario y los bloques naranjas para usarla.`,
+  bloqueO: '“o”',
+  bloqueY: '“y”',
+  operadorSinSi: nm => 'El bloque ' + nm + ' va en el hueco de un “si”. Primero poné un “si”.',
+  siYaTiene: nm => 'Ese “si” ya tiene un ' + nm + '. Tocá otra pregunta celeste.',
+  sensorSinSi: 'Los bloques celestes van en el hueco de un “si”. Primero poné un “si”.',
+  primeroEvento: 'Primero poné un evento amarillo: el programa necesita saber cuándo arrancar.',
+  empezaPrograma: 'Empezá un programa nuevo: tocá “al hacer clic en bandera”.'
+};
+
+/* Textos del armado de programas: flechitas de dirección, menús y botones de los bloques. */
+export const EDITOR = {
+  dir: { derecha: 'derecha', izquierda: 'izquierda', arriba: 'arriba', abajo: 'abajo', adelante: 'adelante', atras: 'para atrás' },
+  mas: 'más: ',
+  menos: 'menos: ',
+  suma: n => 'suma ' + n,
+  resta: n => 'resta ' + n,
+  apuntar: {'0':'▲ arriba', '90':'derecha ▶', '180':'▼ abajo', '-90':'◀ izquierda', '45':'↗ diagonal', '135':'↘ diagonal', '-135':'↙ diagonal', '-45':'↖ diagonal'},
+  enDiagonal: 'en diagonal ↗',
+  diagonal: 'diagonal',
+  paraDonde: '¿para<br>dónde?',
+  elegiDireccion: 'Elegí una dirección',
+  ariaDireccion: n => 'Dirección ' + n + '. Tocá para elegir',
+  cursor: '▸ acá va el próximo bloque',
+  plegadoFijo: f => '▸ ' + f.charAt(0).toUpperCase() + f.slice(1) + ' (ya armado)',
+  esconder: f => '▾ Esconder: ' + f,
+  yaArmado: f => '▸ Ya armado: ' + f + ' (tocá para ver)',
+  masVariable: '＋ variable',
+  ariaMasVariable: 'Poner una variable en este hueco',
+  volverANumero: '↩ número',
+  // nombres para lectores de pantalla
+  numero: 'número', texto: 'texto', tecla: 'tecla', disfraz: 'disfraz', fondo: 'fondo', queClonar: 'qué clonar',
+  variable: 'variable', variableONumero: 'variable o número', personaje: 'personaje', mensaje: 'mensaje',
+  color: n => 'color ' + n,
+  ariaColorCambiar: n => `color ${n}. Tocá para cambiar`,
+  tituloColorCambiar: n => n + ' (tocá para cambiar)',
+  sacarBloque: 'Sacar bloque',
+  sacarOperador: o => 'Sacar “' + o + '”',
+  sacarComparacion: 'Sacar comparación',
+  sacarSensor: 'Sacar sensor',
+  huecoPregunta: 'hueco para una pregunta',
+  huecoSensor: 'hueco para un sensor'
+};
+
+/* Lo que se escribe adentro del escenario: reglas, carteles de variables y preguntas. */
+export const ESCENARIO = {
+  menosX: '◀ menos', masX: 'más ▶', menos: 'menos', mas: 'más',
+  tiempo: '⏱ tiempo',
+  si: 'SÍ', no: 'NO',
+  fondo: f => '🖼 fondo: ' + f,
+  segundos: s => '⏱ ' + s + ' s',
+  escondida: n => n + ' (escondida)'
+};

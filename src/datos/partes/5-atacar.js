@@ -224,7 +224,18 @@ export const FREE5 = {id:'libre5', name:'Modo libre', short:'Libre', mode:'free'
   sprites:[BUG(-190,-140, () => [MOVE_S(), hatKey('space', cloneB('Semilla')), hatMsg('atrapada', chV('puntos', 1))]),
     WASPH('Avispa', -150, 120, () => [PATROL(3), HIT_S()]), SEED(-190, -140, () => SEED_CLONE())]};
 
-export const PARTE = {n:5, name:'Atacar', desc:'Esconder, mensajes, disparos y clones', levels:LEVELS5, free:FREE5,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{avisarSiAfuera:true, avisarDetuvoAntes:true, puntosAlDetener:true, seguirClones:true, portada:'atacar'}, name:'Atacar', desc:'Esconder, mensajes, disparos y clones', levels:LEVELS5, free:FREE5,
    tag:'Aplastar, avisar y disparar semillas.',
    teach:[
      ['La clase', '<p>Núcleo en 6.º y 7.º; partes en 5.º. Una o dos clases. Esconder y mostrar, el operador “y”, mensajes entre objetos y clones. Los clones son lo más difícil: se puede dejar para una segunda clase.</p>'],

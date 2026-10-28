@@ -12,46 +12,46 @@
 <body>
 <div id="app">
   <header class="top">
-    <button class="ibtn" id="home" aria-label="Volver al menú de la parte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
+    <button class="ibtn" id="home" data-ta="ariaInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
     <div class="brand">¡A <b>Moverse!</b></div>
     <div class="lvl">
-      <button class="ibtn" id="prev" aria-label="Nivel anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <span class="lvl-num" id="lvlNum">1 / 8</span>
-      <span class="lvl-name" id="lvlName">La banderita</span>
-      <button class="ibtn" id="next" aria-label="Nivel siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="ibtn" id="prev" data-ta="ariaAnterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span class="lvl-num" id="lvlNum"></span>
+      <span class="lvl-name" id="lvlName"></span>
+      <button class="ibtn" id="next" data-ta="ariaSiguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
     </div>
-    <button class="ibtn ref" id="refBtn" aria-pressed="true" title="Referencias: reglas y flechitas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="8" rx="1.5"/><path d="M6 8v3M9.5 8v2M13 8v3M16.5 8v2M20 8v3"/><path class="slash" d="M4 20L20 4"/></svg><span class="rt">Reglas</span></button>
-    <button class="ibtn" id="snd" aria-label="Sonido"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="sndWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+    <button class="ibtn ref" id="refBtn" aria-pressed="true" data-tt="tituloReglas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="8" rx="1.5"/><path d="M6 8v3M9.5 8v2M13 8v3M16.5 8v2M20 8v3"/><path class="slash" d="M4 20L20 4"/></svg><span class="rt" data-t="reglas"></span></button>
+    <button class="ibtn" id="snd" data-ta="ariaSonido"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="sndWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
   </header>
-  <div class="goal"><span class="tag">Desafío</span><span id="goalText"></span><button class="ghost introbtn" id="introBtn" hidden>💡 Pista</button></div>
+  <div class="goal"><span class="tag" data-t="desafio"></span><span id="goalText"></span><button class="ghost introbtn" id="introBtn" hidden data-t="pista"></button></div>
   <div class="main">
     <section class="left">
       <div class="stage-wrap" id="stageWrap">
         <div class="stage-box" id="stageBox">
-          <canvas id="cv" aria-label="Escenario"></canvas>
+          <canvas id="cv" data-ta="ariaEscenario"></canvas>
           <div class="xy" id="xy" aria-live="off"></div>
           <div class="fb" id="fb" role="status" aria-live="polite" hidden></div>
-          <button class="ghost padmode" id="padMode" hidden>Pad: flechas</button>
+          <button class="ghost padmode" id="padMode" hidden data-t="padFlechas"></button>
         </div>
       </div>
       <div class="controls">
         <div class="run">
-          <button class="bigbtn flag" id="flagBtn" aria-label="Banderita: arrancar el programa"><svg viewBox="0 0 24 24"><path d="M5 2.5v19" stroke="#13202B" stroke-width="2.6" stroke-linecap="round"/><path d="M6 3.5h12.5l-3.2 4.6 3.2 4.6H6z" fill="#1FA85A" stroke="#13202B" stroke-width="2" stroke-linejoin="round"/></svg><span class="t">Banderita</span></button>
-          <button class="bigbtn" id="stopBtn" aria-label="Parar"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="#C8332F" stroke="#13202B" stroke-width="2"/></svg><span class="t">Parar</span></button>
-          <button class="bigbtn spacebtn" id="spaceBtn" hidden aria-label="Tecla espacio">espacio</button>
-          <button class="bigbtn" id="resetBtn" aria-label="Volver a empezar el nivel"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v5h5"/></svg></button>
+          <button class="bigbtn flag" id="flagBtn" data-ta="ariaBanderita"><svg viewBox="0 0 24 24"><path d="M5 2.5v19" stroke="#13202B" stroke-width="2.6" stroke-linecap="round"/><path d="M6 3.5h12.5l-3.2 4.6 3.2 4.6H6z" fill="#1FA85A" stroke="#13202B" stroke-width="2" stroke-linejoin="round"/></svg><span class="t" data-t="banderita"></span></button>
+          <button class="bigbtn" id="stopBtn" data-ta="ariaParar"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="#C8332F" stroke="#13202B" stroke-width="2"/></svg><span class="t" data-t="parar"></span></button>
+          <button class="bigbtn spacebtn" id="spaceBtn" hidden data-ta="ariaEspacio" data-t="espacio"></button>
+          <button class="bigbtn" id="resetBtn" data-ta="ariaReiniciar"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v5h5"/></svg></button>
         </div>
-        <div class="pad" id="pad" aria-label="Flechas">
-          <button class="u" data-k="up" aria-label="Flecha arriba"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-          <button class="l" data-k="left" aria-label="Flecha izquierda"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button>
-          <button class="d" data-k="down" aria-label="Flecha abajo"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
-          <button class="r" data-k="right" aria-label="Flecha derecha"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        <div class="pad" id="pad" data-ta="ariaPad">
+          <button class="u" data-k="up" data-ta="ariaFlechaArriba"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+          <button class="l" data-k="left" data-ta="ariaFlechaIzquierda"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button>
+          <button class="d" data-k="down" data-ta="ariaFlechaAbajo"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
+          <button class="r" data-k="right" data-ta="ariaFlechaDerecha"><svg viewBox="0 0 24 24" fill="none" stroke="#13202B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
         </div>
       </div>
     </section>
     <section class="right" id="right">
-      <aside class="palette" id="palette" aria-label="Bloques"></aside>
-      <div class="program" id="program" aria-label="Programa"></div>
+      <aside class="palette" id="palette" data-ta="ariaBloques"></aside>
+      <div class="program" id="program" data-ta="ariaPrograma"></div>
     </section>
   </div>
 </div>
@@ -60,29 +60,29 @@
   <div class="start" id="partsView">
     <div>
       <h1>¡A <span>Moverse!</span></h1>
-      <p class="tagline">Cada idea funciona… hasta que un desafío la rompe.</p>
+      <p class="tagline" data-t="lema"></p>
     </div>
     <canvas class="hero-cv" id="heroCv" width="440" height="330" aria-hidden="true"></canvas>
-    <div class="parts-head"><h2>Elegí una parte</h2><p>Paso a paso armamos un juego de verdad.</p></div>
+    <div class="parts-head"><h2 data-t="elegiParte"></h2><p data-t="lemaPartes"></p></div>
     <div class="pgrid" id="pgrid"></div>
   </div>
   <div class="start" id="partView" hidden>
     <div>
-      <button class="back" id="backParts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>Partes</button>
+      <button class="back" id="backParts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg><span data-t="partes"></span></button>
       <h1 class="part-title" id="partTitle"></h1>
       <p class="tagline" id="partTag"></p>
       <div class="modes">
-        <button class="mode main-mode" id="goSteps"><strong>Paso a paso</strong><small id="stepsSub"></small></button>
-        <button class="mode" id="goFree"><strong>Libre</strong><small>Todos los bloques</small></button>
+        <button class="mode main-mode" id="goSteps"><strong data-t="pasoAPaso"></strong><small id="stepsSub"></small></button>
+        <button class="mode" id="goFree"><strong data-t="libre"></strong><small data-t="todosLosBloques"></small></button>
       </div>
     </div>
     <canvas class="hero-cv" id="partCv" width="440" height="330" aria-hidden="true"></canvas>
     <div class="levels">
-      <h2>Elegí un nivel</h2>
+      <h2 data-t="elegiNivel"></h2>
       <div class="lgrid" id="lgrid"></div>
     </div>
     <details class="teach">
-      <summary>Para el docente</summary>
+      <summary data-t="paraDocente"></summary>
       <div class="cols" id="teachCols"></div>
     </details>
   </div>
@@ -90,24 +90,24 @@
 
 <div class="modal" id="introModal" hidden>
   <div class="card intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-    <div class="lab">Pista</div>
+    <div class="lab" data-t="pistaTitulo"></div>
     <h2 id="introTitle"></h2>
     <p id="introText"></p>
-    <div class="lab" id="introExLab">Ejemplo</div>
+    <div class="lab" id="introExLab" data-t="ejemplo"></div>
     <div class="exbox" id="introEx"></div>
     <p class="extra" id="introNote"></p>
-    <div class="acts"><button class="primary" id="introGo">Entendido</button></div>
+    <div class="acts"><button class="primary" id="introGo" data-t="entendido"></button></div>
   </div>
 </div>
 <div class="modal" id="winModal" hidden>
   <div class="card" role="dialog" aria-modal="true" aria-labelledby="winTitle">
-    <h2 id="winTitle">¡Lo lograste!</h2>
-    <div class="lab">Qué descubriste</div>
+    <h2 id="winTitle" data-t="loLograste"></h2>
+    <div class="lab" data-t="queDescubriste"></div>
     <p id="winText"></p>
     <p class="extra" id="winExtra" hidden></p>
     <div class="acts">
-      <button class="ghost" id="winAgain">Quedarme acá</button>
-      <button class="primary" id="winNext">Siguiente nivel</button>
+      <button class="ghost" id="winAgain" data-t="quedarme"></button>
+      <button class="primary" id="winNext" data-t="siguienteNivel"></button>
     </div>
   </div>
 </div>

@@ -1,4 +1,5 @@
 import { S } from '../estado.js';
+import { UI } from '../datos/textos.js';
 import { PARTS } from '../datos/partes/index.js';
 import { $, LOCK_SVG, el, txt } from './dom.js';
 import { loadLevel } from '../motor/partida.js';
@@ -16,12 +17,12 @@ export function showParts(){
     b.append(el('span','pn', String(p.n)), el('strong', null, p.name));
     if (p.locked){
       b.disabled = true; b.append(el('small', null, p.desc));
-      const lk = el('span','lock', LOCK_SVG + 'Próximamente'); b.append(lk);
-      b.setAttribute('aria-label', `Parte ${p.n}: ${p.name}. Próximamente`);
+      const lk = el('span','lock', LOCK_SVG + UI.proximamente); b.append(lk);
+      b.setAttribute('aria-label', UI.ariaParte(p.n, p.name) + '. ' + UI.proximamente);
     } else {
       b.append(el('small', null, p.desc));
       const pr = el('span','prog'); const fill = el('i'); fill.style.width = Math.round(partProgress(p) * 100) + '%'; pr.append(fill); b.append(pr);
-      b.setAttribute('aria-label', `Parte ${p.n}: ${p.name}`);
+      b.setAttribute('aria-label', UI.ariaParte(p.n, p.name));
       b.onclick = () => { ac(); showPart(p); };
     }
     g.append(b);
@@ -34,16 +35,16 @@ export function showParts(){
 export function showPart(p){
   if (S.engine){ S.engine.stop(); S.engine.releaseAll(); }
   S.P = p;
-  $('#partTitle').innerHTML = `<small>Parte ${p.n}</small>`; $('#partTitle').append(p.name);
+  $('#partTitle').innerHTML = '<small>' + UI.parte(p.n) + '</small>'; $('#partTitle').append(p.name);
   $('#partTag').textContent = p.tag;
   const n = p.levels.filter(l => l.mode !== 'cierre').length;
-  $('#stepsSub').textContent = `${n} niveles y un cierre`;
+  $('#stepsSub').textContent = UI.nivelesYCierre(n);
   const g = $('#lgrid'); g.innerHTML = '';
   p.levels.forEach((lv, i) => {
     const b = el('button', 'lbtn' + (S.done.has(lv.id) ? ' done' : ''));
     const isC = lv.mode === 'cierre';
     b.append(el('b', null, isC ? '★' : String(i + 1)), txt(lv.short || lv.name));
-    b.setAttribute('aria-label', (isC ? '' : `Nivel ${i + 1}: `) + lv.name + (S.done.has(lv.id) ? ' (hecho)' : ''));
+    b.setAttribute('aria-label', (isC ? '' : UI.ariaNivel(i + 1)) + lv.name + (S.done.has(lv.id) ? UI.hecho : ''));
     b.onclick = () => { ac(); $('#startScreen').hidden = true; go(i); };
     g.append(b);
   });

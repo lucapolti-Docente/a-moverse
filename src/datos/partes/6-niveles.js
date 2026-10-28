@@ -122,7 +122,18 @@ export const FREE6 = Object.assign({}, P6, {id:'libre6', name:'Modo libre', shor
   palette:['flag','key','whenmsg','whenbd','broadcast','switchbd','forever','if','touchc','toucho','keyp','and','or','eq','gt','lt','move','bounce','pointdir','pointto','goto','gorandom','hide','show','say','wait','stop','setvar','changevar'],
   sprites:[BUGW([NEXT_BUG(), BACK_BUG()]), WASPH('Avispa', -40, 140, () => [PATROL(3)]), STAGE(() => [STAGE_START([setV('nivel', 1)]), hatMsg('siguiente nivel', bdB('siguiente fondo'), chV('nivel', 1))])]});
 
-export const PARTE = {n:6, name:'Niveles', desc:'Fondos, escenario y niveles', levels:LEVELS6, free:FREE6,
+/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
+   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
+     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
+     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
+     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
+     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
+     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
+     seguirClones         cuenta clones y semillas en vuelo
+     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
+     animaciones          sigue la cara de dolor del bichito
+     portada              qué animación se ve en la portada de la parte */
+export const PARTE = {rasgos:{avisarSiAfuera:true, finPorNivel:true, mapaCallado:true, portada:'niveles'}, name:'Niveles', desc:'Fondos, escenario y niveles', levels:LEVELS6, free:FREE6,
    tag:'El escenario cambia de fondo y cada fondo es un nivel.',
    teach:[
      ['La clase', '<p>Núcleo en 6.º y 7.º. Una clase de 40 a 60 minutos. El escenario como objeto, fondos, mensajes para coordinar, la variable “nivel” y una variable adentro de un bloque.</p>'],
