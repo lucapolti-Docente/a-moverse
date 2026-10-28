@@ -12,6 +12,10 @@ export function partProgress(p){ return p.levels ? p.levels.filter(l => S.done.h
 export function showParts(){
   if (S.engine){ S.engine.stop(); S.engine.releaseAll(); }
   const g = $('#pgrid'); g.innerHTML = '';
+  // la parte donde conviene seguir: la última que se empezó y no se terminó (o la primera sin terminar)
+  const avance = p => p.levels.filter(l => S.done.has(l.id)).length;
+  const empezadas = PARTS.filter(p => !p.locked && avance(p) > 0 && avance(p) < p.levels.length);
+  const seguir = empezadas.length ? empezadas[empezadas.length - 1] : PARTS.find(p => !p.locked && avance(p) < p.levels.length);
   PARTS.forEach(p => {
     const b = el('button', 'pcard p' + p.n);
     b.append(el('span','pn', String(p.n)), el('strong', null, p.name));
@@ -21,8 +25,12 @@ export function showParts(){
       b.setAttribute('aria-label', UI.ariaParte(p.n, p.name) + '. ' + UI.proximamente);
     } else {
       b.append(el('small', null, p.desc));
-      const pr = el('span','prog'); const fill = el('i'); fill.style.width = Math.round(partProgress(p) * 100) + '%'; pr.append(fill); b.append(pr);
-      b.setAttribute('aria-label', UI.ariaParte(p.n, p.name));
+      const hechos = p.levels.filter(l => S.done.has(l.id)).length, total = p.levels.length;
+      const pr = el('span','prog'); const fill = el('i'); fill.style.width = Math.round(hechos / total * 100) + '%'; pr.append(fill);
+      const fila = el('span','avance'); fila.append(pr, el('span','cuenta', hechos === total ? UI.parteHecha : UI.cuenta(hechos, total))); b.append(fila);
+      if (hechos === total) b.classList.add('hecha');
+      if (p === seguir){ b.classList.add('seguir'); b.append(el('span','marca', UI.seguiAca)); }
+      b.setAttribute('aria-label', UI.ariaParte(p.n, p.name) + '. ' + UI.cuenta(hechos, total) + (p === seguir ? '. ' + UI.seguiAca : ''));
       b.onclick = () => { ac(); showPart(p); };
     }
     g.append(b);

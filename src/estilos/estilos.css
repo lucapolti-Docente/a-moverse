@@ -196,6 +196,7 @@ button{cursor:pointer}
   .cblk{min-width:150px}
   .start{grid-template-columns:1fr;gap:14px;padding-block:14px}
   .hero-cv{max-width:300px;order:-1}
+  #partsView .hero-cv{max-width:190px}
   .tagline{font-size:17px;margin:8px 0 12px}
   .mode{min-width:0;flex:1;padding:10px 14px}
   .mode strong{font-size:20px}
@@ -218,12 +219,20 @@ button.swatch{cursor:pointer}
 .parts-head h2{font-family:var(--f-display);font-weight:600;font-size:24px;margin:0}
 .parts-head p{margin:0;color:var(--muted);font-weight:700;font-size:15px}
 .pgrid{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (min-width:1100px){#partsView .pgrid{grid-template-columns:repeat(4,minmax(0,1fr))} #partsView .hero-cv{max-width:300px} #partsView.start{max-width:1100px} #partsView .pcard{padding:10px 12px} #partsView .pcard strong{font-size:19px} #partsView .pcard small{font-size:13px}}
 .pcard{border:3px solid var(--ink);border-radius:16px;background:var(--surface);padding:12px 14px;text-align:left;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;box-shadow:0 4px 0 var(--ink);min-height:92px}
 .pcard .pn{grid-row:1/3;font-family:var(--f-display);font-weight:700;font-size:40px;line-height:1;width:44px;text-align:center}
 .pcard strong{font-family:var(--f-display);font-weight:600;font-size:21px;line-height:1.1}
 .pcard small{font-size:14px;color:var(--muted);font-weight:700;line-height:1.3}
 .pcard:not([disabled]):active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
-.pcard .prog{grid-column:2;height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
+.pcard{position:relative}
+.pcard .avance{grid-column:2;display:flex;align-items:center;gap:8px;margin-top:4px}
+.pcard .prog{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.pcard .cuenta{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.pcard.hecha{border-color:var(--ok);box-shadow:0 4px 0 var(--ok)}
+.pcard.hecha .cuenta{color:var(--ok)}
+.pcard.seguir{outline:3px dashed var(--accent);outline-offset:3px}
+.pcard .marca{position:absolute;top:-11px;right:12px;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px}
 .pcard .prog i{display:block;height:100%;background:var(--ok)}
 .pcard .pn{color:var(--accent)}
 .pcard[disabled]{cursor:default;box-shadow:none;border-style:dashed;border-color:var(--line);background:transparent}
@@ -240,7 +249,7 @@ button.swatch{cursor:pointer}
   .pcard .pn{grid-row:auto;font-size:26px;text-align:left;width:auto}
   .pcard strong{font-size:17px}
   .pcard small{font-size:12px}
-  .pcard .prog{grid-column:1}
+  .pcard .avance{grid-column:1}
   .swatch{width:24px;height:18px}
   .txtin{width:70px}
 }
