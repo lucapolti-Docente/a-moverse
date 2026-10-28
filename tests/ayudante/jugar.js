@@ -85,6 +85,8 @@ function crearPiloto(){
     let quiero = [];
     const obj = destino(d, b);
     if (op.espacio) quiero.push('space');
+    // esconderse con espacio cuando una avispa se acerca (nivel de la tecla espacio)
+    if (op.esconder && !b.hidden && S.sprites.some(o => o.kind === 'wasp' && !o.hidden && Math.hypot(o.x - b.x, o.y - b.y) < 70)) quiero.push('space');
     if (obj){
       const caza = typeof d === 'string' && d !== 'estrellas' && d !== 'meta';
       const enemigos = op.esquivar ? S.sprites.filter(o => o.kind === 'wasp' && !o.hidden && o !== b && o.name !== d) : [];

@@ -12,9 +12,11 @@ export const SEED = (x, y, program) => ({name:'Semilla', kind:'seed', x, y, prog
 
 export const BAG = (x, y, program) => ({name:'Bolsa', kind:'bag', x, y, program, color:'#A16207'});
 
-export const SWORD = (x, y, program) => ({name:'Espada', kind:'sword', x, y, program, color:'#94A3B8', hidden:true});
+/* La burbuja aparece un ratito al lado del bichito y atrapa lo que está cerca (alcance 50, más que el cuerpo). */
+export const BURBUJA = (x, y, program) => ({name:'Burbuja', kind:'bubble', x, y, program, color:'#38BDF8', hidden:true});
 
-export const SHIP = (x, y, program) => ({name:'Nave', kind:'ship', x, y, program, color:'#6D28D9', hidden:true});
+/* Nube seca que baja; si le llega una semilla, florece. */
+export const NUBE = (x, y, program) => ({name:'Nube', kind:'cloud', x, y, program, color:'#94A3B8', hidden:true});
 
 export const WASPH = (name, x, y, program, hidden, color) => Object.assign(WASP(name, x, y, program, 90, color || '#7A4DD8'), {hidden: !!hidden});
 

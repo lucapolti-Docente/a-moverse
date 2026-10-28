@@ -34,7 +34,14 @@ export function drawHero(t){
     c.save(); c.font = `700 ${16*k}px ${FONT()}`; c.textAlign = 'center'; ['pasto','arena','noche'].forEach((n, i) => { c.fillStyle = i === 2 ? '#E2E8F0' : '#13202B'; c.fillText(n, (i + .5)*W/3, 40*k); }); c.restore();
     return;
   }
-  if (showingPart && S.P.rasgos.portada === 'atacar'){
+  if (showingPart && S.P.rasgos.portada === 'avisar'){
+    // la avispa aparece y desaparece; el bichito la busca
+    const bx = (240 + Math.sin(a) * 150) * k, ver = Math.floor(t/900) % 2 === 0;
+    drawBug(c, bx, 260*k, k*2, '#E8553F', 1, t, true);
+    if (ver) drawWasp(c, (240 + Math.cos(a*1.4) * 150) * k, 90*k, k*2, '#7A4DD8', Math.cos(a*1.4) > 0 ? -90 : 90, t);
+    return;
+  }
+  if (showingPart && S.P.rasgos.portada === 'semillas'){
     const bx = (240 + Math.sin(a) * 150) * k;
     drawBug(c, bx, 270*k, k*2, '#E8553F', 1, t, true);
     for (let i = 0; i < 3; i++){ const sy = 240 - ((t/6 + i*80) % 240); drawSeed(c, bx, sy*k, k*2, 0); }

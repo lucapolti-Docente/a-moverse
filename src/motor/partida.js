@@ -132,10 +132,10 @@ export const hooks = {
     if (name === 'feliz') S.R.happyShown = true;
     S.R.cosLog = (S.R.cosLog || []).concat(S.engine.time).slice(-40);
   },
-  hidden(t){ const s = t.sprite; if (s.kind === 'bug') S.R.bugBlinks = (S.R.bugBlinks || 0) + 1; if (s.kind === 'wasp'){ S.R.waspHid = true; burst(s.x, s.y, '#7A4DD8'); SND.star(); if (S.engine.held.has('space')) S.R.hidWithSpace = true; } },
+  hidden(t){ const s = t.sprite; if (s.kind === 'seed' && s.y >= 150) S.R.semillaArriba = true; if (s.kind === 'bug') S.R.bugBlinks = (S.R.bugBlinks || 0) + 1; if (s.kind === 'wasp'){ S.R.waspHid = true; burst(s.x, s.y, '#7A4DD8'); SND.star(); if (S.engine.held.has('space')) S.R.hidWithSpace = true; else S.R.hidSinEspacio = true; } },
   shown(t){
     const s = t.sprite; if (s.kind === 'wasp') S.R.waspShown = true;
-    if (s.kind === 'sword'){ avisos.tono(520, .07, 'square', .05, 0, 900); S.R.swings = (S.R.swings || 0) + 1; }
+    if (s.kind === 'bubble'){ avisos.tono(660, .12, 'sine', .06, 0, 990); S.R.swings = (S.R.swings || 0) + 1; }
     if (s.kind === 'seed'){
       S.R.shots = (S.R.shots || 0) + 1; avisos.tono(700, .08, 'triangle', .07);
       const bug = S.sprites.find(o => o.kind === 'bug');
@@ -146,11 +146,14 @@ export const hooks = {
   cloned(c){
     if (c.kind === 'seed'){
       avisos.tono(760, .06, 'triangle', .06);
-      if (S.L.id === 'p5-balas'){
-        if ((S.VARS.semillas ?? 0) <= 0){ S.R.freeShot = true; if (!S.R.freeHint){ S.R.freeHint = true; say(MSJ.sinSemillas); } }
-        else S.R.legitShots = (S.R.legitShots || 0) + 1;
-      }
+      // si tiró sin semillas, la variable queda en negativo: eso lo mira afterStep (no importa el orden de los bloques)
+      if (S.L.id === 'p5-balas') S.R.legitShots = (S.R.legitShots || 0) + 1;
     }
+    if (c.kind === 'cloud') S.R.nubes = (S.R.nubes || 0) + 1;
+  },
+  deleted(t){
+    const s = t.sprite;
+    if (s.kind === 'cloud' && S.sprites.some(o => o.kind === 'seed' && !o.hidden && Math.hypot(o.x - s.x, o.y - s.y) < 26)){ burst(s.x, s.y, '#F472B6'); avisos.tono(880, .12, 'triangle', .06); }
   },
   setVar(v, n, t){
     const before = S.VARS[v] ?? 0; S.VARS[v] = Math.round(n * 100) / 100;
@@ -176,7 +179,7 @@ export const hooks = {
   touchingObj(s, target){
     if (target === 'borde'){ const B = s.bounds || {x0:-224,x1:224,y0:-164,y1:164}; return s.x >= B.x1 || s.x <= B.x0 || s.y >= B.y1 || s.y <= B.y0; }
     if (s.hidden) return false;
-    const rad = o => (o.kind === 'sword' || s.kind === 'sword') ? 50 : (o.kind === 'seed' || s.kind === 'seed') ? 22 : (o.kind === 'ship' || s.kind === 'ship') ? 26 : 28;
+    const rad = o => (o.kind === 'bubble' || s.kind === 'bubble') ? 50 : (o.kind === 'seed' || s.kind === 'seed') ? 22 : (o.kind === 'cloud' || s.kind === 'cloud') ? 26 : 28;
     return S.sprites.some(o => o.name === target && o !== s && !o.hidden && Math.hypot(o.x - s.x, o.y - s.y) < rad(o));
   },
   bounce(t){
@@ -189,7 +192,7 @@ export const hooks = {
     if (S.L.id === 'p3-2' && !scan(s.program, b => b.type === 'move')) say(MSJ.rebotoSumarX);
   },
   goto(t){ if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ S.R.lavaFunciona = true; SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },
-  say(t){ if (S.L.id === 'p5-mayor'){ if ((S.VARS.semillas ?? 0) > 3) S.R.saidGt = true; if ((S.VARS.semillas ?? 0) < 1) S.R.saidLt = true; } if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')) S.R.saidOnGoal = true; if (S.L.id === 'p4-igual' && S.VARS.puntos === 5) S.R.said5 = true; },
+  say(t){ if (S.L.id === 'p5-mayor'){ if ((S.VARS.semillas ?? 0) > 3) S.R.saidGt = true; if ((S.VARS.semillas ?? 0) < 3) S.R.saidLt = true; } if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')) S.R.saidOnGoal = true; if (S.L.id === 'p4-igual' && S.VARS.puntos === 5) S.R.said5 = true; },
   stop(t){
     if (S.P.rasgos.finPorNivel){ S.R.stopNivel = S.VARS.nivel ?? null; if (S.R.stopNivel == null) S.R.stopNivel = 0; }
     if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')){ S.R.stopOnGoal = true; S.R.goalBd = S.BACKDROP; if (S.R.tStart != null) S.R.tEnd = S.engine.time - S.R.tStart; }
@@ -264,6 +267,16 @@ export function afterStep(){
     const piled = S.sprites.filter(o => o.isClone && o.y >= 160).length;
     if (piled >= 5 && !S.R.pileHint){ S.R.pileHint = true; say(MSJ.semillasAmontonadas); }
     if (S.L.id === 'p5-mostrar' && S.engine.alive() && S.sprites[1].hidden && !S.R.waspShown && !S.R.ghostHint && S.engine.time > 1500){ S.R.ghostHint = true; say(MSJ.avispaEscondida); }
+    // tiró semillas sin tener: la variable quedó en negativo
+    if (S.L.id === 'p5-balas' && (S.VARS.semillas ?? 0) < 0){ S.R.freeShot = true; if (!S.R.freeHint){ S.R.freeHint = true; say(MSJ.sinSemillas); } }
+    // la semilla llegó arriba y no se esconde
+    const sem = S.sprites.find(o => o.kind === 'seed' && !o.isClone);
+    if (S.L.id === 'p5-vuela' && sem && S.engine.alive()){ S.R.pegadaTicks = !sem.hidden && sem.y >= 160 ? (S.R.pegadaTicks || 0) + 1 : 0; if (S.R.pegadaTicks > 20) S.R.semillaPegada = true; }
+    // un objeto que tenía que crear clones solo y no crea
+    if (S.L.avisoSinClones && S.R.flagT != null && S.engine.alive() && !S.R.nubes && S.engine.time - S.R.flagT > 3000 && !S.R.clonHint){ S.R.clonHint = true; say(S.L.avisoSinClones); }
+    // la avispa se escondió y hace rato que no vuelve
+    const w = S.sprites.find(o => o.kind === 'wasp');
+    if (S.L.avisoEscondida && w && S.engine.alive()){ S.R.escondidaTicks = w.hidden ? (S.R.escondidaTicks || 0) + 1 : 0; if (S.R.escondidaTicks === 120) say(S.L.avisoEscondida); }
     if (S.L.id === 'p5-espacio' && S.R.waspHid && !S.R.hidWithSpace && !S.R.spaceHint){ S.R.spaceHint = true; say(MSJ.sinEspacio); }
   }
   if (S.L.sprites && S.L.mode !== 'cierre' && S.engine.alive()){

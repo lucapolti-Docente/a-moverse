@@ -65,7 +65,7 @@ export const MSJ = {
 
   // atacar
   semillaArriba: 'La semilla apareció arriba, donde había quedado, y se escondió enseguida. Tiene que salir desde el bichito: poné “ir a Bichito” arriba del “mostrar”.',
-  sinSemillas: '¡Disparaste sin tener semillas! Envolvé “crear clon” con “si semillas > 0”.',
+  sinSemillas: '¡Tiraste sin tener semillas! Envolvé “crear clon” con “si semillas > 0”.',
   semillasAmontonadas: 'Las semillas se quedan amontonadas arriba: son clones que nunca se borran. En la semilla: si toca el borde → eliminar este clon.',
   avispaEscondida: 'La avispa sigue escondida de la vez anterior. Poné “mostrar” arriba de su “por siempre”.',
   sinEspacio: 'Se escondió sin apretar espacio. Falta el “y”: ¿tocando Bichito? y ¿tecla espacio presionada?',

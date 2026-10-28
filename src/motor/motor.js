@@ -56,7 +56,7 @@ export function createEngine(hooks){
       case 'broadcast': E.broadcast(b.msg); break;
       case 'gotoobj': { const o = hooks.findSprite && hooks.findSprite(b.target); if (o){ s.x = o.x; s.y = o.y; s.lastOrigin = t.origin; } break; }
       case 'clone': { const src = b.target === 'mí mismo' ? s : (hooks.findSprite && hooks.findSprite(b.target)); if (src) E.makeClone(src); break; }
-      case 'delclone': if (s.isClone){ E.removeSprite(s); throw DEL_CLONE; } break;
+      case 'delclone': if (s.isClone){ if (hooks.deleted) hooks.deleted(t); E.removeSprite(s); throw DEL_CLONE; } break;
       case 'setvar': if (hooks.setVar) hooks.setVar(b.v, num(b.n), t); break;
       case 'changevar': if (hooks.setVar) hooks.setVar(b.v, Number(hooks.getVar(b.v) || 0) + num(b.n), t); break;
       case 'gorandom': { const p = hooks.randomPos ? hooks.randomPos(s) : {x:0, y:0}; s.x = p.x; s.y = p.y; if (hooks.jumped) hooks.jumped(t); break; }

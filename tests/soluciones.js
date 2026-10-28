@@ -114,9 +114,13 @@ export const SOLUCIONES = {
   },
   'p4-cierre': { acciones: [['quiz']] },
 
-  /* ---------- Parte 5 ---------- */
+  /* ---------- Parte 5: Aparecer y avisar ---------- */
   'p5-aplasta': { sprites: { Avispa: () => [PATROL(3), hatFlag(fe(iff(toO('Bichito'), hideB())))] }, acciones: [['bandera'], ['ir', 'Avispa']] },
   'p5-mostrar': { sprites: { Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(toO('Bichito'), hideB())))] }, acciones: [['bandera'], ['ir', 'Avispa']] },
+  'p5-tecla': {
+    sprites: { Bichito: () => [MOVEW_S(), hatFlag(fe(iff(toO('Avispa'), gotoB(-200, 0)))), hatKey('space', hideB(), waitB(1), showB())] },
+    acciones: [['bandera'], ['ir', 'estrellas', { esconder: true }]]
+  },
   'p5-espacio': {
     sprites: { Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(andB(toO('Bichito'), kp('space')), hideB())))] },
     acciones: [['bandera'], ['ir', 'Avispa', { espacio: true }]]
@@ -124,9 +128,20 @@ export const SOLUCIONES = {
   'p5-mensaje': {
     sprites: {
       Bichito: () => [MOVE_S(), hatFlag(setV('puntos', 0)), hatMsg('atrapada', chV('puntos', 1))],
-      Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(andB(toO('Bichito'), kp('space')), hideB(), sendB('atrapada'), waitB(1), rndB(), showB())))]
+      Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(toO('Bichito'), hideB(), sendB('atrapada'), waitB(1), rndB(), showB())))]
     },
-    acciones: [['bandera'], ['ir', 'Avispa', { espacio: true }]]
+    acciones: [['bandera'], ['ir', 'Avispa']]
+  },
+  'p5-meaviso': {
+    sprites: { Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(toO('Bichito'), hideB(), sendB('atrapada')))), hatMsg('atrapada', waitB(1), rndB(), showB())] },
+    acciones: [['bandera'], ['ir', 'Avispa']]
+  },
+  'p5-cierre-avisar': { acciones: [['quiz']] },
+
+  /* ---------- Parte 6: Semillas y clones ---------- */
+  'p5-vuela': {
+    sprites: { Semilla: () => [hatFlag(showB(), gotoB(0, -110), pdirB(0), fe(mv(15), iff(toO('borde'), hideB())))] },
+    acciones: [['bandera'], ['esperar', 40]]
   },
   'p5-dedonde': {
     sprites: { Semilla: () => [SEED_FLY(), hatKey('space', gotoO('Bichito'), showB())] },
@@ -147,33 +162,40 @@ export const SOLUCIONES = {
     },
     acciones: [['bandera'], ['tocar', 'space', 6, 4]]
   },
+  'p5-nacen': {
+    sprites: { Nube: () => [hatFlag(hideB(), fe(waitB(1), rndB(), cy(400), cloneB('mí mismo'))), hatClone(showB(), pdirB(180), fe(mv(3), iff(toO('borde'), delB())))] },
+    acciones: [['bandera'], ['esperar', 200]]
+  },
+  'p5-espada': {
+    sprites: { Burbuja: () => [hatKey('space', gotoO('Bichito'), showB(), waitB(0.3), hideB())] },
+    acciones: [['bandera'], ['ir', 'Avispa', { golpe: true }]]
+  },
+  'p5-cerca': {
+    sprites: {
+      Avispa: () => [Object.assign(hatFlag(showB(), waitB(1), fe(ptoB('Bichito'), mv(2))), {fold:'x'}), hatMsg('atrapada', waitB(1), rndB(), showB()), hatFlag(fe(iff(toO('Burbuja'), hideB(), sendB('atrapada'))))]
+    },
+    acciones: [['bandera'], ['ir', 'Avispa', { golpe: true }]]
+  },
+  'p5-cierre-clones': { acciones: [['quiz']] },
+
+  /* ---------- Parte 7: Juntar y comparar ---------- */
   'p5-mayor': {
-    sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('semillas', 0)), hatFlag(fe(iff(ltB('semillas', 1), sayB('¡No tengo!')), iff(gtB('semillas', 3), sayB('¡Muchas!'))))] },
+    sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('semillas', 0)), hatFlag(fe(iff(ltB('semillas', 3), sayB('¡Pocas!')), iff(gtB('semillas', 3), sayB('¡Muchas!'))))] },
     acciones: [['bandera'], ['esperar', 3], ['ir', 'Bolsa']]
   },
   'p5-balas': {
     sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('semillas', 0)), hatKey('space', iff(gtB('semillas', 0), cloneB('Semilla'), chV('semillas', -1)))] },
     acciones: [['bandera'], ['ir', 'Bolsa', { parar: S => S.VARS.semillas > 0 }], ['tocar', 'space', 3, 10]]
   },
-  'p5-espada': {
-    sprites: { Espada: () => [hatKey('space', gotoO('Bichito'), showB(), waitB(0.3), hideB())] },
-    acciones: [['bandera'], ['ir', 'Avispa', { golpe: true }]]
-  },
-  'p5-cerca': {
-    sprites: {
-      Avispa: () => [Object.assign(hatFlag(showB(), waitB(1), fe(ptoB('Bichito'), mv(2))), {fold:'x'}), hatMsg('atrapada', waitB(1), rndB(), showB()), hatFlag(fe(iff(toO('Espada'), hideB(), sendB('atrapada'))))]
-    },
-    acciones: [['bandera'], ['ir', 'Avispa', { golpe: true }]]
-  },
   'p5-lluvia': {
     sprites: {
-      Nave: () => [hatFlag(hideB(), fe(waitB(1.2), rndB(), cy(400), cloneB('mí mismo'))), hatClone(showB(), pdirB(180), fe(mv(3), iff(toO('Bichito'), sendB('daño'), delB()), iff(tc('lava'), sendB('daño'), delB()), iff(toO('Semilla'), sendB('atrapada'), delB())))]
+      Nube: () => [hatFlag(hideB(), fe(waitB(1.2), rndB(), cy(400), cloneB('mí mismo'))), hatClone(showB(), pdirB(180), fe(mv(3), iff(toO('Bichito'), sendB('ay'), delB()), iff(tc('lava'), sendB('ay'), delB()), iff(toO('Semilla'), sendB('florecí'), delB())))]
     },
-    acciones: [['bandera'], ['ir', { debajo: 'Nave' }]]
+    acciones: [['bandera'], ['ir', { debajo: 'Nube' }]]
   },
   'p5-cierre': { acciones: [['bandera'], ['esperar', 2400]] }, // infinito: termina cuando te quedás sin vidas
 
-  /* ---------- Parte 6 ---------- */
+  /* ---------- Parte 8: Niveles ---------- */
   'p6-escenario': { sprites: { Escenario: () => [hatFlag(bdB('arena'))] }, acciones: [['bandera'], ['esperar', 5]] },
   'p6-inicio': { sprites: { Escenario: () => [hatFlag(bdB('pasto'))] }, acciones: [['bandera'], ['ir', 'meta']] },
   'p6-pasar': {
@@ -207,7 +229,7 @@ export const SOLUCIONES = {
   },
   'p6-cierre': { acciones: [['bandera'], ['ir', 'meta', { esquivar: true }]] },
 
-  /* ---------- Parte 7 ---------- */
+  /* ---------- Parte 9: Animaciones ---------- */
   'p7-disfraces': {
     sprites: { Bichito: () => [hatKey('space', nextCos()), hatKey('up', setCos('feliz'))] },
     acciones: [['bandera'], ['tocar', 'space', 4, 3], ['tocar', 'up', 1, 3]]
@@ -240,6 +262,7 @@ export const SOLUCIONES = {
 /* Otras formas válidas de resolver algunos niveles: el chequeo no puede rechazar un programa que funciona. */
 const MOVE_SOLO = () => hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))));
 export const ALTERNATIVAS = {
+  'p5-espacio': { sprites: { Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(toO('Bichito'), iff(kp('space'), hideB()))))] }, acciones: [['bandera'], ['ir', 'Avispa', { espacio: true }]] },
   'p4-over': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(ltB('vidas', 1), sayB('¡Se terminó!'), stopB())))] }, acciones: [['bandera'], ['ir', 'Avispa']] },
   'p4-todo': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(ltB('vidas', 1), sayB('¡Se terminó!'), stopB()), iff(gtB('puntos', 9), sayB('¡Ganaste!'), stopB())))] }, acciones: [['bandera'], ['ir', 'Moneda', { esquivar: true }]] },
   'p3-6': { sprites: { Avispa: () => [hatFlag(waitB(0.5), fe(ptoB('Bichito'), mv(4)))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]] },
@@ -252,8 +275,8 @@ export const ALTERNATIVAS = {
   'p3-7': { sprites: { Bichito: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(toO('Avispa'), stopB()))), hatFlag(fe(iff(toO('Avispa 2'), stopB())))] }, acciones: [['bandera'], ['ir', 'meta', { esquivar: true }]] },
   'p4-reloj': { sprites: { Bichito: () => [MOVE_S(), hatFlag(fe(iff(eqB('puntos', 5), sayB('¡Listo!'), stopB()))), hatFlag(setV('tiempo', 0), fe(chV('tiempo', 1), waitB(1)))] }, acciones: [['bandera'], ['ir', 'Moneda']] },
   'p5-balas': { sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('semillas', 0)), hatKey('space', iff(gtB('semillas', 0), chV('semillas', -1), cloneB('Semilla')))] }, acciones: [['bandera'], ['ir', 'Bolsa', { parar: S => S.VARS.semillas > 0 }], ['tocar', 'space', 3, 10]] },
-  'p5-mensaje': { sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('puntos', 0)), hatMsg('atrapada', chV('puntos', 1))], Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(andB(kp('space'), toO('Bichito')), sendB('atrapada'), hideB(), waitB(1), rndB(), showB())))] }, acciones: [['bandera'], ['ir', 'Avispa', { espacio: true }]] },
-  'p5-espada': { sprites: { Espada: () => [hatKey('space', gotoO('Bichito'), showB(), waitB(0.2), hideB())] }, acciones: [['bandera'], ['ir', 'Avispa', { golpe: true }]] },
+  'p5-mensaje': { sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('puntos', 0)), hatMsg('atrapada', chV('puntos', 1))], Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(toO('Bichito'), sendB('atrapada'), hideB(), waitB(1), rndB(), showB())))] }, acciones: [['bandera'], ['ir', 'Avispa']] },
+  'p5-espada': { sprites: { Burbuja: () => [hatKey('space', gotoO('Bichito'), showB(), waitB(0.2), hideB())] }, acciones: [['bandera'], ['ir', 'Avispa', { golpe: true }]] },
   'p6-pasar': { sprites: { Bichito: () => [MOVEW_S(), hatFlag(fe(iff(tc('goal'), gotoB(-200, -150), bdB('arena'))))] }, acciones: [['bandera'], ['ir', 'meta']] },
   'p7-dolor': { sprites: { Bichito: () => [MOVE_S(), WALK_S(), hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), waitB(1), setCos('paso 2'))))] }, acciones: [['bandera'], ['ir', 'Avispa', { parar: S => S.R.hurtShown }], ['esperar', 60]] },
   'p7-festejo': { sprites: { Bichito: () => [MOVE_S(), WALK_S(), hatFlag(fe(iff(tc('goal'), sayB('¡Llegué!'), setCos('feliz'), stopB())))] }, acciones: [['bandera'], ['ir', 'meta']] }
@@ -261,6 +284,10 @@ export const ALTERNATIVAS = {
 
 /* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
 export const NO_GANAN = {
+  'p5-meaviso': { acciones: [['bandera'], ['ir', 'Avispa']], dice: 'no vuelve' },
+  'p5-vuela': { sprites: { Semilla: () => [hatFlag(showB(), gotoB(0, -110), pdirB(0), fe(mv(15)))] }, acciones: [['bandera'], ['esperar', 80]], dice: 'se queda pegada' },
+  'p5-nacen': { acciones: [['bandera'], ['esperar', 200]], dice: 'no crea copias' },
+  'p5-balas': { sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('semillas', 0)), hatKey('space', cloneB('Semilla'), chV('semillas', -1))] }, acciones: [['bandera'], ['tocar', 'space', 4, 10]], dice: 'sin tener semillas' },
   'p3-5': { sprites: { Avispa: () => [hatFlag(fe(ptoB('Bichito'), mv(-3)))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]], dice: 'se aleja' },
   'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-195, -140))))], acciones: [['bandera'], ['ir', 'meta']], dice: 'probá la lava' },
   'p2-dentro': { acciones: [['bandera'], ['tener', 'left', 12], ['ir', 'estrellas']], dice: 'se metió en la pared' },

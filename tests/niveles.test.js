@@ -5,7 +5,6 @@ import { SOLUCIONES, ALTERNATIVAS, NO_GANAN } from './soluciones.js';
 
 /* Bugs del original que se arreglan en la Etapa 3: el chequeo rechaza un programa que funciona. */
 const BUGS_CONOCIDOS = {
-  'p5-balas': 'restar la semilla antes de crear el clon cuenta como disparo sin semillas'
 };
 
 describe.each(NIVELES.map(n => [`P${n.parte.n} ${n.nivel.id} · ${n.nivel.name}`, n]))('%s', (_, { parte, i, nivel }) => {

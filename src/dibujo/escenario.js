@@ -170,25 +170,27 @@ export function drawSeed(c, x, y, k, dir){
   c.restore();
 }
 
-export function drawSword(c, x, y, k, t){
+/* Burbuja grande y transparente: muestra hasta dónde alcanza (radio 50). */
+export function drawBurbuja(c, x, y, k, t){
   c.save(); c.translate(x, y);
-  c.globalAlpha = .9;
-  c.strokeStyle = 'rgba(148,163,184,.55)'; c.lineWidth = 14*k; c.lineCap = 'round';
-  c.beginPath(); c.arc(0, 0, 38*k, -Math.PI*0.9, -Math.PI*0.1); c.stroke();
-  c.strokeStyle = '#E2E8F0'; c.lineWidth = 4*k;
-  c.beginPath(); c.arc(0, 0, 38*k, -Math.PI*0.85, -Math.PI*0.15); c.stroke();
-  // hoja
-  c.rotate(-Math.PI/4); c.fillStyle = '#CBD5E1'; c.strokeStyle = '#13202B'; c.lineWidth = 1.8*k;
-  c.beginPath(); c.moveTo(0, -46*k); c.lineTo(4*k, -14*k); c.lineTo(-4*k, -14*k); c.closePath(); c.fill(); c.stroke();
-  c.fillStyle = '#A16207'; c.fillRect(-9*k, -14*k, 18*k, 4*k); c.strokeRect(-9*k, -14*k, 18*k, 4*k);
+  const r = (46 + Math.sin(t/120) * 2) * k;
+  c.beginPath(); c.arc(0, 0, r, 0, Math.PI*2);
+  c.fillStyle = 'rgba(125,211,252,.22)'; c.fill();
+  c.lineWidth = 3*k; c.strokeStyle = 'rgba(14,116,144,.75)'; c.stroke();
+  c.beginPath(); c.arc(-r*0.35, -r*0.35, r*0.22, Math.PI*1.1, Math.PI*1.7); c.lineWidth = 4*k; c.strokeStyle = 'rgba(255,255,255,.9)'; c.lineCap = 'round'; c.stroke();
   c.restore();
 }
 
-export function drawShip(c, x, y, k, t){
+/* Nube seca: gris, con una gotita que tiembla. */
+export function drawNube(c, x, y, k, t){
   c.save(); c.translate(x, y);
-  c.beginPath(); c.ellipse(0, 0, 18*k, 7*k, 0, 0, Math.PI*2); c.fillStyle = '#6D28D9'; c.fill(); c.lineWidth = 2*k; c.strokeStyle = '#13202B'; c.stroke();
-  c.beginPath(); c.ellipse(0, -5*k, 8*k, 7*k, 0, Math.PI, 0); c.fillStyle = '#A5F3FC'; c.fill(); c.stroke();
-  for (let i = -1; i <= 1; i++){ c.beginPath(); c.arc(i*9*k, 1*k, 2*k, 0, Math.PI*2); c.fillStyle = (Math.floor(t/150) + i) % 2 ? '#FDE047' : '#F97316'; c.fill(); }
+  c.beginPath();
+  c.arc(-10*k, 2*k, 9*k, Math.PI*0.5, Math.PI*1.5); c.arc(-2*k, -6*k, 10*k, Math.PI, Math.PI*1.9);
+  c.arc(10*k, -1*k, 9*k, Math.PI*1.3, Math.PI*0.5); c.closePath();
+  c.fillStyle = '#CBD5E1'; c.fill(); c.lineWidth = 2*k; c.strokeStyle = '#13202B'; c.stroke();
+  c.fillStyle = '#13202B'; c.beginPath(); c.arc(-5*k, -1*k, 1.6*k, 0, Math.PI*2); c.arc(5*k, -1*k, 1.6*k, 0, Math.PI*2); c.fill();
+  c.beginPath(); c.moveTo(0, 16*k + Math.sin(t/90)*1.5*k); c.quadraticCurveTo(3*k, 21*k, 0, 22*k); c.quadraticCurveTo(-3*k, 21*k, 0, 16*k + Math.sin(t/90)*1.5*k);
+  c.fillStyle = '#7DD3FC'; c.fill();
   c.restore();
 }
 
@@ -416,7 +418,7 @@ export function draw(t){
     c.beginPath(); c.arc(SX(s.x), SY(s.y), 24*K, -Math.PI/2, -Math.PI/2 + Math.PI*2*Math.min(1, s.hold/30)); c.stroke(); c.restore();
   }
   if (S.L.compass && S.showRef) drawCompass(c);
-  if (S.L.sprites && S.L.mode !== 'cierre' && S.sprites[S.curSp] && S.sprites[S.curSp].kind !== 'stage' && !(S.sprites[S.curSp].hidden && ['seed','sword','ship'].includes(S.sprites[S.curSp].kind))){
+  if (S.L.sprites && S.L.mode !== 'cierre' && S.sprites[S.curSp] && S.sprites[S.curSp].kind !== 'stage' && !(S.sprites[S.curSp].hidden && ['seed','bubble','cloud'].includes(S.sprites[S.curSp].kind))){
     const cs = S.sprites[S.curSp]; c.save(); c.setLineDash([4*DPR, 4*DPR]); c.strokeStyle = '#13202B'; c.lineWidth = 2*DPR;
     c.beginPath(); c.arc(SX(S.L.tween ? (cs.vx ?? cs.x) : cs.x), SY(S.L.tween ? (cs.vy ?? cs.y) : cs.y), 27*K, 0, Math.PI*2); c.stroke(); c.restore();
   }
@@ -429,7 +431,7 @@ export function draw(t){
     const px = S.L.tween ? s.vx : s.x, py = S.L.tween ? s.vy : s.y;
     if (s.kind === 'stage') continue;
     if (s.hidden){
-      if (s.isClone || s.kind === 'seed' || s.kind === 'sword' || s.kind === 'ship') continue;
+      if (s.isClone || s.kind === 'seed' || s.kind === 'bubble' || s.kind === 'cloud') continue;
       c.save(); c.globalAlpha = .18;
       if (S.L.noGhost) { c.restore(); continue; }
       if (s.kind === 'wasp') drawWasp(c, SX(px), SY(py), K, s.color, s.dir, t); else drawBug(c, SX(px), SY(py), K, s.color, s.face, t, false, s.costume);
@@ -439,8 +441,8 @@ export function draw(t){
       continue;
     }
     if (s.kind === 'seed'){ drawSeed(c, SX(px), SY(py), K, s.dir); continue; }
-    if (s.kind === 'sword'){ drawSword(c, SX(px), SY(py), K, t); continue; }
-    if (s.kind === 'ship'){ drawShip(c, SX(px), SY(py), K, t); continue; }
+    if (s.kind === 'bubble'){ drawBurbuja(c, SX(px), SY(py), K, t); continue; }
+    if (s.kind === 'cloud'){ drawNube(c, SX(px), SY(py), K, t); continue; }
     if (s.kind === 'bag'){ drawBag(c, SX(px), SY(py), K); }
     else
     if (s.kind === 'wasp'){ drawWasp(c, SX(px), SY(py), K, s.color, s.dir, t); if (S.L.tween) continue; }
