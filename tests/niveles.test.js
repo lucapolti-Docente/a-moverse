@@ -1,7 +1,7 @@
 /* Cada nivel se gana con su solución guardada (tests/soluciones.js), y también con las otras formas válidas. */
 import { describe, it, expect } from 'vitest';
 import { NIVELES, jugar } from './ayudante/jugar.js';
-import { SOLUCIONES, ALTERNATIVAS } from './soluciones.js';
+import { SOLUCIONES, ALTERNATIVAS, NO_GANAN } from './soluciones.js';
 
 /* Bugs del original que se arreglan en la Etapa 3: el chequeo rechaza un programa que funciona. */
 const BUGS_CONOCIDOS = {
@@ -25,6 +25,13 @@ describe.each(NIVELES.map(n => [`P${n.parte.n} ${n.nivel.id} · ${n.nivel.name}`
     prueba('gana con otra forma válida' + (BUGS_CONOCIDOS[nivel.id] ? ' (bug: ' + BUGS_CONOCIDOS[nivel.id] + ')' : ''), () => {
       const r = jugar(parte, i, ALTERNATIVAS[nivel.id]);
       expect(r.gana, 'no ganó. Último mensaje: ' + r.ultimo).toBe(true);
+    });
+  }
+  if (NO_GANAN[nivel.id]){
+    it('no gana si saltea la idea del nivel, y lo dice', () => {
+      const r = jugar(parte, i, NO_GANAN[nivel.id]);
+      expect(r.gana).toBe(false);
+      expect(r.dichos.join(' | ')).toContain(NO_GANAN[nivel.id].dice);
     });
   }
 });

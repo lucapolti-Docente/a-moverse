@@ -1,5 +1,5 @@
 import { CIERRE_B } from '../programas.js';
-import { cx, cy, fe, hatFlag, hatKey, iff, kp, mv, orB } from '../../motor/bloques.js';
+import { cx, cy, fe, hatFlag, hatKey, iff, kp, mv, orB, repB } from '../../motor/bloques.js';
 import { starsDone } from '../../motor/reglas.js';
 
 export function rocksDiagonal(){
@@ -19,27 +19,38 @@ export const LEVELS1 = [
   {id:1, name:'La banderita', intro:{title:'La banderita', text:'Un programa arranca con un evento. “Al hacer clic en bandera” espera a que toques la banderita verde y ahí corre los bloques de abajo, de arriba hacia abajo.', example:() => [hatFlag(mv(10))], note:'Cada clic en la banderita: 10 pasos más.'}, goal:'Armá “al hacer clic en bandera → mover 10 pasos”. Apretá la banderita hasta llegar a la estrella.',
    palette:['flag','move'], start:{x:-150,y:0}, stars:[{x:-100,y:0}], program:() => [],
    learn:'Un programa arranca con un evento. Cada clic en la banderita lo arranca una vez: el bichito avanza 10 pasos y se queda quieto.'},
-  {id:2, name:'La estrella lejana', intro:{title:'¿Cuántos pasos faltan?', text:'Mirá la regla de abajo: dice cuántos pasos faltan hasta la estrella. Cada “mover 10 pasos” avanza 10. ¿Cuántos bloques necesitás? También podés cambiar el número del bloque.'}, goal:'Mirá la regla: ¿cuántos pasos faltan hasta la estrella? Hacé que llegue con un solo clic en la banderita. Podés sumar bloques o cambiar el número.', measure:true,
-   palette:['flag','move'], start:{x:-180,y:0}, stars:[{x:120,y:0}], resetOnFlag:true, program:() => [hatFlag(mv(10))],
-   learn:'¡Llegó de golpe! La banderita corre todo el programa junto y vos no lo manejás.',
+  {id:2, name:'Repetir', short:'Repetir', intro:{title:'Repetir',
+     text:'“Repetir” hace lo que tiene adentro las veces que le digas, una vuelta atrás de otra. En vez de poner muchos bloques iguales, ponés uno solo adentro de “repetir”. Para cambiar un número, tocalo y escribí otro.',
+     example:() => [hatFlag(repB(3, mv(10)))], note:'Este programa mueve 10 pasos, 3 veces: 30 pasos en total, y se ve cada paso.'},
+   goal:'Juntá todas las estrellas del camino con un solo clic en la banderita. Mirá la regla: ¿cuántas veces hay que repetir “mover 10 pasos”?', measure:true,
+   palette:['flag','move','repeat'], start:{x:-180,y:0}, stars:[{x:-60,y:0},{x:60,y:0},{x:120,y:0}], resetOnFlag:true, pasoAPaso:true, program:() => [hatFlag(mv(10))],
+   learn:'“Repetir” hace lo de adentro varias veces, de a una vuelta. Así el bichito pasa por cada estrella. Pero la banderita corre todo junto y vos no lo manejás.',
    extra:'¿Y si quiero moverlo cuando yo quiera, como en un juego? Eso es lo que vamos a descubrir.'},
-  {id:3, name:'Una tecla', intro:{title:'Una tecla es un evento', text:'“Al presionar tecla” arranca el programa cada vez que apretás esa tecla. Si la dejás apretada, se repite solo.', example:() => [hatKey('right', mv(10))]}, measure:true, goal:'Manejalo vos: “al presionar tecla flecha derecha → mover 10 pasos”. Llegá a la estrella con la flecha.',
+  {id:3, name:'Una tecla', intro:{title:'Una tecla es un evento', text:'“Al presionar tecla” arranca el programa cada vez que apretás esa tecla. Si la dejás apretada en el teclado, se repite solo.', example:() => [hatKey('right', mv(10))]}, measure:true, goal:'Manejalo vos: “al presionar tecla flecha derecha → mover 10 pasos”. Llegá a la estrella con la flecha.',
    palette:['key','move'], start:{x:-180,y:0}, stars:[{x:150,y:0}], collectFrom:'key', program:() => [],
    learn:'Una tecla también es un evento. Apretás la tecla (entrada) y el bichito se mueve (salida).'},
-  {id:4, name:'Para atrás y para arriba', intro:{title:'Números negativos', text:'“Mover pasos” va hacia donde mira el bichito, y mira a la derecha. Con un número negativo, como −10, va para atrás.', example:() => [hatKey('left', mv(-10))]}, measure:true, goal:'Llevá al bichito a la estrella de la izquierda con la flecha izquierda. ¿Y la de arriba?',
-   palette:['key','move'], start:{x:0,y:-40}, stars:[{x:-160,y:-40},{x:0,y:120,opt:true}], collectFrom:'key',
+  {id:'p1-atras', name:'Para atrás', short:'Para atrás',
+   intro:{title:'Números negativos', text:'“Mover pasos” va hacia donde mira el bichito, y mira a la derecha. Con un número negativo, como −10, va para atrás.', example:() => [hatKey('left', mv(-10))], note:'El signo menos (−) va adelante del número.'},
+   goal:'La flecha izquierda lleva al bichito a la derecha. Cambiá el número para que vaya para atrás y llegá a la estrella.', measure:true,
+   palette:['key','move'], start:{x:60,y:-40}, stars:[{x:-160,y:-40}], collectFrom:'key',
+   program:() => [hatKey('left', mv(10))],
+   learn:'“Mover pasos” va hacia donde mira el bichito. Con −10 va para atrás.'},
+  {id:4, name:'Dos flechas, dos programas', short:'Dos flechas',
+   intro:{title:'Un programa por cada tecla', text:'Cada “al presionar tecla” escucha una sola tecla. Para usar otra, sumá otro “al presionar tecla” y elegí la tecla en su menú ▾.', example:() => [hatKey('right', mv(10)), hatKey('left', mv(-10))], note:'Dos programas: uno para cada flecha.'},
+   goal:'Juntá la estrella de la izquierda y la de la derecha. Sumá un programa para la flecha izquierda.', measure:true,
+   palette:['key','move'], start:{x:0,y:-40}, stars:[{x:-160,y:-40},{x:160,y:-40}], collectFrom:'key',
    program:() => [hatKey('right', mv(10))],
-   learn:'“Mover pasos” va hacia donde mira el bichito, y mira a la derecha. Con −10 va para atrás.',
+   learn:'Cada tecla tiene su programa. Con −10, el bichito va para atrás.',
    extra:'Pero para subir, “mover pasos” no alcanza. Necesitamos otra idea: x e y.'},
   {id:5, name:'¿Dónde está?', intro:{title:'x e y', text:'x mide los costados: derecha es más, izquierda es menos. y mide arriba y abajo: arriba es más, abajo es menos. En el centro, x e y valen 0.'}, mode:'explore', goal:'Arrastrá al bichito y mirá cómo cambian x e y. Después adiviná dónde está cada estrella.',
    palette:[], axes:true, start:{x:0,y:0}, stars:[{x:120,y:90},{x:-90,y:-60}],
    learn:'x es para los costados e y es para arriba y abajo. El centro es 0. “Menos” es izquierda o abajo.'},
-  {id:6, name:'Las cuatro flechas', intro:{title:'Sumar a x, sumar a y', text:'“Sumar a x” mueve a los costados y “sumar a y” mueve arriba y abajo. Necesitás un programa por cada flecha.', example:() => [hatKey('up', cy(10)), hatKey('down', cy(-10))]}, goal:'Juntá todas las estrellas con las cuatro flechas. Usá “sumar a x” y “sumar a y” con 10 y −10.',
+  {id:6, name:'Las cuatro flechas', intro:{title:'Sumar a x, sumar a y', text:'“Sumar a x” mueve a los costados y “sumar a y” mueve arriba y abajo. Necesitás un programa por cada flecha.', example:() => [hatKey('right', cx(10)), hatKey('up', cy(10))], note:'Con −10, “sumar a x” va a la izquierda y “sumar a y” va para abajo.'}, goal:'Juntá todas las estrellas con las cuatro flechas. Usá “sumar a x” y “sumar a y” con 10 y −10.',
    palette:['key','cx','cy'], axes:true, start:{x:-180,y:-120},
    stars:[{x:-180,y:60},{x:60,y:60},{x:60,y:-120},{x:-60,y:-120}], collectFrom:'key',
    program:() => [hatKey('right', cx(10))],
    learn:'Sumar va a la derecha o arriba; restar, a la izquierda o abajo.',
-   extra:'Funciona, pero fijate: arranca con un saltito, se traba cuando cambiás de flecha y no puede ir en diagonal.'},
+   extra:'Funciona, pero con el teclado fijate: arranca con un saltito, se traba cuando cambiás de flecha y no puede ir en diagonal.'},
   {id:'p1-siempre', name:'Por siempre', short:'Por siempre',
    intro:{title:'¿Qué es “por siempre”?',
      text:'“Por siempre” repite lo que tiene adentro una y otra vez, sin parar: 30 veces por segundo. Es como una calesita: da vueltas y vueltas hasta que alguien la apaga.',
@@ -60,14 +71,20 @@ export const LEVELS1 = [
    program:() => [hatFlag(fe(cx(10)))],
    learn:'La pregunta “¿tecla presionada?” se contesta sí o no. Adentro del “por siempre” se pregunta todo el tiempo: apretás y camina, soltás y frena.',
    extra:'Ahora fijate qué pasa si te olvidás del “por siempre”.'},
-  {id:7, name:'Preguntar todo el tiempo', intro:{title:'Una sola vez o todo el tiempo', text:'“Si” pregunta una sola vez, en el momento en que corre. Para que pregunte todo el tiempo, tiene que estar adentro de un “por siempre”.', example:() => [hatFlag(fe(iff(kp('right'), cx(10))))]}, goal:'Apretá la banderita y después la flecha derecha. ¿No pasa nada? Arreglalo y llegá a la estrella.',
+  {id:7, name:'Preguntar todo el tiempo', intro:{title:'Encontrá el error', text:'“Si” pregunta una sola vez, en el momento en que corre. Este programa tiene un error: probalo, fijate qué pasa y arreglalo.'}, goal:'Apretá la banderita y después la flecha derecha. ¿No pasa nada? Encontrá el error y llegá a la estrella.',
    palette:['flag','forever','if','keyp','cx'], axes:true, start:{x:-180,y:0}, stars:[{x:150,y:0}], collectFrom:'flag', selStart:true,
    program:() => [hatFlag(iff(kp('right'), cx(10)))],
    learn:'El “si” pregunta una sola vez. Con “por siempre” pregunta todo el tiempo: 30 veces por segundo.'},
-  {id:8, name:'Entre las piedras', intro:{title:'Dos flechas a la vez', text:'Con “por siempre + si”, cada flecha se pregunta por separado, todo el tiempo. Por eso podés apretar dos a la vez y moverte en diagonal.'}, goal:'Armá las cuatro flechas con “por siempre” y “si”. Pasá en diagonal entre las piedras sin tocarlas.',
-   palette:['flag','forever','if','keyp','cx','cy'], axes:true, start:{x:-190,y:-150}, rocks:rocksDiagonal(),
-   stars:[{x:-120,y:-80},{x:-40,y:0},{x:40,y:80},{x:110,y:150}], collectFrom:'flag',
+  {id:'p1-dossi', name:'Dos preguntas', short:'Dos preguntas',
+   intro:{title:'Otro “si” en el mismo “por siempre”', text:'Adentro de un “por siempre” pueden ir varios “si”, uno abajo del otro. Cada vuelta pregunta todos: ¿derecha?, ¿arriba?…', example:() => [hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('up'), cy(10))))], note:'Para elegir la tecla, tocá el menú ▾ de la pregunta celeste.'},
+   goal:'Ahora también hay que subir. Abajo del primer “si”, sumá otro: si ¿tecla flecha arriba presionada? → sumar a y 10. Juntá las estrellas.',
+   palette:['if','keyp','cy'], defaultKey:'up', axes:true, start:{x:-180,y:-120}, stars:[{x:0,y:-120},{x:0,y:100}], collectFrom:'flag',
    program:() => [hatFlag(fe(iff(kp('right'), cx(10))))],
+   learn:'Varios “si” adentro del mismo “por siempre”: cada vuelta pregunta por cada flecha.'},
+  {id:8, name:'Entre las piedras', intro:{title:'Dos flechas a la vez', text:'Con “por siempre + si”, cada flecha se pregunta por separado, todo el tiempo. Por eso podés apretar dos a la vez y moverte en diagonal.'}, goal:'Pasá en diagonal entre las piedras sin tocarlas: apretá dos flechas a la vez. Si querés, sumá las flechas que faltan.',
+   palette:['if','keyp','cx','cy'], axes:true, start:{x:-190,y:-150}, rocks:rocksDiagonal(),
+   stars:[{x:-120,y:-80},{x:-40,y:0},{x:40,y:80},{x:110,y:150}], collectFrom:'flag',
+   program:() => [hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('up'), cy(10))))],
    learn:'Así se mueven los personajes de los juegos de verdad: suave, sin trabarse y en diagonal.'},
   {id:'p1-wasd', name:'Otras teclas: W A S D', short:'W A S D',
    intro:{title:'Las teclas W A S D',
@@ -85,14 +102,14 @@ export const LEVELS1 = [
      text:'“o” junta dos preguntas en una. La respuesta es sí cuando cualquiera de las dos es sí. Como cuando decís: si llueve o hace frío, me pongo campera. Alcanza con una de las dos.',
      example:() => [hatFlag(fe(iff(orB(kp('right'), kp('d')), cx(10))))],
      note:'Si está apretada la flecha derecha o la D, el bichito va a la derecha. Lo encontrás en Operadores, de color verde.'},
-   goal:'Que se mueva con las flechas y también con W A S D. Tocá una pregunta celeste y después el bloque “o”. Juntá estrellas usando las dos formas.',
-   palette:['or','keyp'], axes:true, start:{x:0,y:0}, padToggle:true, needBoth:true,
+   goal:'Que se mueva con las flechas y también con W A S D. Tocá un “si”, después el bloque verde “o” y después una pregunta celeste. Juntá las estrellas usando las dos formas.',
+   palette:['or','keyp'], axes:true, start:{x:0,y:0}, padToggle:true,
    stars:[{x:-160,y:100},{x:150,y:110},{x:150,y:-120},{x:-130,y:-110},{x:0,y:140}], collectFrom:'flag',
    program:() => CIERRE_B(),
    check:R => {
      if (!starsDone()) return false;
-     if (!R.movedArrow) return 'Juntaste todo con W A S D. ¡Probalo también con las flechas! Apretá la banderita y otra vez.';
-     if (!R.movedWasd) return 'Juntaste todo con las flechas. ¡Probalo también con W A S D! Apretá la banderita y otra vez.';
+     if (!R.movedArrow) return 'Juntaste todo con W A S D. ¡Probalo también con las flechas!';
+     if (!R.movedWasd) return 'Juntaste todo con las flechas. ¡Probalo también con W A S D!';
      return true;
    },
    learn:'“o” responde sí cuando alguna de las dos preguntas es sí. Por eso ahora se maneja con flechas o con W A S D, como prefieras.'},
@@ -113,11 +130,11 @@ export const LEVELS1 = [
        ['Para ir siempre para arriba.', false]]},
    ],
    learn:'“Al presionar tecla” espera a que el teclado repita. “Por siempre + si” pregunta todo el tiempo, por eso es suave y va en diagonal.',
-   extra:'En Scratch vas a encontrar estos bloques con los mismos colores: Eventos amarillo, Movimiento azul, Control naranja y Sensores celeste.'},
+   extra:'En Scratch vas a encontrar estos bloques con los mismos colores: Eventos amarillo, Movimiento azul, Control naranja, Sensores celeste y Operadores verde.'},
 ];
 
-export const FREE1 = {id:'libre1', name:'Modo libre', short:'Libre', mode:'free', intro:{title:'Modo libre', text:'Podés usar todos los bloques. Probá armar el movimiento con “por siempre + si”.'}, goal:'Armá tu programa con todos los bloques y juntá las estrellas.',
-  palette:['flag','key','move','cx','cy','forever','if','keyp'], axes:true, start:{x:0,y:0}, stars:[], program:() => []};
+export const FREE1 = {id:'libre1', name:'Modo libre', short:'Libre', mode:'free', intro:{title:'Modo libre', text:'Podés usar todos los bloques. Probá armar el movimiento con “por siempre + si”, con flechas o W A S D.'}, goal:'Armá tu programa con todos los bloques y juntá las estrellas.',
+  palette:['flag','key','move','cx','cy','repeat','forever','if','keyp','or'], axes:true, start:{x:0,y:0}, stars:[], program:() => []};
 
 /* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
    rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
@@ -130,10 +147,10 @@ export const FREE1 = {id:'libre1', name:'Modo libre', short:'Libre', mode:'free'
      finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
      animaciones          sigue la cara de dolor del bichito
      portada              qué animación se ve en la portada de la parte */
-export const PARTE = {rasgos:{avisarDetuvoAntes:true}, name:'Movimiento', desc:'Eventos, x e y, por siempre + si', levels:LEVELS1, free:FREE1,
+export const PARTE = {rasgos:{}, name:'Movimiento', desc:'Eventos, x e y, por siempre + si', levels:LEVELS1, free:FREE1,
    tag:'De la banderita a moverse suave y en diagonal.',
    teach:[
-     ['La clase', '<p>Núcleo en 4.º y 5.º. Sirve en 3.º con ayuda y en 6.º y 7.º como repaso antes de Scratch. Una clase de 40 a 60 minutos. Se juega con las flechas del teclado o con el pad en pantalla.</p><p>Diseño Curricular CABA, Tecnologías, Diseño y Programación: eventos que inician acciones, estructuras de control, entrada y salida.</p>'],
-     ['Antes, sin pantalla', '<ol><li>“Cuando digo YA, das 3 pasos.” (bandera)</li><li>“Cada vez que levanto la mano derecha, un paso a la derecha.” (tecla)</li><li>“Mirame todo el tiempo: si tengo la mano arriba, avanzás.” (por siempre + si)</li></ol>'],
-     ['Preguntas de cierre', '<ul><li>¿Qué diferencia hay entre “al presionar tecla” y “si tecla presionada”?</li><li>¿Qué cambia en x y qué cambia en y?</li><li>¿Dónde vas a encontrar cada bloque en Scratch?</li></ul>'],
+     ['La clase', '<p>Núcleo en 4.º y 5.º. Sirve en 3.º con ayuda y en 6.º y 7.º como repaso antes de Scratch. Una clase de 40 a 60 minutos. Se juega con las flechas del teclado o con el pad en pantalla.</p><p>Diseño Curricular CABA, Tecnologías, Diseño y Programación: eventos que inician acciones, secuencias, repeticiones, estructuras de control, entrada y salida.</p>'],
+     ['Antes, sin pantalla', '<ol><li>“Cuando digo YA, das 3 pasos.” (bandera)</li><li>“Cada vez que levanto la mano derecha, un paso a la derecha.” (tecla)</li><li>“Aplaudo 4 veces: cada aplauso, un paso.” (repetir)</li><li>“Mirame todo el tiempo: si tengo la mano arriba, avanzás.” (por siempre + si)</li><li>“Si levanto la mano O digo YA, avanzás.” (o)</li></ol>'],
+     ['Preguntas de cierre', '<ul><li>¿Qué diferencia hay entre “al presionar tecla” y “si tecla presionada”?</li><li>¿Qué cambia en x y qué cambia en y?</li><li>¿Qué diferencia hay entre “repetir” y “por siempre”?</li><li>¿Para qué sirve el bloque “o”?</li><li>¿Dónde vas a encontrar cada bloque en Scratch?</li></ul>'],
    ]};

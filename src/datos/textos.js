@@ -26,6 +26,8 @@ export const MSJ = {
   ahiEsta: '¡Ahí está! Soltá la flecha y quedate quieto arriba de la estrella.',
   sePaso: 'Se pasó. Soltá la flecha justo arriba de la estrella.',
   sePasoDeLargo: 'Se pasó de largo: el “por siempre” lo hace caminar sin parar. ¿Qué pregunta tiene que hacer para moverse solo cuando apretás la flecha?',
+  salteo: '¡Saltó de golpe y se salteó estrellas! Usá “repetir” para que vaya de a poco y pase por todas.',
+  faltanPasos: n => `Quedó corto: faltan ${n} pasos. ¿Cuántas vueltas más tiene que dar?`,
   unaSolaVez: 'Se movió una sola vez y se quedó. ¿Qué bloque de Control lo hace repetir? Tocá “por siempre”.',
   rondas: n => `¡Juntaste todas! Van ${n} rondas. Ahí vienen más.`,
   siSinPregunta: 'A tu “si” le falta la pregunta. Poné un bloque celeste en el hueco.',
@@ -192,6 +194,7 @@ export const UI = {
   bloqueY: '“y”',
   operadorSinSi: nm => 'El bloque ' + nm + ' va en el hueco de un “si”. Primero poné un “si”.',
   siYaTiene: nm => 'Ese “si” ya tiene un ' + nm + '. Tocá otra pregunta celeste.',
+  siLleno: 'Todos tus “si” ya tienen su pregunta. Para juntar dos preguntas, tocá primero el bloque verde “o”.',
   sensorSinSi: 'Los bloques celestes van en el hueco de un “si”. Primero poné un “si”.',
   primeroEvento: 'Primero poné un evento amarillo: el programa necesita saber cuándo arrancar.',
   empezaPrograma: 'Empezá un programa nuevo: tocá “al hacer clic en bandera”.'

@@ -309,13 +309,21 @@ export function afterStep(){
     }
     if (S.L.holdStar) for (const s of S.stars) if (!s.got && Math.hypot(s.x - sp.x, s.y - sp.y) >= 24){
       if (s.near && !s.got){ s.near = false; s.hold = 0;
-        const asks = has(S.prog[0] ? S.prog[0].body : [], 'if');
-        say(asks ? MSJ.sePaso : MSJ.sePasoDeLargo);
+        // si un "sumar" quedó suelto en el "por siempre", camina aunque no apretes nada
+        const suelto = S.prog.some(sc => sc.body.some(f => f.type === 'forever' && f.body.some(x => x.type === 'cx' || x.type === 'cy')));
+        say(suelto ? MSJ.sePasoDeLargo : MSJ.sePaso);
       }
     }
     if (S.L.foreverHint && S.engine && !S.engine.alive() && sp.lastOrigin === 'flag' && !S.R.hinted && !S.stars.every(s => s.got)){
       S.R.hinted = true; say(MSJ.unaSolaVez);
     }
+  }
+  // niveles de "repetir": cuando el programa termina, decir si se salteó estrellas o si quedó corto
+  if (S.L.pasoAPaso && !S.engine.alive() && S.R.flagT != null && !S.R.pasoAviso && !S.stars.every(s => s.got)){
+    S.R.pasoAviso = true;
+    const b = S.sprites[0], atras = S.stars.filter(s => !s.got && s.x < b.x), adelante = S.stars.filter(s => !s.got && s.x > b.x);
+    if (atras.length) say(MSJ.salteo);
+    else if (adelante.length) say(MSJ.faltanPasos(Math.round(Math.min(...adelante.map(s => s.x)) - b.x)));
   }
   if (S.L.mode === 'free' && S.stars.length && S.stars.every(s => s.got)){ S.freeCount++; say(MSJ.rondas(S.freeCount), true); spawnFree(); }
   if (S.L.mode !== 'cierre') checkWin();
@@ -356,7 +364,7 @@ export function keyDown(k){
   if (S.L.mode !== 'cierre' && S.engine.alive() && !S.engine.held.has(k)){
     let asked = false; const scan = c => { if (!c) return; if (c.type === 'keyp' && c.key === k) asked = true; if (c.type === 'or'){ scan(c.a); scan(c.b); } };
     allBlocks().forEach(b => { if (b.type === 'if') scan(b.cond); });
-    if (!asked && !S.prog.some(sc => sc.hat === 'key' && sc.key === k) && (WASD.includes(k) || S.L.pad === 'wasd'))
+    if (!asked && !S.prog.some(sc => sc.hat === 'key' && sc.key === k) && (WASD.includes(k) || S.L.pad === 'wasd' || S.L.palette.includes('keyp')))
       say(MSJ.teclaSinSi(k, WASD.includes(k)));
   }
   S.engine.keyDown(k); avisos.teclas();

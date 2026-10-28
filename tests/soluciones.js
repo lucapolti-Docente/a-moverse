@@ -5,7 +5,7 @@
      ['ir', destino, opciones]   piloto automático hacia 'estrellas', 'meta', un personaje o {debajo:'Nave'}
      ['hacer', (S, creadas) => …] · ['quiz'] · ['explorar']
    30 ticks = 1 segundo. */
-import { hatFlag, hatKey, mv, cx, cy, fe, iff, kp, tc, orB, toO, bounceB, pdirB, ptoB, waitB, setV, chV, eqB, gtB, ltB, rndB, hideB, showB, andB, sendB, hatMsg, hatClone, gotoO, cloneB, delB, bdB, nextCos, setCos, repB, hatBd, V, sayB, stopB, gotoB } from '../src/motor/bloques.js';
+import { repB, hatFlag, hatKey, mv, cx, cy, fe, iff, kp, tc, orB, toO, bounceB, pdirB, ptoB, waitB, setV, chV, eqB, gtB, ltB, rndB, hideB, showB, andB, sendB, hatMsg, hatClone, gotoO, cloneB, delB, bdB, nextCos, setCos, hatBd, V, sayB, stopB, gotoB } from '../src/motor/bloques.js';
 import { MOVE_S, MOVEW_S, GOAL_S, MOVE_FULL, PATROL, COIN_S, HEART_S, LIFE_S, OVER_S, WIN_S, SEED_FLY, NEXT_BUG, BACK_BUG, STAGE_START, WALK_BODY, WALK_S } from '../src/datos/programas.js';
 
 const MOVER = () => [hatKey('right', cx(10)), hatKey('left', cx(-10)), hatKey('up', cy(10)), hatKey('down', cy(-10))];
@@ -16,14 +16,16 @@ const LIVES_WAIT = () => hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vi
 export const SOLUCIONES = {
   /* ---------- Parte 1 ---------- */
   1: { programa: () => [hatFlag(mv(10))], acciones: CINCO_CLICS },
-  2: { programa: () => [hatFlag(mv(300))], acciones: [['bandera'], ['esperar', 10]] },
+  2: { programa: () => [hatFlag(repB(30, mv(10)))], acciones: [['bandera'], ['esperar', 60]] },
   3: { programa: () => [hatKey('right', mv(10))], acciones: [['ir', 'estrellas', { ejes: 1 }]] },
+  'p1-atras': { programa: () => [hatKey('left', mv(-10))], acciones: [['ir', 'estrellas', { ejes: 1 }]] },
   4: { programa: () => [hatKey('right', mv(10)), hatKey('left', mv(-10))], acciones: [['ir', 'estrellas', { ejes: 1 }]] },
   5: { acciones: [['explorar']] },
   6: { programa: MOVER, acciones: [['ir', 'estrellas', { ejes: 1 }]] },
   'p1-siempre': { programa: () => [hatFlag(fe(cx(10)))], acciones: [['bandera'], ['esperar', 60]] },
   'p1-pregunta': { programa: () => [hatFlag(fe(iff(kp('right'), cx(10))))], acciones: [['bandera'], ['ir', 'estrellas']] },
   7: { programa: () => [hatFlag(fe(iff(kp('right'), cx(10))))], acciones: [['bandera'], ['ir', 'estrellas']] },
+  'p1-dossi': { programa: () => [hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('up'), cy(10))))], acciones: [['bandera'], ['ir', 'estrellas']] },
   8: { programa: () => [FLECHAS_IF('right', 'left', 'up', 'down')], acciones: [['bandera'], ['ir', 'estrellas']] },
   'p1-wasd': { programa: () => [FLECHAS_IF('d', 'a', 'w', 's')], acciones: [['bandera'], ['ir', 'estrellas', { teclas: 'wasd' }]] },
   'p1-o': {
@@ -247,6 +249,7 @@ export const SOLUCIONES = {
 /* Otras formas válidas de resolver algunos niveles: el chequeo no puede rechazar un programa que funciona. */
 const MOVE_SOLO = () => hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))));
 export const ALTERNATIVAS = {
+  2: { programa: () => [hatFlag(repB(10, mv(30)))], acciones: [['bandera'], ['esperar', 60]] },
   'p2-barro': { programa: () => [MOVE_SOLO(), hatFlag(fe(iff(kp('right'), iff(tc('mud'), cx(-5)))))], acciones: [['bandera'], ['ir', 'estrellas']] },
   'p2-hielo': { programa: () => [MOVE_SOLO(), hatFlag(fe(iff(kp('right'), iff(tc('ice'), cx(10))))), GOAL_S(true)], acciones: [['bandera'], ['tener', 'right', 40]] },
   'p2-4': { programa: () => [MOVE_S(), hatFlag(fe(iff(tc('wall'), cx(-10)))), hatFlag(fe(iff(tc('wall'), cy(0))))], acciones: [['bandera'], ['ir', 'estrellas']] },
@@ -261,4 +264,9 @@ export const ALTERNATIVAS = {
   'p6-pasar': { sprites: { Bichito: () => [MOVEW_S(), hatFlag(fe(iff(tc('goal'), gotoB(-200, -150), bdB('arena'))))] }, acciones: [['bandera'], ['ir', 'meta']] },
   'p7-dolor': { sprites: { Bichito: () => [MOVE_S(), WALK_S(), hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), waitB(1), setCos('paso 2'))))] }, acciones: [['bandera'], ['ir', 'Avispa', { parar: S => S.R.hurtShown }], ['esperar', 60]] },
   'p7-festejo': { sprites: { Bichito: () => [MOVE_S(), WALK_S(), hatFlag(fe(iff(tc('goal'), sayB('¡Llegué!'), setCos('feliz'), stopB())))] }, acciones: [['bandera'], ['ir', 'meta']] }
+};
+
+/* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
+export const NO_GANAN = {
+  2: { programa: () => [hatFlag(mv(300))], acciones: [['bandera'], ['esperar', 60]], dice: 'se salteó estrellas' }
 };

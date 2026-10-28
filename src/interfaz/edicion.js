@@ -68,7 +68,7 @@ export function insert(t){
     let target = S.sel && S.sel.cond ? findBlock(S.sel.cond) : null;
     if (!target && S.sel && S.sel.owner){ const ob = findBlock(S.sel.owner); if (ob && ob.type === 'if' && !ob.cond) target = ob; }
     if (!target) target = allBlocks().reverse().find(b => b.type === 'if' && !b.cond);
-    if (!target){ say(UI.sensorSinSi); SND.oops(); return; }
+    if (!target){ say(allBlocks().some(b => b.type === 'if') ? UI.siLleno : UI.sensorSinSi); SND.oops(); return; }
     target.cond = Pb.make(); S.sel = {owner:target.id, index:target.body.length}; SND.pop(); renderProgram(); return;
   }
   if (!S.prog.length){ say(UI.primeroEvento); SND.oops(); return; }
