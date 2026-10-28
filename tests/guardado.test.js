@@ -1,7 +1,7 @@
 /* Lo guardado usa las mismas claves que el original y no se rompe si el navegador no deja guardar. */
 import { it, expect, beforeEach } from 'vitest';
 import { S } from '../src/estado.js';
-import { iniciarGuardado, saveDone, registrarRecord, leerRef, guardarRef } from '../src/guardado.js';
+import { iniciarGuardado, saveDone, registrarRecord, leerRef, guardarRef, leerSilencio, guardarSilencio } from '../src/guardado.js';
 
 let caja;
 beforeEach(() => { caja = {}; globalThis.localStorage = { getItem: k => (k in caja ? caja[k] : null), setItem: (k, v) => { caja[k] = String(v); } }; });
@@ -28,4 +28,9 @@ it('sin localStorage no se rompe', () => {
   globalThis.localStorage = { getItem(){ throw new Error('bloqueado'); }, setItem(){ throw new Error('bloqueado'); } };
   expect(() => { saveDone(); registrarRecord(9); guardarRef(true); iniciarGuardado(); }).not.toThrow();
   expect(leerRef()).toBe(true);
+});
+
+it('amoverse-sonido recuerda el sonido apagado', () => {
+  expect(leerSilencio()).toBe(false);
+  guardarSilencio(true); expect(caja['amoverse-sonido']).toBe('off'); expect(leerSilencio()).toBe(true);
 });

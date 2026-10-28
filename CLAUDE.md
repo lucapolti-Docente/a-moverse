@@ -10,11 +10,12 @@ Este CLAUDE.md manda por sobre el general de `juegos-docente/`: acá sí hay npm
 - `original/a-moverse.html` es el juego de partida. No se edita: es la referencia para comparar.
 
 ## Decisiones que no hay que cambiar
-- Sin cuentas ni login. Lo guardado va en localStorage con try/catch (`src/guardado.js`), con las claves del original: `amoverse-done` (ids de niveles ganados), `amoverse-record` y `amoverse-ref`, más `amoverse-crea` (el proyecto de “Creá tu juego”). Los ids de nivel no cambian aunque el nivel cambie de parte (por eso hay `p5-…` en las partes 6 y 7); si alguna vez cambia uno, se migra `amoverse-done`.
+- Sin cuentas ni login. Lo guardado va en localStorage con try/catch (`src/guardado.js`), con las claves del original: `amoverse-done` (ids de niveles ganados), `amoverse-record` y `amoverse-ref`, más `amoverse-crea` (el proyecto de “Creá tu juego”) y `amoverse-sonido` (sonido apagado). Los ids de nivel no cambian aunque el nivel cambie de parte (por eso hay `p5-…` en las partes 6 y 7); si alguna vez cambia uno, se migra `amoverse-done`.
 - Español rioplatense con voseo, frases cortas. Los mensajes dicen qué pasó y qué revisar, sin retar.
 - Siempre se puede pasar de nivel y saltar niveles. Cada parte tiene modo libre.
 - Personajes originales (bichito, avispas, moneda…), sin derechos de autor ni personas reales. Sin armas ni violencia: la avispa se atrapa con una burbuja y vuelve al panal; las semillas hacen florecer nubes secas. Nunca “Perdiste”: “¡Se terminó!”.
 - Bloques con los mismos nombres y colores que Scratch 3 en español (es). Los rótulos están en `src/datos/bloques.js` (ETIQUETAS) y se verifican contra `src/datos/glosario.js` (que tiene también los del Scratch latinoamericano).
+- Modo lento (🐢) y Paso: todo va a un cuarto de velocidad o de a una vuelta, y se resaltan los bloques que corrieron (el motor los anota en `recorrido`). Errores con sacudida suave + sonido; efectos que respetan “reducir movimiento”.
 - El chequeo de un nivel mira lo que pasó, no la forma exacta del programa: no puede rechazar un programa que funciona.
 
 ## Arquitectura
@@ -29,5 +30,5 @@ Este CLAUDE.md manda por sobre el general de `juegos-docente/`: acá sí hay npm
 - `npm test`: cada nivel se gana con su solución de `tests/soluciones.js` (el piloto de `tests/ayudante/jugar.js` juega solo), con las otras formas válidas (ALTERNATIVAS) y no se gana salteando la idea del nivel (NO_GANAN, que además mira que el juego diga qué falta). Si tocás un nivel, actualizá sus soluciones.
 - `npm run build:pendrive` y `node herramientas/capturas.js dist-pendrive/a-moverse.html pruebas/nuevo`, después `node herramientas/comparar.js`. Revisar en 1366×768 y en 360×620, sin errores en la consola.
 - `node herramientas/jugar-como-chico.js dist-pendrive/a-moverse.html pruebas/chico` juega tocando botones hasta ganar.
-- `node herramientas/probar-crea.js` prueba que “Creá tu juego” guarde el proyecto.
+- `node herramientas/probar-crea.js` prueba que “Creá tu juego” guarde el proyecto; `node herramientas/probar-etapa4.js`, el modo lento, el paso a paso, los efectos y el silencio recordado.
 - `pruebas/` no se sube a GitHub.

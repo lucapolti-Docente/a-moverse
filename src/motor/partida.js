@@ -19,7 +19,7 @@ export function makeSprite(x, y, color, program, bounds, label, extra){ return O
 
 export function loadLevel(level){
   S.L = level; S.won = false;
-  if (S.L.backdrops){ S.BACKDROP = S.L.startBackdrop || S.L.bdOrder[0]; S.L.map = S.L.backdrops[S.BACKDROP].map; } else S.BACKDROP = null; S.VARS = Object.assign({}, S.L.vars || {}); (createdVars[S.L.id] || []).forEach(v => S.VARS[v] = 0); S.particles = []; S.exploreIdx = 0; S.dragging = false; S.insideCount = 0; newRun();
+  if (S.L.backdrops){ S.BACKDROP = S.L.startBackdrop || S.L.bdOrder[0]; S.L.map = S.L.backdrops[S.BACKDROP].map; } else S.BACKDROP = null; S.VARS = Object.assign({}, S.L.vars || {}); (createdVars[S.L.id] || []).forEach(v => S.VARS[v] = 0); S.particles = []; S.efectos = []; S.exploreIdx = 0; S.dragging = false; S.insideCount = 0; newRun();
   S.curSp = 0;
   if (S.L.sprites){
     if (S.L.mode === 'sandbox' && !programs[S.L.id]) recuperarCreacion();
@@ -157,7 +157,7 @@ export const hooks = {
     if (name === 'feliz') S.R.happyShown = true;
     S.R.cosLog = (S.R.cosLog || []).concat(S.engine.time).slice(-40);
   },
-  hidden(t){ const s = t.sprite; if (s.kind === 'seed' && s.y >= 150) S.R.semillaArriba = true; if (s.kind === 'bug') S.R.bugBlinks = (S.R.bugBlinks || 0) + 1; if (s.kind === 'wasp'){ S.R.waspHid = true; burst(s.x, s.y, '#7A4DD8'); SND.star(); if (S.engine.held.has('space')) S.R.hidWithSpace = true; else S.R.hidSinEspacio = true; } },
+  hidden(t){ const s = t.sprite; if (s.kind === 'seed' && s.y >= 150) S.R.semillaArriba = true; if (s.kind === 'bug') S.R.bugBlinks = (S.R.bugBlinks || 0) + 1; if (s.kind === 'wasp'){ S.R.waspHid = true; avisos.efecto('panal', { x: s.x, y: s.y, color: s.color, dir: s.dir }); SND.star(); if (S.engine.held.has('space')) S.R.hidWithSpace = true; else S.R.hidSinEspacio = true; } },
   shown(t){
     const s = t.sprite; if (s.kind === 'wasp') S.R.waspShown = true;
     if (s.kind === 'bubble'){ avisos.tono(660, .12, 'sine', .06, 0, 990); S.R.swings = (S.R.swings || 0) + 1; }
@@ -178,13 +178,20 @@ export const hooks = {
   },
   deleted(t){
     const s = t.sprite;
-    if (s.kind === 'cloud' && S.sprites.some(o => o.kind === 'seed' && !o.hidden && Math.hypot(o.x - s.x, o.y - s.y) < 26)){ burst(s.x, s.y, '#F472B6'); avisos.tono(880, .12, 'triangle', .06); }
+    if (s.kind === 'cloud' && S.sprites.some(o => o.kind === 'seed' && !o.hidden && Math.hypot(o.x - s.x, o.y - s.y) < 26)){ burst(s.x, s.y, '#F472B6'); avisos.efecto('flor', { x: s.x, y: s.y }); avisos.tono(880, .12, 'triangle', .06); }
   },
-  setVar(v, n, t){
+  recibido(s, msg){
+    if (s.kind === 'stage' || s.hidden && s.isClone) return;
+    avisos.efecto('sobre', { x: s.x, y: s.y, quien: s });
+    if (S.R.dingT !== S.engine.time){ S.R.dingT = S.engine.time; avisos.tono(1175, .07, 'sine', .05); }
+  },
+  setVar(v, n, t, cambio){
     const before = S.VARS[v] ?? 0; S.VARS[v] = Math.round(n * 100) / 100;
     if (v === 'puntos' && S.VARS[v] === 0 && t) S.R.startedZero = true;
     if (S.VARS[v] > before) SND.star(); else if (S.VARS[v] < before) SND.bump();
     if (v === 'vidas' && S.VARS[v] < before) S.R.tocado = true;
+    // "sumar a": un +1 que sube desde el personaje que lo hizo
+    if (cambio && t && t.sprite.kind !== 'stage') avisos.efecto('flotante', { x: t.sprite.x, y: t.sprite.y, texto: (cambio > 0 ? '+' : '−') + Math.abs(cambio) + ' ' + v, sube: cambio > 0 });
     avisos.variable(v);
   },
   randomPos(s){

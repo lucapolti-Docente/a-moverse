@@ -207,6 +207,17 @@ button{cursor:pointer}
 }
 @media (max-width:760px) and (max-height:560px){.stage-wrap{height:30dvh}}
 @media (prefers-reduced-motion:reduce){.cursor{animation:none}}
+.fb.sacudir{animation:sacudir .4s ease-in-out}
+@keyframes sacudir{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+@media (prefers-reduced-motion:reduce){.fb.sacudir{animation:none}}
+/* modo lento: bloques que corrieron en la última vuelta y pestañas con programas andando */
+.blk.corriendo{box-shadow:0 0 0 4px #FDE047,0 0 0 6px var(--ink)}
+.tab.anda::after{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;background:#22C55E;border:2px solid var(--ink);margin-left:6px;vertical-align:middle}
+.bigbtn.lento.on,.bigbtn.paso.on{background:#FEF3C7;border-color:var(--ink)}
+.bigbtn .emo{font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;font-size:22px;line-height:1}
+.bigbtn.lento .t,.bigbtn.paso .t,.lentoOn .bigbtn .t{display:none}
+.lentoOn .run{gap:6px}
+@media (max-width:760px){.controls{flex-wrap:wrap;row-gap:6px}.run{gap:5px}.bigbtn{min-width:42px;padding:0 8px}.controls .pad{margin-left:auto}}
 
 /* ---- parte 2 y menú de partes ---- */
 :root{--ap:#9966FF;--ap-d:#774DCB;--wall:#55606E;--lava:#E5322D;--goal:#22B04B}
@@ -304,7 +315,7 @@ button.swatch{cursor:pointer}
 .palette .condslot.op{width:34px}
 .padl{font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--ink)}
 .padmode{position:absolute;top:8px;right:46px;font-size:13px;background:var(--surface)}
-.controls{flex-wrap:nowrap}
+@media (min-width:761px){.controls{flex-wrap:nowrap}}
 @media (max-width:760px){.padmode{font-size:12px;padding:2px 6px;top:5px;right:34px}.padl{font-size:17px}}
 .program .blk.op .blk.se{font-size:13px;padding:3px 6px}
 

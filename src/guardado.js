@@ -14,6 +14,10 @@ export function registrarRecord(pts){
   return { anterior, nuevo };
 }
 
+/* El sonido apagado se recuerda en amoverse-sonido. */
+export const leerSilencio = () => leer('amoverse-sonido', 'on') === 'off';
+export const guardarSilencio = apagado => escribir('amoverse-sonido', apagado ? 'off' : 'on');
+
 export const leerRef = () => leer('amoverse-ref', 'on') !== 'off';
 export const guardarRef = on => escribir('amoverse-ref', on ? 'on' : 'off');
 

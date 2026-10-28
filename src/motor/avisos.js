@@ -9,5 +9,6 @@ export const avisos = {
   teclas(){},                      // cambiaron las teclas apretadas: actualizar el pad
   nivelCargado(){},                // se cargó un nivel: mostrar todo
   reiniciado(){},                  // volvió todo a su lugar
-  gano(){}                         // se ganó el nivel
+  gano(){},                        // se ganó el nivel
+  efecto(tipo, datos){}            // algo para ver en el escenario: 'flotante' (+1), 'sobre' (mensaje), 'flor', 'panal'
 };

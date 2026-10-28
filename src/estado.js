@@ -24,7 +24,9 @@ export const S = {
   muted: false,
   lastMsg: '',
   showRef: true,
-  terminado: []
+  terminado: [],
+  efectos: [],       // efectos visuales en el escenario (dibujo/escenario.js)
+  velocidad: 'normal' // 'normal', 'lento' o 'pausa' (modo lento y paso a paso)
 };
 
 export const createdVars = {};

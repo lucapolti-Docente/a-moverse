@@ -13,15 +13,31 @@ export function loop(now){
   const dt = Math.min(200, now - prevT); prevT = now;
   if ($('#startScreen').hidden){
     if (S.engine && S.L.mode !== 'explore'){
-      acc += dt; let n = 0;
+      // modo lento: un cuarto de la velocidad; en pausa solo avanza con el botón Paso
+      acc += S.velocidad === 'lento' ? dt / 4 : S.velocidad === 'pausa' ? 0 : dt; let n = 0;
       while (acc >= DT && n < 6){ S.engine.step(); afterStep(); acc -= DT; n++; }
       if (n === 6) acc = 0;
+      if (n && S.velocidad !== 'normal') resaltar();
     }
     for (const p of S.particles){ p.x += p.vx; p.y += p.vy; p.vy -= .12; p.life -= .03; }
     S.particles = S.particles.filter(p => p.life > 0);
     updateXY(); draw(now);
   } else drawHero(now);
   requestAnimationFrame(loop);
+}
+
+/* Una vuelta: todos los programas avanzan hasta su próxima espera. */
+export function pasoUnaVuelta(){
+  if (!S.engine || S.L.mode === 'explore') return;
+  S.engine.step(); afterStep(); resaltar();
+}
+
+/* Marca los bloques que corrieron en la última vuelta y las pestañas de los personajes que tienen programas andando. */
+export function resaltar(){
+  const corrieron = S.velocidad !== 'normal' && S.engine && S.engine.recorrido || new Set();
+  document.querySelectorAll('#program [data-id]').forEach(b => b.classList.toggle('corriendo', corrieron.has(b.dataset.id)));
+  const andan = new Set(S.velocidad !== 'normal' && S.engine ? S.engine.threads.map(t => t.sprite.name) : []);
+  document.querySelectorAll('#program .tab[data-sp]').forEach(tb => tb.classList.toggle('anda', andan.has(S.sprites[tb.dataset.sp].name)));
 }
 
 export function toStage(e){ const r = cv.getBoundingClientRect(); return {x:(e.clientX - r.left) / r.width * 480 - 240, y:180 - (e.clientY - r.top) / r.height * 360}; }

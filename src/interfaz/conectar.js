@@ -3,7 +3,7 @@ import { S } from '../estado.js';
 import { UI } from '../datos/textos.js';
 import { avisos } from '../motor/avisos.js';
 import { mensajeAlCargar } from '../motor/partida.js';
-import { burst, monitorPulse, updateXY } from '../dibujo/escenario.js';
+import { agregarEfecto, burst, monitorPulse, updateXY } from '../dibujo/escenario.js';
 import { SND, tone } from '../sonido.js';
 import { say } from './aviso.js';
 import { padSync, setPadMode } from './controles.js';
@@ -35,16 +35,22 @@ function mostrarNivel(){
   if (m) say(m);
 }
 
+/* Errores amables: el mensaje se sacude un poquito (después de que se muestra). */
+function sacudirMensaje(){
+  setTimeout(() => { const fb = $('#fb'); if (fb.hidden) return; fb.classList.remove('sacudir'); void fb.offsetWidth; fb.classList.add('sacudir'); }, 0);
+}
+
 export function conectarMotor(){
   Object.assign(avisos, {
     decir: (texto, bien) => say(texto, bien),
-    sonar: nombre => SND[nombre](),
+    sonar: nombre => { SND[nombre](); if (nombre === 'oops' || nombre === 'bump') sacudirMensaje(); },
     tono: (...a) => tone(...a),
     chispas: (x, y, color) => burst(x, y, color),
     variable: v => { monitorPulse[v] = performance.now(); },
     teclas: () => padSync(),
     nivelCargado: mostrarNivel,
     reiniciado: () => updateXY(),
-    gano: () => { clearTimeout(S.winTimer); S.winTimer = setTimeout(() => { SND.win(); showWin(); }, 500); }
+    gano: () => { clearTimeout(S.winTimer); agregarEfecto('festejo', {}); S.winTimer = setTimeout(() => { SND.win(); showWin(); }, 500); },
+    efecto: (tipo, datos) => agregarEfecto(tipo, datos)
   });
 }

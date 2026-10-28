@@ -36,6 +36,7 @@ export function createEngine(hooks){
   function* runList(list, t){ for (let i = 0; i < list.length; i++) yield* runBlock(list[i], t); }
   function* runBlock(b, t){
     const s = t.sprite;
+    if (E.recorrido) E.recorrido.add(b.id);   // para el modo lento: qué bloques corrieron en esta vuelta
     switch (b.type){
       case 'move': {
         const a = (s.dir == null ? 90 : s.dir) * Math.PI / 180, n = num(b.n);
@@ -58,7 +59,7 @@ export function createEngine(hooks){
       case 'clone': { const src = b.target === 'mí mismo' ? s : (hooks.findSprite && hooks.findSprite(b.target)); if (src) E.makeClone(src); break; }
       case 'delclone': if (s.isClone){ if (hooks.deleted) hooks.deleted(t); E.removeSprite(s); throw DEL_CLONE; } break;
       case 'setvar': if (hooks.setVar) hooks.setVar(b.v, num(b.n), t); break;
-      case 'changevar': if (hooks.setVar) hooks.setVar(b.v, Number(hooks.getVar(b.v) || 0) + num(b.n), t); break;
+      case 'changevar': if (hooks.setVar) hooks.setVar(b.v, Number(hooks.getVar(b.v) || 0) + num(b.n), t, num(b.n)); break;
       case 'gorandom': { const p = hooks.randomPos ? hooks.randomPos(s) : {x:0, y:0}; s.x = p.x; s.y = p.y; if (hooks.jumped) hooks.jumped(t); break; }
       case 'wait': { const n = Math.max(0, Math.round(num(b.n) * 30)); for (let i = 0; i < n; i++) yield; break; }
       case 'cx':   move(t, num(b.n), 0, b); break;
@@ -96,6 +97,7 @@ export function createEngine(hooks){
     for (const s of E.sprites.slice()) for (const sc of s.program) if (sc.hat === 'msg' && sc.msg === msg){
       E.threads = E.threads.filter(t => !(t.script === sc && t.sprite === s));
       start(s, sc, 'msg');
+      if (hooks.recibido) hooks.recibido(s, msg);
     }
   };
   E.makeClone = src => {
@@ -124,9 +126,11 @@ export function createEngine(hooks){
   E.alive = () => E.threads.length > 0;
   E.step = () => {
     E.time += DT;
+    E.recorrido = new Set();
     while (E.last && E.time >= E.nextRep){ fire(E.last); E.nextRep += KEY_REPEAT; }
     for (const t of E.threads.slice()){
       if (!E.threads.includes(t)) continue;
+      E.recorrido.add(t.script.id);
       let done;
       try { done = t.gen.next().done; } catch(e){ if (e === STOP_ALL) break; if (e === DEL_CLONE) continue; throw e; }
       if (done) E.threads.splice(E.threads.indexOf(t), 1);

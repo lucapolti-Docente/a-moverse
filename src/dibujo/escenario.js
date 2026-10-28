@@ -450,7 +450,7 @@ export function draw(t){
     if (s.kind === 'wasp'){ drawWasp(c, SX(px), SY(py), K, s.color, s.dir, t); if (S.L.tween) continue; }
     else if (s.kind === 'coin') drawCoin(c, SX(s.x), SY(s.y), K, t);
     else if (s.kind === 'heart') drawHeart(c, SX(s.x), SY(s.y), K, t);
-    else drawBug(c, SX(s.x), SY(s.y), K, s.color, s.face, t, performance.now() - s.moved < 120, s.costume);
+    else drawBug(c, SX(s.x), SY(s.y), K, s.color, s.face, t, performance.now() - s.moved < 120, festejando() && s.kind === 'bug' ? 'feliz' : s.costume);
     if (S.L.sprites && S.sprites.length > 1 && !s.isClone){
       c.save(); c.font = `700 ${LS(10, 10)}px ${FONT()}`; c.textAlign = 'center'; c.textBaseline = 'top';
       const ty = SY(s.y) + 22*K, w = c.measureText(s.name).width + 8*DPR;
@@ -461,10 +461,66 @@ export function draw(t){
   for (const s of S.sprites) drawBubble(c, SX(s.x), SY(s.y), K, s.bubble);
   if (S.L.vars) drawMonitors(c);
   if (S.L.showCostumes) drawCostumes(c, t);
+  dibujarEfectos(c, t);
   for (const p of S.particles){ c.globalAlpha = Math.max(0, p.life); starPath(c, SX(p.x), SY(p.y), 5*K*p.life + 1, 2.2*K*p.life + .5, 0); c.fillStyle = p.col || '#FFC93C'; c.fill(); }
   c.globalAlpha = 1;
 }
 
 export function iniciarEscenario(){
   new ResizeObserver(fit).observe($('#stageWrap'));
+}
+
+/* ---------- Efectos para ver lo que pasa (Etapa 4) ----------
+   Cada efecto dura un ratito y se borra solo. Con "reducir movimiento", no se mueven: solo se desvanecen. */
+const DURA = { flotante: 1100, sobre: 900, flor: 1400, panal: 600, festejo: 2200 };
+
+export function agregarEfecto(tipo, datos){
+  S.efectos.push(Object.assign({ tipo, t0: performance.now() }, datos));
+  if (tipo === 'festejo' && !reduce) for (let i = 0; i < 4; i++) burst(-180 + i * 120, 120 - (i % 2) * 60, '#FFC93C');
+}
+
+/* el bichito pone cara feliz mientras dura el festejo */
+export const festejando = () => S.efectos.some(e => e.tipo === 'festejo');
+
+function dibujarSobre(c, x, y, k){
+  c.save(); c.translate(x, y);
+  c.fillStyle = '#FFFFFF'; c.strokeStyle = '#13202B'; c.lineWidth = 1.8*k;
+  c.beginPath(); c.rect(-11*k, -7*k, 22*k, 14*k); c.fill(); c.stroke();
+  c.beginPath(); c.moveTo(-11*k, -7*k); c.lineTo(0, 2*k); c.lineTo(11*k, -7*k); c.stroke();
+  c.restore();
+}
+
+function dibujarFlor(c, x, y, k, crece){
+  c.save(); c.translate(x, y); c.scale(crece, crece);
+  c.fillStyle = '#F472B6'; c.strokeStyle = '#13202B'; c.lineWidth = 1.5*k;
+  for (let i = 0; i < 5; i++){ const a = i * Math.PI * 2 / 5; c.beginPath(); c.ellipse(Math.cos(a)*8*k, Math.sin(a)*8*k, 6*k, 4.5*k, a, 0, Math.PI*2); c.fill(); c.stroke(); }
+  c.beginPath(); c.arc(0, 0, 5*k, 0, Math.PI*2); c.fillStyle = '#FDE047'; c.fill(); c.stroke();
+  c.restore();
+}
+
+export function dibujarEfectos(c, now){
+  S.efectos = S.efectos.filter(e => now - e.t0 < DURA[e.tipo]);
+  for (const e of S.efectos){
+    const p = (now - e.t0) / DURA[e.tipo], fuera = Math.max(0, 1 - p);
+    c.save(); c.globalAlpha = Math.min(1, fuera * 1.6);
+    if (e.tipo === 'flotante'){
+      const dy = reduce ? 0 : p * 30 * (e.sube ? 1 : -1);
+      c.font = `700 ${LS(14, 13)}px ${FONT()}`; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.lineWidth = 4*DPR; c.strokeStyle = '#FFFFFF'; c.strokeText(e.texto, SX(e.x), SY(e.y + 30 + dy));
+      c.fillStyle = e.sube ? '#178A4B' : '#C8332F'; c.fillText(e.texto, SX(e.x), SY(e.y + 30 + dy));
+    } else if (e.tipo === 'sobre'){
+      const q = e.quien, x = q ? q.x : e.x, y = q ? q.y : e.y;
+      dibujarSobre(c, SX(x + 26), SY(y + 18 + (reduce ? 0 : p * 8)), K);
+    } else if (e.tipo === 'flor'){
+      dibujarFlor(c, SX(e.x), SY(e.y), K, reduce ? 1 : Math.min(1, p * 4));
+    } else if (e.tipo === 'panal'){
+      // la avispa se achica y sube, como si volviera a su panal
+      const esc = reduce ? 1 : 1 - p * 0.8, dy = reduce ? 0 : p * 60;
+      c.translate(SX(e.x), SY(e.y + dy)); c.scale(esc, esc);
+      drawWasp(c, 0, 0, K, e.color, e.dir, now);
+    } else if (e.tipo === 'festejo' && !reduce && Math.random() < 0.25){
+      burst(Math.random() * 400 - 200, 150, ['#FFC93C', '#F472B6', '#38BDF8'][Math.floor(Math.random() * 3)]);
+    }
+    c.restore();
+  }
 }

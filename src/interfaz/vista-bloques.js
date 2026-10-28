@@ -190,7 +190,7 @@ export function msgSel(obj, ro){
 }
 
 export function hatEl(sc, ro){
-  const h = el('div', 'blk ' + (sc.hat === 'clone' ? 'co' : 'ev') + ' hat');
+  const h = el('div', 'blk ' + (sc.hat === 'clone' ? 'co' : 'ev') + ' hat'); h.dataset.id = sc.id;
   if (sc.hat === 'flag'){ h.append(txt(ETIQUETAS.flag[0])); h.insertAdjacentHTML('beforeend', FLAG_SVG); }
   else if (sc.hat === 'key'){ h.append(txt(ETIQUETAS.key[0]), keySel(sc, ro)); }
   else if (sc.hat === 'msg'){ h.append(txt(ETIQUETAS.whenmsg[0]), msgSel(sc, ro)); }
@@ -250,7 +250,7 @@ export function stmtEl(b, owner, i, ro){
   const after = pick({owner, index:i + 1}, ro);
   if (['move','cx','cy','goto','say','stop','bounce','pointdir','pointto','wait','setvar','changevar','gorandom','hide','show','broadcast','gotoobj','clone','delclone','switchbd','nextcos','setcos'].includes(b.type)){
     const cls = (b.type === 'say' || b.type === 'hide' || b.type === 'show' || b.type === 'switchbd' || b.type === 'nextcos' || b.type === 'setcos') ? 'ap' : (b.type === 'stop' || b.type === 'wait' || b.type === 'clone' || b.type === 'delclone') ? 'co' : (b.type === 'setvar' || b.type === 'changevar') ? 'va' : b.type === 'broadcast' ? 'ev' : 'mo';
-    const e = el('div','blk ' + cls);
+    const e = el('div','blk ' + cls); e.dataset.id = b.id;
     if (b.type === 'move') e.append(txt(ETIQUETAS.move[0]), numIn(b, ro), txt(ETIQUETAS.move[1]), dirChip(b));
     else if (b.type === 'cx' || b.type === 'cy') e.append(txt(b.type === 'cx' ? ETIQUETAS.cx[0] : ETIQUETAS.cy[0]), numIn(b, ro), dirChip(b));
     else if (b.type === 'goto') e.append(txt(ETIQUETAS.goto[0]), numIn(b, ro, 'x'), txt(ETIQUETAS.goto[1]), numIn(b, ro, 'y'));
@@ -276,7 +276,7 @@ export function stmtEl(b, owner, i, ro){
     e.addEventListener('click', after); return e;
   }
   const c = el('div','cblk');
-  const head = el('div','blk co');
+  const head = el('div','blk co'); head.dataset.id = b.id;
   if (b.type === 'forever') head.append(txt(ETIQUETAS.forever[0]));
   else if (b.type === 'repeat') head.append(txt(ETIQUETAS.repeat[0]), numIn(b, ro));
   else head.append(txt(ETIQUETAS['if'][0]), condEl(b, ro), txt(ETIQUETAS['if'][1]));

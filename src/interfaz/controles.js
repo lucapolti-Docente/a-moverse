@@ -6,8 +6,9 @@ import { renderExplore } from './explorar-cierre.js';
 import { go, showPart } from './menu.js';
 import { flagPressed as banderaMotor, keyDown as teclaMotor, keyUp, resetLevel } from '../motor/partida.js';
 import { SND, ac } from '../sonido.js';
-import { guardarRef, leerRef } from '../guardado.js';
+import { guardarRef, guardarSilencio, leerRef, leerSilencio } from '../guardado.js';
 import { guardarProyecto } from './editor.js';
+import { pasoUnaVuelta, resaltar } from './bucle.js';
 
 /* El motor no toca la pantalla: acá se prende el audio y se suelta el foco, como en el original. */
 export function flagPressed(){
@@ -18,6 +19,14 @@ export function flagPressed(){
 export function keyDown(k){
   if (S.L.mode !== 'explore') ac();
   teclaMotor(k);
+}
+
+export function ponerVelocidad(v){
+  S.velocidad = v;
+  $('#lentoBtn').classList.toggle('on', v === 'lento'); $('#lentoBtn').setAttribute('aria-pressed', String(v === 'lento'));
+  $('#pasoBtn').hidden = v === 'normal'; $('#pasoBtn').classList.toggle('on', v === 'pausa');
+  $('#app').classList.toggle('lentoOn', v !== 'normal');
+  resaltar();
 }
 
 export const DOMKEY = {ArrowRight:'right', ArrowLeft:'left', ArrowUp:'up', ArrowDown:'down', KeyW:'w', KeyA:'a', KeyS:'s', KeyD:'d', Space:'space', ' ':'space'};
@@ -89,6 +98,9 @@ export function iniciarControles(){
   });
   $('#flagBtn').onclick = flagPressed;
   $('#stopBtn').onclick = () => { S.engine.stop(); };
+  // 🐢: normal → lento → normal; si estaba en pausa (por Paso), vuelve a lento
+  $('#lentoBtn').onclick = () => { ac(); ponerVelocidad(S.velocidad === 'normal' || S.velocidad === 'pausa' ? 'lento' : 'normal'); SND.pop(); };
+  $('#pasoBtn').onclick = () => { ac(); ponerVelocidad('pausa'); pasoUnaVuelta(); SND.pop(); };
   $('#resetBtn').onclick = () => { resetLevel(); if (S.L.mode === 'explore'){ S.exploreIdx = 0; S.stars.forEach(s => s.got = false); renderExplore(); } };
   $('#prev').onclick = () => go(S.li - 1);
   $('#next').onclick = () => go(S.li + 1);
@@ -100,5 +112,7 @@ export function iniciarControles(){
     say(S.showRef ? UI.refPrendidas : UI.refApagadas);
   };
   applyRef();
-  $('#snd').onclick = () => { S.muted = !S.muted; $('#sndWave').style.display = S.muted ? 'none' : ''; $('#snd').setAttribute('aria-label', S.muted ? UI.sonidoApagado : UI.sonido); };
+  const mostrarSonido = () => { $('#sndWave').style.display = S.muted ? 'none' : ''; $('#snd').setAttribute('aria-label', S.muted ? UI.sonidoApagado : UI.sonido); };
+  S.muted = leerSilencio(); mostrarSonido();
+  $('#snd').onclick = () => { S.muted = !S.muted; guardarSilencio(S.muted); mostrarSonido(); };
 }

@@ -23,7 +23,7 @@ export function renderProgram(){
     const tabs = el('div','tabs'); tabs.setAttribute('role','tablist');
     S.sprites.forEach((sp, i) => {
       if (sp.isClone) return;
-      const tb = el('button','tab' + (i === S.curSp ? ' on' : '')); tb.setAttribute('role','tab'); tb.setAttribute('aria-selected', String(i === S.curSp));
+      const tb = el('button','tab' + (i === S.curSp ? ' on' : '')); tb.dataset.sp = i; tb.setAttribute('role','tab'); tb.setAttribute('aria-selected', String(i === S.curSp));
       const dot = el('i'); dot.style.background = sp.color; tb.append(dot, txt(sp.name));
       const n = sp.program.length; tb.append(el('small', null, n ? String(n) : '0'));
       tb.onclick = () => { selectSprite(i); SND.pop(); };
