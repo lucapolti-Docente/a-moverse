@@ -127,8 +127,19 @@ export const hooks = {
   costume(t, name){
     const s = t.sprite; if (s.kind !== 'bug') return;
     S.R.cosChanges = (S.R.cosChanges || 0) + 1;
-    if (S.engine.held.size){ S.R.walkSwaps = (S.R.walkSwaps || 0) + 1; if (name === 'feliz' || name === 'dolor') S.R.oddWhileWalk = (S.R.oddWhileWalk || 0) + 1; }
-    if (name === 'dolor') S.R.hurtShown = true;
+    if (S.engine.held.size){
+      S.R.walkSwaps = (S.R.walkSwaps || 0) + 1; if (name === 'feliz' || name === 'dolor') S.R.oddWhileWalk = (S.R.oddWhileWalk || 0) + 1;
+      S.R.pasosVistos = [...new Set([...(S.R.pasosVistos || []), name])];
+      // cuánto pasó desde el cambio anterior: si es casi nada, ese disfraz no llega a verse
+      const dt = S.R.ultimoCambio == null ? null : S.engine.time - S.R.ultimoCambio;
+      if (dt != null && dt < 50) S.R.cambiosRapidos = (S.R.cambiosRapidos || 0) + 1;
+      if (dt != null && dt > 600 && dt < 2000) S.R.cambiosLentos = (S.R.cambiosLentos || 0) + 1;
+    }
+    S.R.ultimoCambio = S.engine.time;
+    if (name === 'feliz' && t.origin === 'key' && t.key === 'up') S.R.felizConFlecha = true;
+    // volver a la cara de siempre desde la regla de la avispa (no desde el programa de caminar)
+    if (S.R.hurtShown && (name === 'paso 1' || name === 'paso 2') && scan([t.script], b => b.type === 'if' && b.cond && b.cond.type === 'toucho' && b.cond.target === 'Avispa')) S.R.recuperoEnRegla = true;
+    if (name === 'dolor'){ S.R.hurtShown = true; if (S.R.tDolor == null) S.R.tDolor = S.engine.time; }
     if (S.R.hurtShown && name !== 'dolor' && name !== 'feliz') S.R.recovered = true;
     if (name === 'feliz') S.R.happyShown = true;
     S.R.cosLog = (S.R.cosLog || []).concat(S.engine.time).slice(-40);
@@ -160,6 +171,7 @@ export const hooks = {
     const before = S.VARS[v] ?? 0; S.VARS[v] = Math.round(n * 100) / 100;
     if (v === 'puntos' && S.VARS[v] === 0 && t) S.R.startedZero = true;
     if (S.VARS[v] > before) SND.star(); else if (S.VARS[v] < before) SND.bump();
+    if (v === 'vidas' && S.VARS[v] < before) S.R.tocado = true;
     avisos.variable(v);
   },
   randomPos(s){
@@ -218,8 +230,10 @@ export function wallMsg(s){
 export function afterStep(){
   if (S.P.rasgos.animaciones && S.engine.alive()){
     const b = S.sprites[0];
+    if (S.engine.held.size) S.R.heldTicks = (S.R.heldTicks || 0) + 1;
     S.R.hurtTicks = b.costume === 'dolor' ? (S.R.hurtTicks || 0) + 1 : 0;
     if (S.R.hurtTicks > 75) S.R.hurtLong = true;
+    if (S.R.tDolor != null && !S.R.recuperoEnRegla && S.engine.time - S.R.tDolor > 2500) S.R.hurtLong = true;
   }
   if (S.L.map && S.L.mode !== 'cierre' && S.L.mode !== 'sandbox' && S.engine.alive()){
     const s = S.sprites[0];

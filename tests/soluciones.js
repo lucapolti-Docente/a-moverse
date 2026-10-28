@@ -295,6 +295,10 @@ export const ALTERNATIVAS = {
 
 /* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
 export const NO_GANAN = {
+  'p7-disfraces': { sprites: { Bichito: () => [hatKey('space', nextCos()), hatKey('up')] }, acciones: [['bandera'], ['tocar', 'space', 5, 3]], dice: 'Ya pasaste por todos' },
+  'p7-caminar': { sprites: { Bichito: () => [MOVE_S(), hatFlag(fe(iff(kp('right'), setCos('paso 1'), setCos('paso 2'), waitB(0.15), waitB(0.15))))] }, acciones: [['bandera'], ['tener', 'right', 60]], dice: 'cambia tan rápido' },
+  'p7-dolor': { sprites: { Bichito: () => [MOVE_S(), WALK_S(), hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), waitB(1))))] }, acciones: [['bandera'], ['ir', 'Avispa', { parar: S => S.R.hurtShown }], ['tener', 'right', 120]], dice: 'no vuelve a su cara' },
+  'p7-festejo': { acciones: [['bandera'], ['ir', 'meta']], dice: 'no festejó' },
   'p6-aviso': { sprites: { Escenario: () => [STAGE_START(), hatMsg('siguiente nivel', bdB('arena'))] }, acciones: [['bandera'], ['ir', 'meta']], dice: 'se queda ahí' },
   'p6-enviar': { acciones: [['bandera'], ['ir', 'meta']], dice: 'falta: si ¿tocando el color verde?' },
   'p5-tecla': { sprites: { Bichito: () => [MOVEW_S(), hatFlag(fe(iff(toO('Avispa'), gotoB(-200, 0))))] }, acciones: [['bandera'], ['ir', 'estrellas']], dice: 'te alcanzó' },
