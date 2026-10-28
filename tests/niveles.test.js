@@ -5,7 +5,6 @@ import { SOLUCIONES, ALTERNATIVAS, NO_GANAN } from './soluciones.js';
 
 /* Bugs del original que se arreglan en la Etapa 3: el chequeo rechaza un programa que funciona. */
 const BUGS_CONOCIDOS = {
-  'p3-5': 'la velocidad de la avispa se mide con el último “mover”, no con la suma',
   'p5-balas': 'restar la semilla antes de crear el clon cuenta como disparo sin semillas'
 };
 

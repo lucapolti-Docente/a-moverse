@@ -62,7 +62,7 @@ export const SOLUCIONES = {
     acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]]
   },
   'p3-dir': {
-    acciones: [0, 90, 180, -90].flatMap(d => [['hacer', S => { S.sprites[0].program[0].body[0].n = d; }], ['bandera'], ['esperar', 45]])
+    acciones: [0, 90, 180, -90].flatMap(d => [['hacer', S => { S.sprites[0].program[0].body[1].n = d; }], ['bandera'], ['esperar', 45]])
   },
   'p3-4': {
     sprites: { Avispa: () => [hatFlag(pdirB(90), fe(mv(5), bounceB()))], 'Avispa 2': () => [hatFlag(pdirB(0), fe(mv(5), bounceB()))] },
@@ -245,6 +245,7 @@ export const SOLUCIONES = {
 /* Otras formas válidas de resolver algunos niveles: el chequeo no puede rechazar un programa que funciona. */
 const MOVE_SOLO = () => hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))));
 export const ALTERNATIVAS = {
+  'p3-6': { sprites: { Avispa: () => [hatFlag(waitB(0.5), fe(ptoB('Bichito'), mv(4)))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]] },
   2: { programa: () => [hatFlag(repB(10, mv(30)))], acciones: [['bandera'], ['esperar', 60]] },
   'p2-barro': { programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('mud'), cx(-5))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10)))), hatFlag(fe(iff(tc('ice'), cx(10)))), GOAL_S(true)], acciones: [['bandera'], ['tener', 'right', 60]] },
   'p2-4': { programa: () => [MOVE_S(), hatFlag(fe(iff(tc('wall'), cx(-10)))), hatFlag(fe(iff(tc('wall'), cy(0))))], acciones: [['bandera'], ['ir', 'estrellas']] },
@@ -263,6 +264,7 @@ export const ALTERNATIVAS = {
 
 /* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
 export const NO_GANAN = {
+  'p3-5': { sprites: { Avispa: () => [hatFlag(fe(ptoB('Bichito'), mv(-3)))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]], dice: 'se aleja' },
   'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-195, -140))))], acciones: [['bandera'], ['ir', 'meta']], dice: 'probá la lava' },
   'p2-dentro': { acciones: [['bandera'], ['tener', 'left', 12], ['ir', 'estrellas']], dice: 'se metió en la pared' },
   'p2-barro': { acciones: [['bandera'], ['tener', 'right', 80]], dice: 'Caminando normal no llegás' },

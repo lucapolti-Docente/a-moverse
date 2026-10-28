@@ -184,6 +184,8 @@ export const hooks = {
     const ad = Math.abs(s.dir);
     if ((s.y >= 164 || s.y <= -164) && s.name === 'Avispa 2' && (ad < 1 || ad > 179)) S.R.vBounce = (S.R.vBounce || 0) + 1;
     if ((s.x >= 224 || s.x <= -224) && s.name === 'Avispa' && Math.abs(ad - 90) < 1) S.R.hBounce = (S.R.hBounce || 0) + 1;
+    if (((s.y >= 164 || s.y <= -164) && s.name === 'Avispa' && (ad < 1 || ad > 179)) || ((s.x >= 224 || s.x <= -224) && s.name === 'Avispa 2' && Math.abs(ad - 90) < 1)) S.R.alReves = (S.R.alReves || 0) + 1;
+    if (Math.abs(ad - 45) < 1 || Math.abs(ad - 135) < 1) S.R.diagonal = (S.R.diagonal || 0) + 1;
     if (S.L.id === 'p3-2' && !scan(s.program, b => b.type === 'move')) say(MSJ.rebotoSumarX);
   },
   goto(t){ if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ S.R.lavaFunciona = true; SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },

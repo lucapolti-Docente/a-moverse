@@ -41,7 +41,8 @@ export const enemyRule = (who, pred) => scanF(progOf('Bichito'), b => b.type ===
 
 export const enemyRuleOnce = (who) => scan(progOf('Bichito'), b => b.type === 'if' && condTargets(b.cond).includes(who));
 
-export const chaseSpeed = () => { let n = null; walk((progOf('Avispa')[0] || {body:[]}).body, b => { if (b.type === 'move') n = Number(b.n); }); return n; };
+/* Velocidad de la avispa: lo que avanza en cada vuelta del "por siempre" (suma de todos sus "mover"). */
+export const chaseSpeed = () => { let n = null; progOf('Avispa').forEach(sc => walkF(sc.body, b => { if (b.type === 'move') n = (n || 0) + Number(b.n); })); return n; };
 
 export const ruleIn = (who, pred) => scanF(progOf(who), pred);
 
