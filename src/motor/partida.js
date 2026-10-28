@@ -22,7 +22,7 @@ export function loadLevel(level){
   S.curSp = 0;
   if (S.L.sprites){
     if (!programs[S.L.id] || S.L.mode === 'cierre') programs[S.L.id] = S.L.sprites.map(d => d.program());
-    S.sprites = S.L.sprites.map((d, i) => makeSprite(d.x, d.y, d.color || '#E8553F', programs[S.L.id][i], null, d.name,
+    S.sprites = S.L.sprites.map((d, i) => makeSprite(d.x, d.y, d.color || '#E8553F', programs[S.L.id][i], d.bounds || null, d.name,
       {name:d.name, kind:d.kind || 'bug', dir:d.dir || 90, sdir:d.dir || 90, hidden:!!d.hidden, shidden:!!d.hidden, costume:d.costume, scostume:d.costume}));
     S.curSp = S.L.mode === 'cierre' ? 0 : (S.L.selSprite || 0);
     S.prog = S.sprites[S.curSp].program; S.sel = null;
@@ -191,7 +191,7 @@ export const hooks = {
     if (Math.abs(ad - 45) < 1 || Math.abs(ad - 135) < 1) S.R.diagonal = (S.R.diagonal || 0) + 1;
     if (S.L.id === 'p3-2' && !scan(s.program, b => b.type === 'move')) say(MSJ.rebotoSumarX);
   },
-  goto(t){ if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ S.R.lavaFunciona = true; SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },
+  goto(t){ if (S.L.avisoVolviste && t.sprite.kind === 'bug' && t.origin === 'flag' && S.sprites.some(o => o.kind === 'wasp' && !o.hidden && Math.hypot(o.x - t.sprite.x, o.y - t.sprite.y) < 28)) say(S.L.avisoVolviste); if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ S.R.lavaFunciona = true; SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },
   say(t){ if (S.L.id === 'p5-mayor'){ if ((S.VARS.semillas ?? 0) > 3) S.R.saidGt = true; if ((S.VARS.semillas ?? 0) < 3) S.R.saidLt = true; } if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')) S.R.saidOnGoal = true; if (S.L.id === 'p4-igual' && S.VARS.puntos === 5) S.R.said5 = true; },
   stop(t){
     if (S.P.rasgos.finPorNivel){ S.R.stopNivel = S.VARS.nivel ?? null; if (S.R.stopNivel == null) S.R.stopNivel = 0; }

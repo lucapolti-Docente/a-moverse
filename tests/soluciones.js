@@ -284,6 +284,7 @@ export const ALTERNATIVAS = {
 
 /* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
 export const NO_GANAN = {
+  'p5-tecla': { sprites: { Bichito: () => [MOVEW_S(), hatFlag(fe(iff(toO('Avispa'), gotoB(-200, 0))))] }, acciones: [['bandera'], ['ir', 'estrellas']], dice: 'te alcanzó' },
   'p5-meaviso': { acciones: [['bandera'], ['ir', 'Avispa']], dice: 'no vuelve' },
   'p5-vuela': { sprites: { Semilla: () => [hatFlag(showB(), gotoB(0, -110), pdirB(0), fe(mv(15)))] }, acciones: [['bandera'], ['esperar', 80]], dice: 'se queda pegada' },
   'p5-nacen': { acciones: [['bandera'], ['esperar', 200]], dice: 'no crea copias' },
