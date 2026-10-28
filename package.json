@@ -1,0 +1,22 @@
+{
+  "name": "a-moverse",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Puente hacia Scratch: bloques como los de Scratch para mover un personaje y armar un juego por partes.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:pendrive": "vite build --mode pendrive",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "capturas": "node herramientas/capturas.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1",
+    "vite": "8.3.4",
+    "vite-plugin-singlefile": "2.3.3",
+    "vitest": "5.0.3"
+  }
+}
