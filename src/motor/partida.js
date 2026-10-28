@@ -111,12 +111,13 @@ export const hooks = {
   touching(s, color){ return touchAt(s.x, s.y, BODY_R, color); },
   findSprite(name){ return S.sprites.find(o => o.name === name && !o.isClone); },
   getVar(v){ return S.VARS[v] ?? 0; },
-  switchBackdrop(name){
+  switchBackdrop(name, t){
     if (!S.L.backdrops) return null;
     const order = S.L.bdOrder, from = S.BACKDROP;
     let to = name === 'siguiente fondo' ? order[(order.indexOf(from) + 1) % order.length] : name;
     if (!S.L.backdrops[to]) return null;
     if (from === 'noche' && name === 'siguiente fondo') S.R.finishedNoche = true;
+    if (t && t.origin === 'msg' && name !== 'siguiente fondo' && S.L.msgs && !S.R.fijoHint){ S.R.fijoHint = true; say(MSJ.fondoFijo(name)); }
     if (from === 'arena' && to === 'arena') S.R.arenaGoal = true;
     S.BACKDROP = to; S.L.map = S.L.backdrops[to].map;
     if (from !== to){ avisos.tono(523, .1, 'triangle', .08); avisos.tono(784, .14, 'triangle', .08, .09); }
@@ -244,6 +245,7 @@ export function afterStep(){
     const onGoal = touchAt(s.x, s.y, BODY_R, 'goal');
     S.R.goalTicks = onGoal ? S.R.goalTicks + 1 : 0;
     if (S.L.goalSayHint && S.R.goalTicks === 20 && !S.R.saidOnGoal) say(MSJ.metaSinDecir);
+    if (S.L.avisoMeta && S.R.goalTicks === 30) say(S.L.avisoMeta);
     if (S.L.needStop && S.R.goalTicks === 40 && !S.R.stopOnGoal) say(MSJ.metaSinDetener);
   }
   if (S.L.backdrops && S.L.mode !== 'cierre' && S.L.mode !== 'sandbox' && S.engine.alive()){
@@ -257,7 +259,7 @@ export function afterStep(){
       S.R.gotoHint = true; say(MSJ.gotoSuelto);
     }
     if (S.engine.held.size){ if (S.R.heldSince == null) S.R.heldSince = S.engine.time; } else S.R.heldSince = null;
-    if (S.L.id === 'p6-pasar' && S.BACKDROP === 'arena' && S.R.inside && !S.R.stuckHint && !scan(progOf('Bichito'), b => b.type === 'goto')){ S.R.stuckHint = true; say(MSJ.paredNivelNuevo); }
+    if (S.L.id === 'p6-pasar' && S.BACKDROP === 'arena' && S.R.inside && !S.R.stuckHint){ S.R.stuckHint = true; say(scan(progOf('Bichito'), b => b.type === 'goto') ? MSJ.gotoLejos : MSJ.paredNivelNuevo); }
     if (S.L.id === 'p6-inicio' && S.BACKDROP === 'noche' && !S.R.ncHint && S.engine.time > 1200){ S.R.ncHint = true; say(MSJ.nocheVieja); }
   }
   if (S.L.sprites && S.L.mode !== 'cierre' && S.P.rasgos.seguirClones){

@@ -206,6 +206,10 @@ export const SOLUCIONES = {
     sprites: { Escenario: () => [STAGE_START(), hatMsg('siguiente nivel', bdB('siguiente fondo'))] },
     acciones: [['bandera'], ['ir', 'meta']]
   },
+  'p6-enviar': {
+    sprites: { Bichito: () => [MOVEW_S(), BACK_BUG(), hatFlag(fe(iff(tc('goal'), sendB('siguiente nivel'), waitB(0.5))))] },
+    acciones: [['bandera'], ['ir', 'meta']]
+  },
   'p6-nivel': {
     sprites: {
       Bichito: () => [MOVEW_S(), NEXT_BUG(), BACK_BUG(), hatFlag(fe(iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB())))],
@@ -262,6 +266,13 @@ export const SOLUCIONES = {
 /* Otras formas válidas de resolver algunos niveles: el chequeo no puede rechazar un programa que funciona. */
 const MOVE_SOLO = () => hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))));
 export const ALTERNATIVAS = {
+  'p6-nivel': {
+    sprites: {
+      Bichito: () => [MOVEW_S(), NEXT_BUG(), BACK_BUG(), hatFlag(fe(iff(gtB('nivel', 3), sayB('¡Ganaste!'), stopB())))],
+      Escenario: () => [STAGE_START([setV('nivel', 1)]), hatMsg('siguiente nivel', bdB('siguiente fondo'), chV('nivel', 1))]
+    },
+    acciones: [['bandera'], ['ir', 'meta']]
+  },
   'p5-espacio': { sprites: { Avispa: () => [PATROL(3), hatFlag(showB(), fe(iff(toO('Bichito'), iff(kp('space'), hideB()))))] }, acciones: [['bandera'], ['ir', 'Avispa', { espacio: true }]] },
   'p4-over': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(ltB('vidas', 1), sayB('¡Se terminó!'), stopB())))] }, acciones: [['bandera'], ['ir', 'Avispa']] },
   'p4-todo': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(ltB('vidas', 1), sayB('¡Se terminó!'), stopB()), iff(gtB('puntos', 9), sayB('¡Ganaste!'), stopB())))] }, acciones: [['bandera'], ['ir', 'Moneda', { esquivar: true }]] },
@@ -284,6 +295,8 @@ export const ALTERNATIVAS = {
 
 /* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
 export const NO_GANAN = {
+  'p6-aviso': { sprites: { Escenario: () => [STAGE_START(), hatMsg('siguiente nivel', bdB('arena'))] }, acciones: [['bandera'], ['ir', 'meta']], dice: 'se queda ahí' },
+  'p6-enviar': { acciones: [['bandera'], ['ir', 'meta']], dice: 'falta: si ¿tocando el color verde?' },
   'p5-tecla': { sprites: { Bichito: () => [MOVEW_S(), hatFlag(fe(iff(toO('Avispa'), gotoB(-200, 0))))] }, acciones: [['bandera'], ['ir', 'estrellas']], dice: 'te alcanzó' },
   'p5-meaviso': { acciones: [['bandera'], ['ir', 'Avispa']], dice: 'no vuelve' },
   'p5-vuela': { sprites: { Semilla: () => [hatFlag(showB(), gotoB(0, -110), pdirB(0), fe(mv(15)))] }, acciones: [['bandera'], ['esperar', 80]], dice: 'se queda pegada' },

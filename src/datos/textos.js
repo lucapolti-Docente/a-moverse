@@ -73,6 +73,8 @@ export const MSJ = {
   // niveles
   gotoSuelto: 'El bichito no se puede mover: hay un “ir a x: y:” suelto adentro del “por siempre”, y lo manda al inicio todo el tiempo. Ponelo adentro del “si”.',
   paredNivelNuevo: '¡Quedó adentro de una pared del nivel nuevo! Después de cambiar el fondo, mandalo al inicio: ir a x: −200 y: −150.',
+  gotoLejos: 'Quedó adentro de una pared del nivel nuevo. El “ir a x: −200 y: −150” tiene que ir justo abajo de “cambiar fondo a arena”, adentro del mismo “si”.',
+  fondoFijo: f => `El escenario cambió a “${f}” y se queda ahí. Para avanzar de a uno, elegí “siguiente fondo” en el menú ▾.`,
   nocheVieja: 'Seguís en la noche, de la partida anterior. En el Escenario: “cambiar fondo a pasto” abajo de la banderita.',
 
   // banderita y teclas
