@@ -1,8 +1,8 @@
 # ¡A Moverse!
 
 Puente hacia Scratch para primaria: se arman programas con bloques iguales a los de Scratch 3 (mismos nombres y colores)
-para mover un bichito y armar un juego de a partes: movimiento, choques, enemigos, vidas y puntos, atacar, niveles, animaciones
-y un modo para crear tu propio juego.
+para mover un bichito y armar un juego de a partes: movimiento, choques, enemigos, vidas y puntos, aparecer y avisar,
+semillas y clones, juntar y comparar, niveles, animaciones y un modo para crear tu propio juego.
 
 ## Usarlo
 
@@ -19,7 +19,7 @@ Todo lo que se ve está en `src/datos/`:
 | Las notas para el docente de una parte | el mismo archivo, en `teach` |
 | Una parte nueva | un archivo nuevo en `src/datos/partes/` y una línea en `partes/index.js` |
 | Una palabra o un mensaje del juego | `src/datos/textos.js` |
-| Lo que dice un bloque | `src/datos/bloques.js` (ETIQUETAS) |
+| Lo que dice un bloque | `src/datos/bloques.js` (ETIQUETAS) y su nombre en Scratch en `src/datos/glosario.js` |
 | Personajes, programas ya armados, fondos | `personajes.js`, `programas.js`, `fondos.js` |
 
 Cada nivel tiene un `id` que no se cambia: el avance de los chicos se guarda con él.

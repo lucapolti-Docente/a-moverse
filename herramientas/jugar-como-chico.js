@@ -35,6 +35,16 @@ await foto('gano');
 const gano = await pag.isVisible('#winModal');
 await tocar('#winNext'); await foto('nivel2');
 
+// parte 1, nivel 2 (repetir): envolver "mover 10 pasos" con "repetir", poner 30 y ganar
+await tocar('#program .blk.hat');                         // el cursor va abajo de la banderita
+await tocar('#palette button.blk.co');                    // "repetir" envuelve lo de abajo
+await pag.locator('#program .cblk input.num').first().fill('30');
+await foto('repetir-armado');
+await tocar('#flagBtn'); await pag.waitForTimeout(2500);
+await foto('repetir-gano');
+const ganoRepetir = await pag.isVisible('#winModal');
+await tocar('#winAgain');
+
 // parte 4, crear variable
 await tocar('#home'); await tocar('#backParts');
 await tocar('#pgrid .pcard.p4');
@@ -45,11 +55,11 @@ await pag.fill('#mkName', 'monedas'); await tocar('#mkOk'); await foto('variable
 // parte 3: pestañas de personajes y elegir dirección
 await tocar('#home'); await tocar('#backParts');
 await tocar('#pgrid .pcard.p3');
-await tocar('#lgrid .lbtn >> nth=3');
+await tocar('#lgrid .lbtn >> nth=1');
 await tocar('#program .dirpick'); await foto('elegir-direccion');
 await tocar('.dp-opt >> nth=4'); await foto('direccion-elegida');
 await tocar('#refBtn'); await foto('sin-reglas'); await tocar('#refBtn');
 
 await nav.close();
-console.log(`${paso} capturas en ${carpeta} · ganó el nivel 1: ${gano ? 'sí' : 'NO'} · errores: ${errores.length}`);
+console.log(`${paso} capturas en ${carpeta} · ganó el nivel 1: ${gano ? 'sí' : 'NO'} · ganó repetir: ${ganoRepetir ? 'sí' : 'NO'} · errores: ${errores.length}`);
 errores.forEach(e => console.log('  ' + e));

@@ -225,7 +225,7 @@ button.swatch{cursor:pointer}
 .pcard:not([disabled]):active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .pcard .prog{grid-column:2;height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
 .pcard .prog i{display:block;height:100%;background:var(--ok)}
-.pcard.p1 .pn{color:var(--mo-d)} .pcard.p2 .pn{color:var(--accent)}
+.pcard .pn{color:var(--accent)}
 .pcard[disabled]{cursor:default;box-shadow:none;border-style:dashed;border-color:var(--line);background:transparent}
 .pcard[disabled] .pn,.pcard[disabled] strong{color:var(--muted)}
 .lock{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--muted)}
@@ -257,7 +257,7 @@ button.swatch{cursor:pointer}
 .dir{display:inline-flex;align-items:center;gap:3px;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap;background:#fff;color:var(--mo-d);border:2px solid currentColor}
 .dir.y{color:#B2341F}
 .dir.neg{background:#FFF4D6}
-.program .dir{font-size:11px;padding:1px 6px}
+.program .dir{font-size:12px;padding:1px 6px}
 
 .ibtn.ref{width:auto;padding:0 10px;gap:6px;display:flex;align-items:center;font-weight:700;font-size:14px}
 .ibtn.ref .slash{display:none}
@@ -287,7 +287,7 @@ button.swatch{cursor:pointer}
 .exbox .cblk{min-width:0}
 .exbox .mouth{min-height:22px;margin-left:12px}
 .exbox .cfoot{height:12px}
-@media (max-width:760px){.card{padding:16px}.card.intro p{font-size:15px}.exbox .blk{font-size:11px;min-height:28px}.exbox .key{font-size:11px}}
+@media (max-width:760px){.card{padding:16px}.card.intro p{font-size:15px}.exbox .blk{font-size:12px;min-height:28px}.exbox .key{font-size:12px}}
 
 :root{--op:#59C059;--op-d:#389438}
 .blk.op{background:var(--op);border-color:var(--op-d);border-radius:20px;padding-left:8px;padding-right:8px}
@@ -296,7 +296,7 @@ button.swatch{cursor:pointer}
 .padl{font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--ink)}
 .padmode{position:absolute;top:8px;right:46px;font-size:13px;background:var(--surface)}
 .controls{flex-wrap:nowrap}
-@media (max-width:760px){.padmode{font-size:11px;padding:2px 6px;top:5px;right:34px}.padl{font-size:17px}}
+@media (max-width:760px){.padmode{font-size:12px;padding:2px 6px;top:5px;right:34px}.padl{font-size:17px}}
 .program .blk.op .blk.se{font-size:13px;padding:3px 6px}
 
 .foldbtn{margin-top:3px;border:2px dashed var(--co-d);background:var(--soft);border-radius:8px;padding:6px 10px;font-weight:700;font-size:13px;text-align:left;color:var(--ink)}
@@ -311,14 +311,14 @@ button.swatch{cursor:pointer}
 
 .dirpick{display:inline-flex;align-items:center;gap:4px;border:2px solid rgba(0,0,0,.25);border-radius:999px;background:#fff;padding:2px 8px;font-weight:700;color:var(--ink);cursor:pointer}
 .dirpick span{font-size:16px;line-height:1}
-.dirpick i{font-style:normal;font-size:11px;color:var(--muted)}
+.dirpick i{font-style:normal;font-size:12px;color:var(--muted)}
 .dirpop-wrap{position:fixed;inset:0;z-index:40}
 .dirpop{position:fixed;width:256px;height:256px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink)}
 .dp-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;font-size:12px;font-weight:700;color:var(--muted);line-height:1.2}
 .dp-opt{position:absolute;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;border:2px solid var(--line);background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;line-height:1}
 .dp-opt .g{font-size:18px;font-weight:700}
-.dp-opt .n{font-size:11px;font-weight:700;color:var(--muted)}
-.dp-opt .w{font-size:9.5px;font-weight:700;color:var(--mo-d);white-space:nowrap;margin-top:1px}
+.dp-opt .n{font-size:12px;font-weight:700;color:var(--muted)}
+.dp-opt .w{font-size:11px;font-weight:700;color:var(--mo-d);white-space:nowrap;margin-top:1px}
 .dp-opt.card{width:62px;height:62px;border-color:var(--mo-d);background:#E6F0FF}
 .dp-opt.card .g{color:var(--mo-d);font-size:22px}
 .dp-opt:hover{border-color:var(--ink)}
@@ -363,5 +363,5 @@ button.swatch{cursor:pointer}
 .withspace .run{gap:6px}
 
 .numwrap{display:inline-flex;align-items:center;gap:4px}
-.tovar{border:2px dashed var(--va-d);background:#FFF3E6;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap}
+.tovar{border:2px dashed var(--va-d);background:#FFF3E6;border-radius:999px;padding:4px 10px;min-height:30px;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
 .tovar:hover{background:#FFE2C2}

@@ -350,7 +350,9 @@ export function markerY(c, g, Y, col){ c.save(); c.fillStyle = col; c.beginPath(
 
 export function drawMeasure(c){
   const s = S.sprites[0];
-  const target = S.stars.filter(st => !st.got && !st.opt && Math.abs(st.y - s.y) < 1)[0];
+  // en los niveles de "repetir" se mide hasta la estrella más lejana: hay que pasar por todas
+  const enFila = S.stars.filter(st => !st.got && !st.opt && Math.abs(st.y - s.y) < 1);
+  const target = S.L.pasoAPaso ? enFila.reduce((m, st) => !m || Math.abs(st.x - s.x) > Math.abs(m.x - s.x) ? st : m, null) : enFila[0];
   const g = rulerGeom(false);
   drawRulerX(c, g, target ? {a:s.x, b:target.x} : null);
   dotted(c, SX(s.x), SY(s.y) + 18*K, SX(s.x), g.yB, '#2B66BF'); markerX(c, g, SX(s.x), '#2B66BF');
