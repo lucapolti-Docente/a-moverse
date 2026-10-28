@@ -25,17 +25,7 @@ export const SANDBOX = {id:'p8-crea', name:'Creá tu juego', short:'Creá tu jue
 
 export const LEVELS10 = [SANDBOX];
 
-/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
-   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
-     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
-     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
-     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
-     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
-     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
-     seguirClones         cuenta clones y semillas en vuelo
-     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
-     animaciones          sigue la cara de dolor del bichito
-     portada              qué animación se ve en la portada de la parte */
+/* Ficha de la parte: ver el comentario de rasgos en 1-movimiento.js. */
 export const PARTE = {rasgos:{avisarSiAfuera:true, portada:'crear'}, name:'Creá tu juego', desc:'Todos los bloques, todos los personajes', levels:LEVELS10, free:SANDBOX,
    tag:'Un espacio libre para armar tu propio juego.',
    teach:[

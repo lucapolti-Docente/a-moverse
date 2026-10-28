@@ -44,8 +44,8 @@ export const LEVELS3 = [
      if (!starsDone()) return false;
      if (!enemyRule('Avispa', b => b.type === 'goto' || b.type === 'stop')) return enemyRuleOnce('Avispa')
        ? 'Juntaste todo, pero tu “si ¿tocando Avispa?” no está adentro de un “por siempre”: pregunta una sola vez, al principio, y después nunca más. Ponelo adentro de un “por siempre”.'
-       : 'Juntaste todo, pero si te pica la avispa no pasa nada. En el bichito: si ¿tocando Avispa? → ir al inicio.';
-     if (R.enemyIgnored) return 'En algún momento te picó y no pasó nada. Arreglalo y apretá la banderita.';
+       : 'Juntaste todo, pero si te toca la avispa no pasa nada. En el bichito: si ¿tocando Avispa? → ir al inicio.';
+     if (R.enemyIgnored) return 'En algún momento te tocó y no pasó nada. Arreglalo y apretá la banderita.';
      return true;
    },
    learn:'“¿Tocando Avispa?” pregunta por un personaje, no por un color. El bichito tiene sus programas y la avispa los suyos.'},
@@ -111,7 +111,7 @@ export const LEVELS3 = [
      if (!R.stopOnGoal) return false;
      const any = b => b.type === 'stop' || b.type === 'goto';
      if (!enemyRule('Avispa', any) || !enemyRule('Avispa 2', any)) return 'Llegaste, pero falta que el bichito pierda si lo toca alguna de las dos avispas.';
-     if (R.enemyIgnored) return 'En el camino te picaron y no pasó nada. Arreglalo y apretá la banderita.';
+     if (R.enemyIgnored) return 'En el camino te tocaron y no pasó nada. Arreglalo y apretá la banderita.';
      return true;
    },
    learn:'Un juego con enemigos: unos patrullan solos, otros te persiguen, y el jugador pregunta todo el tiempo si lo tocaron.'},
@@ -146,17 +146,7 @@ export const FREE3 = {id:'libre3', name:'Modo libre', short:'Libre', mode:'free'
   palette:['flag','forever','if','keyp','toucho','or','cx','cy','move','bounce','pointdir','pointto','goto','say','wait','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[],
   sprites:[BUG(-190,-140, () => [MOVE_S(), LOSE_S(['Avispa','Avispa 2'])]), WASP('Avispa', -150, 60, () => [PATROL(4)]), WASP('Avispa 2', 190, 140, () => [hatFlag(fe())], 90, '#C2410C')]};
 
-/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
-   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
-     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
-     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
-     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
-     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
-     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
-     seguirClones         cuenta clones y semillas en vuelo
-     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
-     animaciones          sigue la cara de dolor del bichito
-     portada              qué animación se ve en la portada de la parte */
+/* Ficha de la parte: ver el comentario de rasgos en 1-movimiento.js. */
 export const PARTE = {rasgos:{alCargar:'pestanas', avisarSiAfuera:true, avisarDetuvoAntes:true, avisoAtrapo:true, portada:'enemigos'}, name:'Enemigos', desc:'Personajes que se mueven solos y te persiguen', levels:LEVELS3, free:FREE3,
    tag:'Aparece otro personaje, con sus propios programas.',
    teach:[

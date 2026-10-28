@@ -149,17 +149,7 @@ export const FREE2 = {id:'libre2', name:'Modo libre', short:'Libre', mode:'free'
   palette:['flag','key','move','cx','cy','goto','say','repeat','forever','if','stop','keyp','touchc','or'], colors:['wall','lava','goal','ice','mud'], resetOnFlag:true,
   start:{x:-200,y:-150}, stars:[], map:MAP_L6, program:() => [MOVEW_S()]};
 
-/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
-   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
-     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
-     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
-     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
-     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
-     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
-     seguirClones         cuenta clones y semillas en vuelo
-     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
-     animaciones          sigue la cara de dolor del bichito
-     portada              qué animación se ve en la portada de la parte */
+/* Ficha de la parte: ver el comentario de rasgos en 1-movimiento.js. */
 export const PARTE = {rasgos:{alCargar:'movimientoArmado', avisarSiAfuera:true, avisarPorSiempreVacio:true, avisarDetuvoAntes:true, portada:'choques'}, name:'Choques y metas', desc:'Tocar colores: meta, lava y paredes', levels:LEVELS2, free:FREE2,
    tag:'El movimiento ya está. Ahora el juego pregunta qué estás tocando.',
    teach:[

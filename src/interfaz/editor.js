@@ -53,7 +53,7 @@ export function paletteBlock(t){
   else if (t === 'goto'){ b = el('button','blk mo'); b.append(txt(ETIQUETAS.goto[0]), el('span','val', String(S.L.start.x)), txt(ETIQUETAS.goto[1]), el('span','val', String(S.L.start.y))); }
   else if (t === 'say'){ b = el('button','blk ap'); b.append(txt(ETIQUETAS.say[0]), el('span','val','¡Llegué!')); }
   else if (t === 'forever'){ b = el('button','blk co'); b.append(txt(ETIQUETAS.forever[0])); }
-  else if (t === 'repeat'){ b = el('button','blk co'); b.append(txt(ETIQUETAS.repeat[0]), el('span','val','5'), txt(ETIQUETAS.repeat[1])); }
+  else if (t === 'repeat'){ b = el('button','blk co'); b.append(txt(ETIQUETAS.repeat[0]), el('span','val','5')); }
   else if (t === 'nextcos'){ b = el('button','blk ap'); b.append(txt(ETIQUETAS.nextcos[0])); }
   else if (t === 'setcos'){ b = el('button','blk ap'); b.append(txt(ETIQUETAS.setcos[0]), el('span','val', (S.L.defaultCos || 'feliz') + ' ▾')); }
   else if (t === 'if'){ b = el('button','blk co'); b.append(txt(ETIQUETAS['if'][0]), el('span','condslot'), txt(ETIQUETAS['if'][1])); }

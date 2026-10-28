@@ -61,14 +61,14 @@ export const LEVELS9 = [
    intro:{title:'Repetir',
      text:'“Repetir 5 veces” hace lo de adentro 5 veces y sigue. Con esconder y mostrar, el bichito parpadea: así muestran los juegos que te lastimaron. Pero entre esconder y mostrar tiene que haber esperas, si no, pasa tan rápido que no se ve.',
      example:() => [repB(5, hideB(), waitB(0.1), showB(), waitB(0.1))], note:'Se esconde, espera, se muestra, espera… cinco veces.'},
-   goal:'Cuando te pica, el bichito tiene que parpadear. El “repetir 5 veces” ya está, pero no se ve: falta una espera. Agregá “esperar 0.1 segundos” después de “mostrar”. Dejate picar.',
+   goal:'Cuando te toca, el bichito tiene que parpadear. El “repetir 5 veces” ya está, pero no se ve: falta una espera. Agregá “esperar 0.1 segundos” después de “mostrar”. Dejate tocar.',
    palette:['wait'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], selInIf:true, vars:{vidas:3}, varNames:['vidas'], noGhost:true,
    sprites:[BUGC(-190, -140, () => [MOVE_S(), WALK_S(), hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), repB(5, hideB(), waitB(0.1), showB()), setCos('paso 1'))))]),
      WASP('Avispa', 60, -60, () => [PATROL(3)])],
    check:R => {
      if ((R.bugBlinks || 0) < 5) return false;
      const ok = scanF(progOf('Bichito'), b => b.type === 'repeat' && b.body.filter(x => x.type === 'wait').length >= 2);
-     if (!ok) return 'Te picó, pero el parpadeo no se ve: falta “esperar 0.1 segundos” después de “mostrar”, adentro del “repetir”.';
+     if (!ok) return 'Te tocó, pero el parpadeo no se ve: falta “esperar 0.1 segundos” después de “mostrar”, adentro del “repetir”.';
      return true;
    },
    learn:'“Repetir” hace algo varias veces. Con esperas entre esconder y mostrar, el parpadeo se ve.'},
@@ -93,8 +93,8 @@ export const LEVELS9 = [
    palette:['or','keyp'], resetOnFlag:true, start:{x:0,y:-140}, stars:[], vars:{vidas:3}, varNames:['vidas'], noGhost:true, showCostumes:false,
    map:[R_(-236,20,-160,96,'goal')],
    sprites:[BUGC(0, -140, () => [MOVE_S(), Object.assign(hatFlag(fe(iff(kp('right'), ...WALK_BODY()))), {open:true}),
-       Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), repB(5, hideB(), waitB(0.1), showB(), waitB(0.1)), setCos('paso 1')))), {fold:'si me pica: dolor, −1 vida y parpadeo'}),
-       Object.assign(hatFlag(fe(iff(tc('goal'), setCos('feliz'), sayB('¡Llegué!'), stopB()), iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()))), {fold:'meta: festejo; sin vidas: perdiste'})]),
+       Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), repB(5, hideB(), waitB(0.1), showB(), waitB(0.1)), setCos('paso 1')))), {fold:'si me toca: dolor, −1 vida y parpadeo'}),
+       Object.assign(hatFlag(fe(iff(tc('goal'), setCos('feliz'), sayB('¡Llegué!'), stopB()), iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()))), {fold:'meta: festejo; sin vidas: se termina'})]),
      WASP('Avispa', -60, 20, () => [PATROL(4)])],
    check:R => {
      if (!R.stopOnGoal) return false;
@@ -108,17 +108,7 @@ export const FREE9 = {id:'libre7', name:'Modo libre', short:'Libre', mode:'free'
   goal:'Animá al bichito como quieras.', palette:['flag','key','forever','repeat','if','keyp','toucho','or','nextcos','setcos','hide','show','say','wait','move','cx','cy'], resetOnFlag:true, start:{x:0,y:-60}, stars:[], showCostumes:true, noGhost:true,
   sprites:[BUGC(0, -60, () => [MOVE_S(), WALK_S()]), WASP('Avispa', 60, 60, () => [PATROL(3)])]};
 
-/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
-   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
-     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
-     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
-     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
-     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
-     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
-     seguirClones         cuenta clones y semillas en vuelo
-     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
-     animaciones          sigue la cara de dolor del bichito
-     portada              qué animación se ve en la portada de la parte */
+/* Ficha de la parte: ver el comentario de rasgos en 1-movimiento.js. */
 export const PARTE = {rasgos:{avisarSiAfuera:true, animaciones:true, portada:'animaciones'}, name:'Animaciones', desc:'Disfraces, caminar, daño y festejo', levels:LEVELS9, free:FREE9,
    tag:'Que el bichito camine, se duela y festeje.',
    teach:[

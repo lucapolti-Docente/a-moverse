@@ -47,7 +47,7 @@ export const MSJ = {
 
   // enemigos
   atrapo: '¡Te atrapó la avispa! Apretá la banderita y probá otra vez.',
-  picoSinPasar: '¡Te picó la avispa y no pasó nada! En el bichito: si ¿tocando Avispa? → que pase algo.',
+  picoSinPasar: '¡Te tocó la avispa y no pasó nada! En el bichito: si ¿tocando Avispa? → que pase algo.',
   avispaSinProgramas: 'La avispa no tiene programas todavía. Tocá su pestaña, arriba del programa.',
 
   // variables
@@ -157,6 +157,7 @@ export const UI = {
   ariaParte: (n, nombre) => `Parte ${n}: ${nombre}`,
   proximamente: 'Próximamente',
   nivelesYCierre: n => `${n} niveles y un cierre`,
+  niveles: n => n === 1 ? '1 nivel' : `${n} niveles`,
   ariaNivel: i => `Nivel ${i}: `,
   hecho: ' (hecho)',
   // barra de arriba

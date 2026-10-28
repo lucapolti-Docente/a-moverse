@@ -75,7 +75,7 @@ export const LEVELS8 = [
      example:() => [hatBd('arena', showB()), hatBd('noche', hideB())]},
    goal:'La avispa tiene que aparecer solo en la arena. En la avispa: “cuando el fondo cambie a arena → mostrar” y “cuando el fondo cambie a noche → esconder”. Pasá los 3 fondos.',
    palette:['whenbd','show','hide'], selSprite:1, startBackdrop:'pasto', msgs:['siguiente nivel'],
-   sprites:[BUGW([LAVA_S(), NEXT_BUG(), BACK_BUG(), Object.assign(hatFlag(fe(iff(toO('Avispa'), gotoB(-200, -150)))), {fold:'si me pica la avispa, vuelvo al inicio'})]),
+   sprites:[BUGW([LAVA_S(), NEXT_BUG(), BACK_BUG(), Object.assign(hatFlag(fe(iff(toO('Avispa'), gotoB(-200, -150)))), {fold:'si me toca la avispa, vuelvo al inicio'})]),
      WASPH('Avispa', -40, 140, () => [PATROL(4), Object.assign(hatFlag(hideB()), {fold:'al empezar: esconderme'})], true),
      STAGE(() => [STAGE_START(), Object.assign(hatMsg('siguiente nivel', bdB('siguiente fondo')), {fold:'al recibir siguiente nivel: siguiente fondo'})])],
    check:R => {
@@ -91,7 +91,7 @@ export const LEVELS8 = [
      example:() => [hatFlag(fe(mv(V('velocidad')), bounceB()))], note:'En Scratch se arrastra la bolita naranja de la variable adentro del hueco blanco.'},
    goal:'La velocidad sube en cada nivel (mirá el cartel), pero la avispa vuela siempre igual. En la avispa, tocá “＋ variable” en “mover 3 pasos” y elegí “velocidad”. Pasá los 3 fondos.',
    palette:[], selSprite:1, startBackdrop:'pasto', msgs:['siguiente nivel'], vars:{velocidad:2}, varNames:['velocidad'],
-   sprites:[BUGW([LAVA_S(), NEXT_BUG(), BACK_BUG(), Object.assign(hatFlag(fe(iff(toO('Avispa'), gotoB(-200, -150)))), {fold:'si me pica la avispa, vuelvo al inicio'})]),
+   sprites:[BUGW([LAVA_S(), NEXT_BUG(), BACK_BUG(), Object.assign(hatFlag(fe(iff(toO('Avispa'), gotoB(-200, -150)))), {fold:'si me toca la avispa, vuelvo al inicio'})]),
      WASPH('Avispa', -40, 140, () => [hatFlag(showB(), fe(mv(3), bounceB()))]),
      STAGE(() => [STAGE_START([setV('velocidad', 2)]), Object.assign(hatMsg('siguiente nivel', bdB('siguiente fondo'), chV('velocidad', 3)), {fold:'al recibir siguiente nivel: siguiente fondo y +3 de velocidad'})])],
    check:R => {
@@ -107,7 +107,7 @@ export const LEVELS8 = [
    goal:'Falta la lava. En el programa vacío del bichito: si ¿tocando el color rojo? → sumar a vidas −1 → ir a x: −200 y: −150. ¡Y ganá los 3 niveles!',
    palette:['if','touchc','changevar','goto'], colors:['lava'], startBackdrop:'pasto', msgs:['siguiente nivel'], vars:{nivel:1, vidas:3, velocidad:2}, varNames:['vidas','nivel','velocidad'],
    sprites:[BUGW([NEXT_BUG(), BACK_BUG(),
-       Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-200, -150), waitB(1)))), {fold:'si me pica la avispa: −1 vida y al inicio'}),
+       Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-200, -150), waitB(1)))), {fold:'si me toca la avispa: −1 vida y al inicio'}),
        Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB()))), {fold:'reglas: perder con 0 vidas, ganar con nivel 4'}),
        hatFlag(fe())]),
      WASPH('Avispa', -40, 140, () => [Object.assign(hatFlag(showB(), fe(mv(V('velocidad')), bounceB())), {fold:'vuelo con la velocidad del nivel'})]),
@@ -125,7 +125,7 @@ export const LEVELS8 = [
    goal:'¡Tu juego de 3 niveles! Pasá el pasto, la arena y la noche sin quedarte sin vidas. Después abrí los programas y hacelo más fácil o más difícil.',
    palette:[], startBackdrop:'pasto', msgs:['siguiente nivel'], vars:{nivel:1, vidas:3, velocidad:2}, varNames:['vidas','nivel','velocidad'],
    sprites:[BUGW([NEXT_BUG(), BACK_BUG(),
-       Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-200, -150), waitB(1)))), {fold:'si me pica la avispa: −1 vida y al inicio'}),
+       Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-200, -150), waitB(1)))), {fold:'si me toca la avispa: −1 vida y al inicio'}),
        Object.assign(hatFlag(fe(iff(tc('lava'), chV('vidas', -1), gotoB(-200, -150), waitB(0.5)))), {fold:'si toco la lava: −1 vida y al inicio'}),
        Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB()))), {fold:'reglas: perder con 0 vidas, ganar con nivel 4'})]),
      WASPH('Avispa', -40, 140, () => [Object.assign(hatFlag(showB(), fe(mv(V('velocidad')), bounceB())), {fold:'vuelo con la velocidad del nivel'})]),
@@ -139,17 +139,7 @@ export const FREE8 = Object.assign({}, P6, {id:'libre6', name:'Modo libre', shor
   palette:['flag','key','whenmsg','whenbd','broadcast','switchbd','forever','if','touchc','toucho','keyp','and','or','eq','gt','lt','move','bounce','pointdir','pointto','goto','gorandom','hide','show','say','wait','stop','setvar','changevar'],
   sprites:[BUGW([NEXT_BUG(), BACK_BUG()]), WASPH('Avispa', -40, 140, () => [PATROL(3)]), STAGE(() => [STAGE_START([setV('nivel', 1)]), hatMsg('siguiente nivel', bdB('siguiente fondo'), chV('nivel', 1))])]});
 
-/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
-   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
-     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
-     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
-     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
-     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
-     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
-     seguirClones         cuenta clones y semillas en vuelo
-     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
-     animaciones          sigue la cara de dolor del bichito
-     portada              qué animación se ve en la portada de la parte */
+/* Ficha de la parte: ver el comentario de rasgos en 1-movimiento.js. */
 export const PARTE = {rasgos:{avisarSiAfuera:true, finPorNivel:true, mapaCallado:true, portada:'niveles'}, name:'Niveles', desc:'Fondos, escenario y niveles', levels:LEVELS8, free:FREE8,
    tag:'El escenario cambia de fondo y cada fondo es un nivel.',
    teach:[

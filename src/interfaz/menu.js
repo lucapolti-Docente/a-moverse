@@ -38,7 +38,7 @@ export function showPart(p){
   $('#partTitle').innerHTML = '<small>' + UI.parte(p.n) + '</small>'; $('#partTitle').append(p.name);
   $('#partTag').textContent = p.tag;
   const n = p.levels.filter(l => l.mode !== 'cierre').length;
-  $('#stepsSub').textContent = UI.nivelesYCierre(n);
+  $('#stepsSub').textContent = p.levels.some(l => l.mode === 'cierre') ? UI.nivelesYCierre(n) : UI.niveles(n);
   const g = $('#lgrid'); g.innerHTML = '';
   p.levels.forEach((lv, i) => {
     const b = el('button', 'lbtn' + (S.done.has(lv.id) ? ' done' : ''));

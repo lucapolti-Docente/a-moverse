@@ -55,14 +55,14 @@ export const LEVELS4 = [
   {id:'p4-vidas', name:'Vidas', short:'Vidas',
    intro:{title:'Restar también es sumar',
      text:'“Sumar a vidas −1” le resta uno. Un número negativo en “sumar” es restar, igual que con x e y.',
-     example:() => [hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-190, -140))))], note:'Empieza con 3 vidas. Si la avispa te pica, pierde una y vuelve al inicio.'},
+     example:() => [hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-190, -140))))], note:'Empieza con 3 vidas. Si la avispa te toca, pierde una y vuelve al inicio.'},
    goal:'En el bichito: si ¿tocando Avispa? → sumar a vidas −1 → ir al inicio. Ya empieza con 3 vidas. Juntá 5 monedas.',
    palette:['if','toucho','changevar','goto'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], enemyMatters:true, vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'],
    sprites:[BUG(-190,-140, () => [MOVE_S(), hatFlag(setV('vidas', 3), fe())]), WASP('Avispa', -150, 10, () => [PATROL(5)]), COIN(60, 90, () => [COIN_S(true, true)])],
    check:R => {
      if (vars().puntos < 5) return false;
-     if (!hasVarChange('Bichito', 'Avispa', 'vidas', -1)) return 'Juntaste 5, pero si te pica la avispa no perdés vidas. Agregá “sumar a vidas −1” adentro del “si ¿tocando Avispa?”.';
-     if (R.enemyIgnored) return 'En algún momento te picó y no pasó nada. Arreglalo y apretá la banderita.';
+     if (!hasVarChange('Bichito', 'Avispa', 'vidas', -1)) return 'Juntaste 5, pero si te toca la avispa no perdés vidas. Agregá “sumar a vidas −1” adentro del “si ¿tocando Avispa?”.';
+     if (R.enemyIgnored) return 'En algún momento te tocó y no pasó nada. Arreglalo y apretá la banderita.';
      return true;
    },
    learn:'“Sumar a vidas −1” resta una vida. Un número negativo en “sumar” es restar.'},
@@ -70,7 +70,7 @@ export const LEVELS4 = [
    intro:{title:'Un ratito de ventaja',
      text:'El “por siempre” pregunta 30 veces por segundo. Si la avispa te sigue tocando, en un segundo te resta 30 vidas. Los juegos lo arreglan así: después de perder una vida, esperan un ratito antes de volver a preguntar.',
      example:() => [hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), waitB(1))))], note:'Pierde una vida y espera un segundo: así no pierde todas de golpe.'},
-   goal:'Ahora la avispa te persigue y la regla no te manda al inicio. Mirá qué pasa con las vidas cuando te pica. Arreglalo para perder de a una. Juntá 5 monedas sin quedarte sin vidas.',
+   goal:'Ahora la avispa te persigue y la regla no te manda al inicio. Mirá qué pasa con las vidas cuando te toca. Arreglalo para perder de a una. Juntá 5 monedas sin quedarte sin vidas.',
    palette:['wait'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], selInIf:true, vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'],
    sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({open:true})]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(1), fe(ptoB('Bichito'), mv(3)))]), COIN(60, -60, () => [COIN_S(true, true)])],
    check:R => {
@@ -93,12 +93,12 @@ export const LEVELS4 = [
      return true;
    },
    learn:'Adentro de un “si”, el “=” no es una cuenta: es una pregunta que se contesta sí o no. Con 5 puntos la respuesta es sí.',
-   extra:'Con la misma pregunta se arma el final de un juego: ¿vidas = 0? Si sí, perdiste.'},
+   extra:'Con la misma pregunta se arma el final de un juego: ¿vidas = 0? Si sí, se termina.'},
   {id:'p4-over', name:'Game over', short:'Game over',
    intro:{title:'¿Vidas igual a 0?',
      text:'Con el “=” también se arma el final del juego: “¿vidas = 0?” se contesta sí o no. Si es sí, el juego termina.',
      example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB())))], note:'Si las vidas llegan a 0: dice “¡Se terminó!” y se termina todo.'},
-   goal:'Con 0 vidas el juego sigue como si nada. Programá el final en el programa vacío del bichito: si vidas = 0 → decir “¡Se terminó!” → detener todos. Probalo: dejate picar 3 veces.',
+   goal:'Con 0 vidas el juego sigue como si nada. Programá el final en el programa vacío del bichito: si vidas = 0 → decir “¡Se terminó!” → detener todos. Probalo: dejate tocar 3 veces.',
    palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'], showEq:true,
    sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe())]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(1), fe(ptoB('Bichito'), mv(4)))]), COIN(60, -60, () => [COIN_S(true, true)])],
    check:R => R.gameOver && hasEqRule('vidas', 0),
@@ -193,17 +193,7 @@ export const FREE4 = {id:'libre4', name:'Modo libre', short:'Libre', mode:'free'
   sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), OVER_S()]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(2), fe(ptoB('Bichito'), mv(3)))]),
     COIN(60, -60, () => [COIN_S(true, true)]), HEART(-60, 110, () => [hatFlag(fe())])]};
 
-/* Ficha de la parte. El número lo pone la lista (partes/index.js) según el orden.
-   rasgos: cómo se comporta el juego en esta parte (ver motor/partida.js):
-     alCargar             mensaje al entrar a un nivel (clave de AL_CARGAR en textos.js)
-     avisarSiAfuera       avisa si un “si” quedó afuera del “por siempre”
-     avisarPorSiempreVacio, avisarDetuvoAntes, avisoAtrapo   otros avisos al chico
-     finPorVariables      al detenerse mira vidas = 0 o puntos ≥ 10
-     puntosAlDetener      al detenerse guarda los puntos (para el chequeo)
-     seguirClones         cuenta clones y semillas en vuelo
-     finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
-     animaciones          sigue la cara de dolor del bichito
-     portada              qué animación se ve en la portada de la parte */
+/* Ficha de la parte: ver el comentario de rasgos en 1-movimiento.js. */
 export const PARTE = {rasgos:{avisarSiAfuera:true, finPorVariables:true, portada:'variables'}, name:'Vidas y puntos', desc:'Objetos, variables, ganar y perder', levels:LEVELS4, free:FREE4,
    tag:'Monedas, corazones y una cajita que cuenta.',
    teach:[

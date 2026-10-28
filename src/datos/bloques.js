@@ -79,7 +79,7 @@ export const ETIQUETAS = {
   switchbd: ['cambiar fondo a'],
   broadcast: ['enviar'],
   forever: ['por siempre'],
-  repeat: ['repetir', 'veces'],
+  repeat: ['repetir'],
   'if': ['si', 'entonces'],
   wait: ['esperar', 'segundos'],
   stop: ['detener', 'todos ▾'],

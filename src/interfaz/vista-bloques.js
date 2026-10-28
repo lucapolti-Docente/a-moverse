@@ -278,7 +278,7 @@ export function stmtEl(b, owner, i, ro){
   const c = el('div','cblk');
   const head = el('div','blk co');
   if (b.type === 'forever') head.append(txt(ETIQUETAS.forever[0]));
-  else if (b.type === 'repeat') head.append(txt(ETIQUETAS.repeat[0]), numIn(b, ro), txt(ETIQUETAS.repeat[1]));
+  else if (b.type === 'repeat') head.append(txt(ETIQUETAS.repeat[0]), numIn(b, ro));
   else head.append(txt(ETIQUETAS['if'][0]), condEl(b, ro), txt(ETIQUETAS['if'][1]));
   const d = delBtn(b.id, ro); if (d) head.append(d);
   head.addEventListener('click', after);
