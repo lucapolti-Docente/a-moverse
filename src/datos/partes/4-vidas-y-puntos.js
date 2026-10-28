@@ -2,13 +2,14 @@ import { BUG, COIN, HEART, WASP } from '../personajes.js';
 import { COIN_S, HEART_S, LIFE_S, MOVE_S, OVER_S, PATROL, WIN_S } from '../programas.js';
 import { chV, eqB, fe, gotoB, hatFlag, iff, mv, ptoB, rndB, sayB, setV, stopB, toO, waitB } from '../../motor/bloques.js';
 import { condTargets, corrida, creadas, hasEqRule, hasEqSay, hasVarChange, progOf, ruleIn, scan, scanF, vars } from '../../motor/reglas.js';
+import { walk } from '../../motor/recorrer.js';
 
 export const LEVELS4 = [
-  {id:'p4-obj', name:'Las monedas también son personajes', short:'Objetos',
+  {id:'p4-obj', name:'La moneda también es un objeto', short:'Objetos',
    intro:{title:'Objetos que no se mueven solos',
-     text:'En Scratch, todo lo que está en el escenario es un “objeto”: el bichito, la avispa… y también una moneda o un corazón. No hace falta que caminen: igual tienen sus propios programas.',
+     text:'En Scratch, todo lo que está en el escenario es un “objeto”: el bichito, la avispa… y también una moneda o un corazón. No hace falta que caminen: igual tienen sus propios programas. “Ir a posición aleatoria” (Movimiento) lo manda a un lugar cualquiera, al azar.',
      example:() => [hatFlag(fe(iff(toO('Bichito'), rndB())))], note:'Este programa va en la moneda: si la toca el Bichito, salta a otro lugar.'},
-   goal:'La moneda es un objeto, como un personaje que no camina. Tocá su pestaña y programala: si ¿tocando Bichito? → ir a posición aleatoria. Agarrala 3 veces.',
+   goal:'Tocá la pestaña de la moneda y programala: si ¿tocando Bichito? → ir a posición aleatoria. Agarrala 3 veces.',
    palette:['if','toucho','gorandom'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], selSprite:1,
    sprites:[BUG(-190,-140, () => [MOVE_S()]), COIN(60, 40, () => [hatFlag(fe())])],
    check:R => (R.coinJumps || 0) >= 3,
@@ -32,6 +33,8 @@ export const LEVELS4 = [
    sprites:[BUG(-190,-140, () => [MOVE_S()]), COIN(60, 40, () => [COIN_S(false)])],
    check:R => {
      const mine = creadas() || [];
+     if (mine.length && (corrida().coinJumps || 0) >= 2 && !mine.some(n => scan(progOf('Moneda'), b => b.type === 'changevar' && b.v === n))) return 'Creaste “' + mine[0] + '”, pero la moneda no la suma. En la moneda: sumar a ' + mine[0] + ' 1, adentro del “si”.';
+     if (!mine.length && (corrida().coinJumps || 0) >= 3) return 'Todavía no creaste tu variable. En Variables tocá “Crear una variable”.';
      const v = mine.find(n => (vars()[n] || 0) >= 5 && scan(progOf('Moneda'), b => b.type === 'changevar' && b.v === n));
      return !!v;
    },
@@ -45,7 +48,7 @@ export const LEVELS4 = [
    sprites:[BUG(-190,-140, () => [MOVE_S()]), COIN(60, 40, () => [COIN_S(true)])],
    check:R => {
      if (vars().puntos < 5) return false;
-     if (!R.startedZero) return 'Tenés ' + vars().puntos + ' puntos, pero no empezaste de 0: venían de antes. Poné “dar a puntos el valor 0” arriba del “por siempre” de la moneda.';
+     if (!R.startedZero) return 'Tenés ' + vars().puntos + ' puntos, pero no empezaste de 0: venían de antes. Poné “dar a puntos el valor 0” abajo de la banderita, arriba del “por siempre” de la moneda.';
      return true;
    },
    learn:'Las variables se acuerdan del número. Por eso al empezar se ponen en 0 con “dar a … el valor”.'},
@@ -63,19 +66,6 @@ export const LEVELS4 = [
      return true;
    },
    learn:'“Sumar a vidas −1” resta una vida. Un número negativo en “sumar” es restar.'},
-  {id:'p4-corazon', name:'Agarrá vidas', short:'Corazones',
-   intro:{title:'Un objeto que da vidas',
-     text:'El corazón es otro objeto, como la moneda. Tiene su propio programa: si lo toca el bichito, suma una vida y salta a otro lugar.',
-     example:() => [HEART_S()]},
-   goal:'Tocá la pestaña del corazón y programalo: si ¿tocando Bichito? → sumar a vidas 1 → ir a posición aleatoria. Llegá a 6 vidas.',
-   palette:['if','toucho','changevar','gorandom'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], selSprite:2, vars:{vidas:3}, varNames:['vidas'],
-   sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({goto:true, wait:false})]), WASP('Avispa', -150, -30, () => [PATROL(4)]), HEART(-60, 110, () => [hatFlag(fe())])],
-   check:R => {
-     if (vars().vidas < 6) return false;
-     if (!hasVarChange('Corazón', 'Bichito', 'vidas', 1)) return 'Llegaste a 6, pero falta que el corazón sume la vida.';
-     return true;
-   },
-   learn:'Tocar un objeto puede sumar o restar: la moneda suma puntos, el corazón suma vidas, la avispa resta vidas.'},
   {id:'p4-golpe', name:'¡Perdí todas de golpe!', short:'De golpe',
    intro:{title:'Un ratito de ventaja',
      text:'El “por siempre” pregunta 30 veces por segundo. Si la avispa te sigue tocando, en un segundo te resta 30 vidas. Los juegos lo arreglan así: después de perder una vida, esperan un ratito antes de volver a preguntar.',
@@ -92,8 +82,8 @@ export const LEVELS4 = [
    learn:'Después de perder una vida, “esperar” da un ratito de ventaja. Así no se pierden todas juntas.'},
   {id:'p4-igual', name:'¿Es igual?', short:'¿Es igual?',
    intro:{title:'El “=” como pregunta',
-     text:'En matemática, “2 + 3 = 5” es una cuenta y el 5 es el resultado. Acá adentro del “si”, el “=” es una pregunta: ¿puntos es igual a 5? Se contesta con sí o con no. Mientras tengas 0, 1, 2, 3 o 4 puntos, la respuesta es NO. Cuando tenés 5, es SÍ.',
-     example:() => [hatFlag(fe(iff(eqB('puntos', 5), sayB('¡Tengo 5!'))))], note:'El “por siempre” pregunta todo el tiempo: ¿puntos = 5? No… no… no… ¡sí! Y ahí dice “¡Tengo 5!”.'},
+     text:'En matemática, “2 + 3 = 5” es una cuenta y el 5 es el resultado. Acá adentro del “si”, el “=” es una pregunta: ¿puntos es igual a 5? Se contesta con sí o con no. Mientras tengas 0, 1, 2, 3 o 4 puntos, la respuesta es NO. Cuando tenés 5, es SÍ. El “=” es un bloque verde de Operadores.',
+     example:() => [hatFlag(fe(iff(eqB('puntos', 5), sayB('¡Tengo 5!'))))], note:'El “por siempre” pregunta todo el tiempo: ¿puntos = 5? No… no… no… ¡sí! Y ahí dice “¡Tengo 5!”. En Scratch, el nombre de la variable es una bolita naranja que se arrastra al hueco de la izquierda.'},
    goal:'Adentro del “si”, el “=” es una pregunta: ¿puntos es igual a 5? Hacé que el bichito diga “¡Tengo 5!” justo cuando tenga 5 puntos. Mirá el cartel de la pregunta en el escenario: contesta SÍ o NO.',
    palette:['if','eq','say'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0}, varNames:['puntos'], showEq:true,
    sprites:[BUG(-190,-140, () => [MOVE_S(), hatFlag(fe())]), COIN(60, -60, () => [Object.assign(COIN_S(true, true), {fold:'si me toca el bichito, suma un punto y salto'})])],
@@ -106,25 +96,16 @@ export const LEVELS4 = [
    extra:'Con la misma pregunta se arma el final de un juego: ¿vidas = 0? Si sí, perdiste.'},
   {id:'p4-over', name:'Game over', short:'Game over',
    intro:{title:'¿Vidas igual a 0?',
-     text:'“=” es un bloque verde de Operadores: pregunta si dos números son iguales. “¿vidas = 0?” se contesta sí o no, y se pone en el hueco de un “si”, como las preguntas celestes.',
+     text:'Con el “=” también se arma el final del juego: “¿vidas = 0?” se contesta sí o no. Si es sí, el juego termina.',
      example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB())))], note:'Si las vidas llegan a 0: dice “¡Se terminó!” y se termina todo.'},
    goal:'Con 0 vidas el juego sigue como si nada. Programá el final en el programa vacío del bichito: si vidas = 0 → decir “¡Se terminó!” → detener todos. Probalo: dejate picar 3 veces.',
    palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'], showEq:true,
    sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe())]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(1), fe(ptoB('Bichito'), mv(4)))]), COIN(60, -60, () => [COIN_S(true, true)])],
    check:R => R.gameOver && hasEqRule('vidas', 0),
    learn:'“=” compara dos números. “Si vidas = 0” es el final del juego: game over.'},
-  {id:'p4-ganar', name:'Ganar por puntos', short:'Ganar',
-   intro:{title:'También se gana con una variable',
-     text:'Igual que el game over, pero con los puntos: si puntos = 10, ganaste.',
-     example:() => [WIN_S()]},
-   goal:'Ahora falta cómo se gana. En el programa vacío del bichito: si puntos = 10 → decir “¡Ganaste!” → detener todos. Juntá 10 monedas.',
-   palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['puntos','vidas'], showEq:true,
-   sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), OVER_S(), hatFlag(fe())]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(2), fe(ptoB('Bichito'), mv(3)))]), COIN(60, -60, () => [COIN_S(true, true)])],
-   check:R => R.wonByPoints && hasEqRule('puntos', 10),
-   learn:'Con variables se arma el final de un juego: si los puntos llegan a la meta, ganás; si las vidas llegan a 0, perdés.'},
   {id:'p4-reloj', name:'Cronómetro', short:'Cronómetro',
    intro:{title:'Un reloj es una variable',
-     text:'Un reloj también es una cajita con un número: “tiempo”. Arranca en 0 y, cada un segundo, le sumás 1. Para eso sirve “esperar 1 segundos”: sin esperar, el “por siempre” sumaría 30 por segundo.',
+     text:'Un reloj también es una cajita con un número: “tiempo”. Arranca en 0 y, cada segundo, le sumás 1. Para eso sirve “esperar 1 segundos”: sin esperar, el “por siempre” sumaría 30 por segundo.',
      example:() => [hatFlag(setV('tiempo', 0), fe(waitB(1), chV('tiempo', 1)))], note:'Pone el tiempo en 0. Después, para siempre: espera un segundo y suma uno.'},
    goal:'Armá un cronómetro en el programa vacío del bichito: adentro del “por siempre”, esperar 1 segundos y sumar a tiempo 1. Juntá 5 monedas y mirá cuánto tardaste.',
    palette:['wait','changevar'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, tiempo:0}, varNames:['tiempo','puntos'],
@@ -132,7 +113,8 @@ export const LEVELS4 = [
      COIN(60, -60, () => [Object.assign(COIN_S(true, true), {fold:'si me toca el bichito, suma un punto y salto'})])],
    check:R => {
      if (!(R.stopPts >= 5)) return false;
-     const ok = scanF(progOf('Bichito'), b => b.type === 'changevar' && b.v === 'tiempo' && Number(b.n) > 0) && scanF(progOf('Bichito'), b => b.type === 'wait' && Number(b.n) >= 1);
+     // un "por siempre" que espere 1 segundo y sume 1 al tiempo
+     const ok = progOf('Bichito').some(sc => { let si = false; walk(sc.body, b => { if (b.type === 'forever' && b.body.some(x => x.type === 'wait' && Number(x.n) === 1) && b.body.some(x => x.type === 'changevar' && x.v === 'tiempo' && Number(x.n) === 1)) si = true; }); return si; });
      if (!ok) return 'Juntaste 5, pero el reloj no cuenta bien. Adentro del “por siempre”: esperar 1 segundos y sumar a tiempo 1.';
      return true;
    },
@@ -142,15 +124,15 @@ export const LEVELS4 = [
    intro:{title:'Un reloj para atrás',
      text:'Una cuenta regresiva arranca en un número, por ejemplo 10, y cada segundo le resta 1: sumar a tiempo −1. Cuando llega a 0, se acabó el tiempo.',
      example:() => [hatFlag(setV('tiempo', 10), fe(waitB(1), chV('tiempo', -1)))], note:'Y otra regla: si tiempo = 0 → “Se acabó el tiempo” → detener todos.'},
-   goal:'El reloj arranca en 10 pero ¡sube en vez de bajar! Arreglalo para que cuente para atrás. Y agregá: si tiempo = 0 → decir “Se acabó el tiempo” → detener todos. Probá juntar 8 monedas antes de que llegue a 0. Si se acaba el tiempo y el juego termina, ¡también vale!',
+   goal:'El reloj sube en vez de bajar: hacé que cuente para atrás. Y sumá la regla: si tiempo = 0 → decir “Se acabó el tiempo” → detener todos.',
    palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, tiempo:10}, varNames:['tiempo','puntos'], showEq:true,
    sprites:[BUG(-190,-140, () => [MOVE_S(), hatFlag(setV('tiempo', 10), fe(waitB(1), chV('tiempo', 1))),
        Object.assign(hatFlag(fe(iff(eqB('puntos', 8), sayB('¡Ganaste!'), stopB()))), {fold:'si junto 8 monedas, gano'}), hatFlag(fe())]),
      COIN(60, -60, () => [Object.assign(COIN_S(true, true), {fold:'si me toca el bichito, suma un punto y salto'})])],
    check:R => {
      if (!(R.stopPts >= 8) && !R.timeUp) return false;
-     if (!scanF(progOf('Bichito'), b => b.type === 'changevar' && b.v === 'tiempo' && Number(b.n) < 0)) return 'Ganaste, pero el reloj no cuenta para atrás. Cambiá “sumar a tiempo 1” por −1.';
-     if (!hasEqRule('tiempo', 0)) return 'Ganaste, pero falta la regla: si tiempo = 0 → “Se acabó el tiempo” → detener todos.';
+     if (!scanF(progOf('Bichito'), b => b.type === 'changevar' && b.v === 'tiempo' && Number(b.n) < 0)) return (R.timeUp ? 'Se terminó' : 'Ganaste') + ', pero el reloj no cuenta para atrás. Cambiá “sumar a tiempo 1” por −1.';
+     if (!hasEqRule('tiempo', 0)) return (R.timeUp ? 'Se terminó' : 'Ganaste') + ', pero falta la regla: si tiempo = 0 → “Se acabó el tiempo” → detener todos.';
      return true;
    },
    learn:() => corrida().timeUp
@@ -158,10 +140,10 @@ export const LEVELS4 = [
      : '¡Llegaste a 8 antes de que se acabe el tiempo! Una cuenta regresiva resta 1 por segundo, y con “¿tiempo = 0?” el juego sabe cuándo se terminó.'},
   {id:'p4-todo', name:'Todo junto', short:'Todo junto',
    intro:{title:'Las reglas del juego',
-     text:'Un solo programa puede tener las dos reglas: una para perder y otra para ganar. Las dos adentro del mismo “por siempre”.',
+     text:'Igual que con las vidas, también se gana con una variable: si puntos = 10, ganaste. Las dos reglas pueden ir en el mismo “por siempre”.',
      example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('puntos', 10), sayB('¡Ganaste!'), stopB())))]},
-   goal:'Moneda, corazón y avispa ya están programados. Armá “las reglas del juego” en un solo programa del bichito: si vidas = 0, perdés; si puntos = 10, ganás. ¡Y ganá!',
-   palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'],
+   goal:'Moneda, corazón y avispa ya están programados. Armá las reglas del juego en el bichito: si vidas = 0, se termina; si puntos = 10, ganaste. ¡Y ganá!',
+   palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'], showEq:true,
    sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe())]),
      WASP('Avispa', 190, 140, () => [hatFlag(waitB(2), fe(ptoB('Bichito'), mv(3)))]), WASP('Avispa 2', -150, 30, () => [PATROL(4)], 90, '#C2410C'),
      COIN(60, -60, () => [Object.assign(COIN_S(true, true), {fold:'si me toca el bichito, suma un punto y salto'})]),
@@ -181,6 +163,10 @@ export const LEVELS4 = [
        ['Un personaje que se mueve.', false],
        ['Una cajita con nombre que guarda un número, como “puntos” o “vidas”.', true, 'Exacto. Se puede dar un valor, sumarle, restarle y preguntar cuánto vale.'],
        ['Un color del escenario.', false]]},
+     {q:'Con 3 vidas, ¿qué contesta “¿vidas = 0?”?', opts:[
+       ['Sí.', false],
+       ['No: 3 no es igual a 0.', true, 'Exacto. Recién cuando las vidas llegan a 0 contesta sí, y ahí termina el juego.'],
+       ['3.', false]]},
      {q:'¿Por qué al empezar se pone “dar a puntos el valor 0”?', opts:[
        ['Porque la cajita se acuerda del número de la partida anterior.', true, '¡Sí! Si no la ponés en 0, arrancás con los puntos de antes.'],
        ['Porque si no, la moneda no salta.', false],
@@ -218,10 +204,10 @@ export const FREE4 = {id:'libre4', name:'Modo libre', short:'Libre', mode:'free'
      finPorNivel          al detenerse guarda la variable “nivel”; mapaCallado: no avisa paredes ni lava
      animaciones          sigue la cara de dolor del bichito
      portada              qué animación se ve en la portada de la parte */
-export const PARTE = {rasgos:{avisarSiAfuera:true, avisarDetuvoAntes:true, finPorVariables:true, portada:'variables'}, name:'Vidas y puntos', desc:'Objetos, variables, ganar y perder', levels:LEVELS4, free:FREE4,
+export const PARTE = {rasgos:{avisarSiAfuera:true, finPorVariables:true, portada:'variables'}, name:'Vidas y puntos', desc:'Objetos, variables, ganar y perder', levels:LEVELS4, free:FREE4,
    tag:'Monedas, corazones y una cajita que cuenta.',
    teach:[
-     ['La clase', '<p>Núcleo en 5.º, 6.º y 7.º. Una clase de 40 a 60 minutos. Primero, la idea de que todo lo del escenario es un objeto con programas. Después, variables: dar un valor, sumar, restar y comparar con “=”.</p>'],
+     ['La clase', '<p>Núcleo en 4.º y 5.º; también 6.º y 7.º. Dos clases de 40 a 60 minutos: la primera hasta “Game over”; la segunda, reloj, cuenta regresiva y las reglas del juego. Primero, la idea de que todo lo del escenario es un objeto con programas. Después, variables: dar un valor, sumar, restar y comparar con “=”.</p><p>Diferencia con Scratch: acá el lado izquierdo del “=” es un menú con la variable; en Scratch se arrastra la bolita naranja de la variable al hueco.</p>'],
      ['Antes, sin pantalla', '<ol><li>Una caja con un papel que dice “puntos: 0”. Cada vez que alguien toca la “moneda”, se tacha y se escribe uno más.</li><li>¿Qué pasa si la próxima ronda no borramos el papel? (dar a puntos el valor 0)</li><li>Tres vidas en la pizarra: si llega a 0, “game over”.</li></ol>'],
      ['Preguntas de cierre', '<ul><li>¿Qué guarda una variable?</li><li>¿Por qué se pone en 0 al empezar?</li><li>¿Cómo sabe el juego que ganaste o que perdiste?</li></ul>'],
    ]};

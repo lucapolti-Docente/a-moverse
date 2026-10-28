@@ -48,8 +48,14 @@ export const ruleIn = (who, pred) => scanF(progOf(who), pred);
 
 export const hasVarChange = (who, target, v, sign) => ruleIn(who, b => b.type === 'if' && condTargets(b.cond).includes(target) && b.body.some(x => x.type === 'changevar' && x.v === v && Math.sign(Number(x.n)) === sign));
 
-export const hasEqSay = (v, n) => scanF(progOf('Bichito'), b => b.type === 'if' && b.cond && b.cond.type === 'eq' && b.cond.v === v && Number(b.cond.n) === n && b.body.some(x => x.type === 'say'));
-
-export const hasEqRule = (v, n) => scanF(progOf('Bichito'), b => b.type === 'if' && b.cond && b.cond.type === 'eq' && b.cond.v === v && Number(b.cond.n) === n && b.body.some(x => x.type === 'stop'));
+/* Programas de todos los objetos del nivel (sin clones). */
+const todosLosProgramas = () => S.L.sprites ? S.sprites.filter(o => !o.isClone).flatMap(o => o.program) : S.prog;
+/* ¿La pregunta "c" se vuelve sí justo cuando la variable llega a n? Vale "= n", "< n+1" (si baja) y "> n−1" (si sube). */
+export const condFin = (c, v, n) => !!c && c.v === v && ((c.type === 'eq' && Number(c.n) === n) || (c.type === 'lt' && Number(c.n) === n + 1) || (c.type === 'gt' && Number(c.n) === n - 1));
+export const hasEqSay = (v, n) => scanF(todosLosProgramas(), b => b.type === 'if' && b.cond && b.cond.type === 'eq' && b.cond.v === v && Number(b.cond.n) === n && b.body.some(x => x.type === 'say'));
+/* Regla de fin: si la variable llega a n → … → detener todos. */
+export const hasEqRule = (v, n) => scanF(todosLosProgramas(), b => b.type === 'if' && condFin(b.cond, v, n) && b.body.some(x => x.type === 'stop'));
+/* La regla está pero le falta "detener todos". */
+export const reglaSinDetener = (v, n) => !hasEqRule(v, n) && scanF(todosLosProgramas(), b => b.type === 'if' && condFin(b.cond, v, n) && !b.body.some(x => x.type === 'stop'));
 
 export const andHas = (c, pred) => c && c.type === 'and' && [c.a, c.b].some(x => x && pred(x));

@@ -6,7 +6,7 @@ import { ARROWS, WASD } from './bloques.js';
 import { createEngine } from './motor.js';
 import { cosNames } from './nombres.js';
 import { allBlocks, has, ifOutsideForever, walk } from './recorrer.js';
-import { hasEqRule, hasRule, nested, progOf, scan, starsDone, wallRule } from './reglas.js';
+import { hasEqRule, hasRule, nested, reglaSinDetener, progOf, scan, starsDone, wallRule } from './reglas.js';
 
 const say = (t, bien) => avisos.decir(t, bien);
 const SND = new Proxy({}, { get: (_, nombre) => () => avisos.sonar(nombre) });
@@ -281,8 +281,8 @@ export function afterStep(){
     if (S.L.id === 'p4-regresiva' && S.VARS.tiempo > 10 && !S.R.upHint){ S.R.upHint = true; say(MSJ.relojSube); }
     if (S.L.id === 'p4-regresiva' && S.VARS.tiempo < 0 && !S.R.zeroHint && !hasEqRule('tiempo', 0)){ S.R.zeroHint = true; say(MSJ.tiempoPasoCero); }
     if (S.L.id === 'p4-golpe' && S.VARS.vidas < 0 && !S.R.golpeHint){ S.R.golpeHint = true; say(MSJ.vidasDeGolpe); }
-    if (S.L.id === 'p4-over' && S.VARS.vidas <= 0 && !S.R.overHint && !hasEqRule('vidas', 0)){ S.R.overHint = true; say(MSJ.sinVidasSigue); }
-    if (S.L.id === 'p4-ganar' && S.VARS.puntos > 10 && !S.R.winHint && !hasEqRule('puntos', 10)){ S.R.winHint = true; say(MSJ.pasastePuntos); }
+    if (S.L.id === 'p4-over' && S.VARS.vidas <= 0 && !S.R.overHint && !hasEqRule('vidas', 0)){ S.R.overHint = true; say(reglaSinDetener('vidas', 0) ? MSJ.reglaSinDetener : MSJ.sinVidasSigue); }
+    if (S.L.id === 'p4-todo' && S.VARS.puntos > 10 && !S.R.winHint && !hasEqRule('puntos', 10)){ S.R.winHint = true; say(reglaSinDetener('puntos', 10) ? MSJ.reglaSinDetener : MSJ.pasastePuntos); }
     if (S.L.id === 'p3-1' && !S.sprites[1].program.length && !S.R.tabHint){ S.R.tabHint = true; say(MSJ.avispaSinProgramas); }
   }
   for (const [si, sp] of S.sprites.entries()){
@@ -341,7 +341,7 @@ export function flagPressed(){
     else if (S.P.rasgos.avisarSiAfuera && S.prog.some(s => s.hat === 'flag' && ifOutsideForever(s.body))) say(MSJ.siAfuera);
     else if (S.P.rasgos.avisarPorSiempreVacio && S.prog.some(s => s.hat === 'flag' && s.body.some(b => b.type === 'forever' && !b.body.length) && s !== S.prog[0])) say(MSJ.porSiempreVacio);
   }
-  if (S.L.needReset && !scan(progOf('Moneda'), b => b.type === 'setvar' && b.v === 'puntos')) say(MSJ.puntosArrancan(S.VARS.puntos));
+  if (S.L.needReset && !S.sprites.some(o => scan(o.program, b => b.type === 'setvar' && b.v === 'puntos'))) say(MSJ.puntosArrancan(S.VARS.puntos));
   if (S.L.resetOnFlag){
     S.sprites.forEach(s => { s.x = s.sx; s.y = s.sy; s.bubble = ''; s.dir = s.sdir; s.bounced = false; s.costume = s.scostume; });
     if (S.L.mode !== 'free' && !S.L.keepStars) S.stars.forEach(s => { s.got = false; s.hold = 0; s.near = false; });

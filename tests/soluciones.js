@@ -94,17 +94,12 @@ export const SOLUCIONES = {
     sprites: { Bichito: () => [MOVE_S(), hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-190, -140))))] },
     acciones: [['bandera'], ['ir', 'Moneda', { esquivar: true }]]
   },
-  'p4-corazon': { sprites: { 'Corazón': () => [HEART_S()] }, acciones: [['bandera'], ['ir', 'Corazón', { esquivar: true }]] },
   'p4-golpe': { sprites: { Bichito: () => [MOVE_S(), LIVES_WAIT()] }, acciones: [['bandera'], ['ir', 'Moneda', { esquivar: true }]] },
   'p4-igual': {
     sprites: { Bichito: () => [MOVE_S(), hatFlag(fe(iff(eqB('puntos', 5), sayB('¡Tengo 5!'))))] },
     acciones: [['bandera'], ['ir', 'Moneda']]
   },
   'p4-over': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), OVER_S(true)] }, acciones: [['bandera'], ['ir', 'Avispa']] },
-  'p4-ganar': {
-    sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), OVER_S(), WIN_S()] },
-    acciones: [['bandera'], ['ir', 'Moneda', { esquivar: true }]]
-  },
   'p4-reloj': {
     sprites: { Bichito: () => [MOVE_S(), hatFlag(fe(iff(eqB('puntos', 5), sayB('¡Listo!'), stopB()))), hatFlag(setV('tiempo', 0), fe(waitB(1), chV('tiempo', 1)))] },
     acciones: [['bandera'], ['ir', 'Moneda']]
@@ -245,6 +240,8 @@ export const SOLUCIONES = {
 /* Otras formas válidas de resolver algunos niveles: el chequeo no puede rechazar un programa que funciona. */
 const MOVE_SOLO = () => hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))));
 export const ALTERNATIVAS = {
+  'p4-over': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(ltB('vidas', 1), sayB('¡Se terminó!'), stopB())))] }, acciones: [['bandera'], ['ir', 'Avispa']] },
+  'p4-todo': { sprites: { Bichito: () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(ltB('vidas', 1), sayB('¡Se terminó!'), stopB()), iff(gtB('puntos', 9), sayB('¡Ganaste!'), stopB())))] }, acciones: [['bandera'], ['ir', 'Moneda', { esquivar: true }]] },
   'p3-6': { sprites: { Avispa: () => [hatFlag(waitB(0.5), fe(ptoB('Bichito'), mv(4)))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]] },
   2: { programa: () => [hatFlag(repB(10, mv(30)))], acciones: [['bandera'], ['esperar', 60]] },
   'p2-barro': { programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('mud'), cx(-5))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10)))), hatFlag(fe(iff(tc('ice'), cx(10)))), GOAL_S(true)], acciones: [['bandera'], ['tener', 'right', 60]] },
