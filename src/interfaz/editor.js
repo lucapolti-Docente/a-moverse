@@ -11,6 +11,8 @@ import { renderCierre, renderExplore } from './explorar-cierre.js';
 import { programView } from './vista-bloques.js';
 import { bdNames, msgNames, otherNames, varNames } from '../motor/nombres.js';
 import { SND, ac } from '../sonido.js';
+import { loadLevel } from '../motor/partida.js';
+import { borrarCreacion, guardarCreacion, saveDone } from '../guardado.js';
 
 export function renderProgram(){
   const root = $('#program'); root.innerHTML = '';
@@ -35,6 +37,7 @@ export function renderProgram(){
     else { programs[S.L.id] = S.L.program ? S.L.program() : []; S.prog = programs[S.L.id]; S.sprites[0].program = S.prog; }
     S.sel = null; S.engine.stop(); renderProgram(); };
   head.append(clr); root.append(head);
+  if (S.L.mode === 'sandbox'){ root.append(listaTerminado()); head.append(botonDeCero()); guardarProyecto(); }
   if (!S.prog.length) root.append(el('p','empty',UI.programaVacio));
   root.append(programView(S.prog, false));
 }
@@ -131,6 +134,36 @@ export function renderPalette(){
     for (const t of items) box.append(paletteBlock(t));
     g.append(box); p.append(g);
   }
+}
+
+/* Creá tu juego: guarda el proyecto (programas, variables creadas y lista). */
+export function guardarProyecto(){
+  if (S.L.mode !== 'sandbox') return;
+  guardarCreacion({ programas: programs[S.L.id], variables: createdVars[S.L.id] || [], terminado: S.terminado });
+}
+
+function listaTerminado(){
+  const d = el('details','terminado'); d.append(el('summary', null, UI.terminadoTitulo));
+  S.L.terminado.forEach((t, i) => {
+    const lab = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.checked = S.terminado.includes(i);
+    cb.onchange = () => {
+      S.terminado = cb.checked ? [...new Set([...S.terminado, i])] : S.terminado.filter(x => x !== i);
+      guardarProyecto(); SND.pop();
+      if (S.terminado.length === S.L.terminado.length){ S.done.add(S.L.id); saveDone(); SND.win(); say(UI.terminadoListo, true); }
+    };
+    lab.append(cb, txt(t)); d.append(lab);
+  });
+  return d;
+}
+
+function botonDeCero(){
+  const b = el('button','ghost',UI.empezarDeCero);
+  b.onclick = () => {
+    if (!confirm(UI.empezarDeCeroSeguro)) return;
+    borrarCreacion(); delete programs[S.L.id]; delete createdVars[S.L.id]; S.terminado = [];
+    loadLevel(S.L);
+  };
+  return b;
 }
 
 export function selectSprite(i){ S.curSp = i; S.prog = S.sprites[i].program; S.sel = null; fixSel(); renderProgram(); }

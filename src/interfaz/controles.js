@@ -7,10 +7,12 @@ import { go, showPart } from './menu.js';
 import { flagPressed as banderaMotor, keyDown as teclaMotor, keyUp, resetLevel } from '../motor/partida.js';
 import { SND, ac } from '../sonido.js';
 import { guardarRef, leerRef } from '../guardado.js';
+import { guardarProyecto } from './editor.js';
 
 /* El motor no toca la pantalla: acá se prende el audio y se suelta el foco, como en el original. */
 export function flagPressed(){
   ac(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  guardarProyecto();
   banderaMotor();
 }
 export function keyDown(k){
@@ -58,6 +60,7 @@ export function applyRef(){
 }
 
 export function iniciarControles(){
+  addEventListener('pagehide', guardarProyecto);
   $('#padMode').onclick = () => { setPadMode(padMode === 'wasd' ? 'arrows' : 'wasd'); SND.pop(); };
   addEventListener('keydown', e => {
     const k = domKey(e);

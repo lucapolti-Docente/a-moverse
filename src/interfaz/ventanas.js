@@ -20,6 +20,8 @@ export function showIntro(){
   const ex = $('#introEx'); ex.innerHTML = '';
   ex.hidden = $('#introExLab').hidden = !I.example; if (I.example) ex.append(programView(I.example(), true));
   $('#introNote').hidden = !I.note; $('#introNote').textContent = I.note || '';
+  const rc = $('#introRecetas'); rc.innerHTML = ''; rc.hidden = !I.recetas;
+  (I.recetas || []).forEach(r => { const li = document.createElement('li'); li.textContent = r; rc.append(li); });
   $('#introModal').hidden = false; $('#introGo').focus({preventScroll:true}); $('#introModal .card').scrollTop = 0;
 }
 

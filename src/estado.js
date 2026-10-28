@@ -23,7 +23,8 @@ export const S = {
   done: new Set(),
   muted: false,
   lastMsg: '',
-  showRef: true
+  showRef: true,
+  terminado: []
 };
 
 export const createdVars = {};

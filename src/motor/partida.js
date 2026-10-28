@@ -1,6 +1,7 @@
 import { S, createdVars, programs } from '../estado.js';
 import { AL_CARGAR, MSJ } from '../datos/textos.js';
-import { saveDone } from '../guardado.js';
+import { leerCreacion, saveDone } from '../guardado.js';
+import { nid } from './bloques.js';
 import { avisos } from './avisos.js';
 import { ARROWS, WASD } from './bloques.js';
 import { createEngine } from './motor.js';
@@ -21,6 +22,7 @@ export function loadLevel(level){
   if (S.L.backdrops){ S.BACKDROP = S.L.startBackdrop || S.L.bdOrder[0]; S.L.map = S.L.backdrops[S.BACKDROP].map; } else S.BACKDROP = null; S.VARS = Object.assign({}, S.L.vars || {}); (createdVars[S.L.id] || []).forEach(v => S.VARS[v] = 0); S.particles = []; S.exploreIdx = 0; S.dragging = false; S.insideCount = 0; newRun();
   S.curSp = 0;
   if (S.L.sprites){
+    if (S.L.mode === 'sandbox' && !programs[S.L.id]) recuperarCreacion();
     if (!programs[S.L.id] || S.L.mode === 'cierre') programs[S.L.id] = S.L.sprites.map(d => d.program());
     S.sprites = S.L.sprites.map((d, i) => makeSprite(d.x, d.y, d.color || '#E8553F', programs[S.L.id][i], d.bounds || null, d.name,
       {name:d.name, kind:d.kind || 'bug', dir:d.dir || 90, sdir:d.dir || 90, hidden:!!d.hidden, shidden:!!d.hidden, costume:d.costume, scostume:d.costume}));
@@ -50,6 +52,17 @@ export function mensajeAlCargar(){
   if (S.P.rasgos.alCargar === 'movimientoArmado' && S.L.mode !== 'cierre') return AL_CARGAR.movimientoArmado;
   if (S.P.rasgos.alCargar === 'pestanas' && S.L.mode !== 'cierre' && S.sprites.length > 1) return AL_CARGAR.pestanas;
   return '';
+}
+
+/* Trae el proyecto guardado de "Creá tu juego", si coincide con los personajes del nivel. */
+function recuperarCreacion(){
+  const c = leerCreacion();
+  if (!c || !Array.isArray(c.programas) || c.programas.length !== S.L.sprites.length) return;
+  const reId = o => { if (Array.isArray(o)) o.forEach(reId); else if (o && typeof o === 'object'){ if (typeof o.id === 'string') o.id = nid(); Object.values(o).forEach(reId); } };
+  reId(c.programas);
+  programs[S.L.id] = c.programas;
+  createdVars[S.L.id] = c.variables || [];
+  S.terminado = c.terminado || [];
 }
 
 export function resetLevel(){

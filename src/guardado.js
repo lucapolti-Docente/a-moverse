@@ -17,6 +17,11 @@ export function registrarRecord(pts){
 export const leerRef = () => leer('amoverse-ref', 'on') !== 'off';
 export const guardarRef = on => escribir('amoverse-ref', on ? 'on' : 'off');
 
+/* Creá tu juego: el proyecto se guarda en amoverse-crea (programas, variables creadas y lista de terminado). */
+export function leerCreacion(){ try { return JSON.parse(leer('amoverse-crea', 'null')); } catch(e){ return null; } }
+export const guardarCreacion = datos => escribir('amoverse-crea', JSON.stringify(datos));
+export const borrarCreacion = () => { try { localStorage.removeItem('amoverse-crea'); } catch(e){} };
+
 export function iniciarGuardado(){
   try { S.done = new Set(JSON.parse(leer('amoverse-done', '[]'))); } catch(e){}
 }

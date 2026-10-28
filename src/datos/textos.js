@@ -200,6 +200,10 @@ export const UI = {
   siLleno: 'Todos tus “si” ya tienen su pregunta. Para juntar dos preguntas, tocá primero el bloque verde “o”.',
   sensorSinSi: 'Los bloques celestes van en el hueco de un “si”. Primero poné un “si”.',
   primeroEvento: 'Primero poné un evento amarillo: el programa necesita saber cuándo arrancar.',
+  terminadoTitulo: '¿Mi juego está terminado?',
+  terminadoListo: '¡Juego terminado! Mostráselo a alguien y pedile que lo pruebe.',
+  empezarDeCero: 'Empezar de cero',
+  empezarDeCeroSeguro: '¿Borrar todo tu juego y empezar de cero?',
   empezaPrograma: 'Empezá un programa nuevo: tocá “al hacer clic en bandera”.'
 };
 
