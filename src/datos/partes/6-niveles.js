@@ -53,21 +53,21 @@ export const LEVELS6 = [
    check:R => R.stopNivel >= 4 && hasEqRule('nivel', 4),
    learn:'La variable “nivel” cuenta los niveles. Con “si nivel = 4” el juego sabe que terminaste.'}),
   Object.assign({}, P6, {id:'p6-cadauno', name:'Cada nivel con lo suyo', short:'Por fondo',
-   intro:{title:'Al cambiar el fondo',
-     text:'“Al cambiar el fondo a arena” es un evento: arranca cuando el escenario cambia a ese fondo. Así cada personaje sabe qué hacer en cada nivel: la avispa aparece en la arena y se esconde en los otros.',
+   intro:{title:'Cuando el fondo cambie',
+     text:'“Cuando el fondo cambie a arena” es un evento: arranca cuando el escenario cambia a ese fondo. Así cada personaje sabe qué hacer en cada nivel: la avispa aparece en la arena y se esconde en los otros.',
      example:() => [hatBd('arena', showB()), hatBd('noche', hideB())]},
-   goal:'La avispa tiene que aparecer solo en la arena. En la avispa: “al cambiar el fondo a arena → mostrar” y “al cambiar el fondo a noche → esconder”. Pasá los 3 fondos.',
+   goal:'La avispa tiene que aparecer solo en la arena. En la avispa: “cuando el fondo cambie a arena → mostrar” y “cuando el fondo cambie a noche → esconder”. Pasá los 3 fondos.',
    palette:['whenbd','show','hide'], selSprite:1, startBackdrop:'pasto', msgs:['siguiente nivel'],
    sprites:[BUGW([NEXT_BUG(), BACK_BUG(), Object.assign(hatFlag(fe(iff(toO('Avispa'), gotoB(-200, -150)))), {fold:'si me pica la avispa, vuelvo al inicio'})]),
      WASPH('Avispa', -40, 140, () => [PATROL(4), Object.assign(hatFlag(hideB()), {fold:'al empezar: esconderme'})], true),
      STAGE(() => [STAGE_START(), Object.assign(hatMsg('siguiente nivel', bdB('siguiente fondo')), {fold:'al recibir siguiente nivel: siguiente fondo'})])],
    check:R => {
      if (!R.finishedNoche) return false;
-     if (!R.waspInArena) return 'Pasaste todo, pero la avispa no apareció en la arena. “Al cambiar el fondo a arena → mostrar”.';
-     if (R.waspInNoche) return 'Pasaste todo, pero la avispa siguió en la noche. “Al cambiar el fondo a noche → esconder”.';
+     if (!R.waspInArena) return 'Pasaste todo, pero la avispa no apareció en la arena. “Cuando el fondo cambie a arena → mostrar”.';
+     if (R.waspInNoche) return 'Pasaste todo, pero la avispa siguió en la noche. “Cuando el fondo cambie a noche → esconder”.';
      return true;
    },
-   learn:'“Al cambiar el fondo a” arranca cuando aparece ese nivel. Así cada personaje sabe qué hacer en cada uno.'}),
+   learn:'“Cuando el fondo cambie a” arranca cuando aparece ese nivel. Así cada personaje sabe qué hacer en cada uno.'}),
   Object.assign({}, P6, {id:'p6-dificil', name:'Cada vez más difícil', short:'Más difícil', varInNum:true,
    intro:{title:'Una variable adentro de un número',
      text:'En el hueco de un número también podés poner una variable. “Mover (velocidad) pasos” mueve lo que valga “velocidad” en ese momento. Si la velocidad sube en cada nivel, la avispa va cada vez más rápido.',
@@ -91,7 +91,7 @@ export const LEVELS6 = [
    palette:['if','touchc','changevar','goto'], colors:['lava'], startBackdrop:'pasto', msgs:['siguiente nivel'], vars:{nivel:1, vidas:3, velocidad:2}, varNames:['vidas','nivel','velocidad'],
    sprites:[BUGW([NEXT_BUG(), BACK_BUG(),
        Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-200, -150), waitB(1)))), {fold:'si me pica la avispa: −1 vida y al inicio'}),
-       Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('Perdiste'), stopB()), iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB()))), {fold:'reglas: perder con 0 vidas, ganar con nivel 4'}),
+       Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB()))), {fold:'reglas: perder con 0 vidas, ganar con nivel 4'}),
        hatFlag(fe())]),
      WASPH('Avispa', -40, 140, () => [Object.assign(hatFlag(showB(), fe(mv(V('velocidad')), bounceB())), {fold:'vuelo con la velocidad del nivel'})]),
      STAGE(() => [STAGE_START([setV('nivel', 1), setV('velocidad', 2)]), Object.assign(hatMsg('siguiente nivel', bdB('siguiente fondo'), chV('nivel', 1), chV('velocidad', 3)), {fold:'al recibir siguiente nivel: siguiente fondo, +1 nivel, +3 velocidad'})])],
@@ -110,7 +110,7 @@ export const LEVELS6 = [
    sprites:[BUGW([NEXT_BUG(), BACK_BUG(),
        Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), gotoB(-200, -150), waitB(1)))), {fold:'si me pica la avispa: −1 vida y al inicio'}),
        Object.assign(hatFlag(fe(iff(tc('lava'), chV('vidas', -1), gotoB(-200, -150), waitB(0.5)))), {fold:'si toco la lava: −1 vida y al inicio'}),
-       Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('Perdiste'), stopB()), iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB()))), {fold:'reglas: perder con 0 vidas, ganar con nivel 4'})]),
+       Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('nivel', 4), sayB('¡Ganaste!'), stopB()))), {fold:'reglas: perder con 0 vidas, ganar con nivel 4'})]),
      WASPH('Avispa', -40, 140, () => [Object.assign(hatFlag(showB(), fe(mv(V('velocidad')), bounceB())), {fold:'vuelo con la velocidad del nivel'})]),
      STAGE(() => [STAGE_START([setV('nivel', 1), setV('velocidad', 2)]), Object.assign(hatMsg('siguiente nivel', bdB('siguiente fondo'), chV('nivel', 1), chV('velocidad', 3)), {fold:'al recibir siguiente nivel: siguiente fondo, +1 nivel, +3 velocidad'})])],
    check:R => R.stopNivel != null,

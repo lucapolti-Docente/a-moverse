@@ -88,7 +88,7 @@ export const LEVELS7 = [
    map:[R_(-236,20,-160,96,'goal')],
    sprites:[BUGC(0, -140, () => [MOVE_S(), Object.assign(hatFlag(fe(iff(kp('right'), ...WALK_BODY()))), {open:true}),
        Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), setCos('dolor'), chV('vidas', -1), repB(5, hideB(), waitB(0.1), showB(), waitB(0.1)), setCos('paso 1')))), {fold:'si me pica: dolor, −1 vida y parpadeo'}),
-       Object.assign(hatFlag(fe(iff(tc('goal'), setCos('feliz'), sayB('¡Llegué!'), stopB()), iff(eqB('vidas', 0), sayB('Perdiste'), stopB()))), {fold:'meta: festejo; sin vidas: perdiste'})]),
+       Object.assign(hatFlag(fe(iff(tc('goal'), setCos('feliz'), sayB('¡Llegué!'), stopB()), iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()))), {fold:'meta: festejo; sin vidas: perdiste'})]),
      WASP('Avispa', -60, 20, () => [PATROL(4)])],
    check:R => {
      if (!R.stopOnGoal) return false;

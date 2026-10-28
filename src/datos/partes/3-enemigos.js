@@ -17,7 +17,7 @@ export const LEVELS3 = [
   {id:'p3-2', name:'Ir y volver', intro:{title:'Rebotar',
      text:'“Rebotar si toca un borde” da vuelta al personaje cuando llega al borde: si miraba a la derecha, ahora mira a la izquierda. Pero ojo: cambia hacia dónde mira, no los números de x.',
      example:() => [hatFlag(fe(mv(5), bounceB()))], note:'“Mover pasos” va hacia donde mira. Por eso, cuando rebota, vuelve.'},
-   goal:'Hacé que la avispa vaya y vuelva. Probá “rebotar si toca un borde”. ¿Funciona con “sumar a x”?',
+   goal:'Hacé que la avispa vaya y vuelva. Probá “si toca un borde, rebotar”. ¿Funciona con “sumar a x”?',
    palette:['move','cx','bounce'], resetOnFlag:true, start:{x:-180,y:-120}, stars:[], selSprite:1,
    sprites:[BUG(-180,-120, () => [MOVE_S()]), WASP('Avispa', -180, 80, () => [hatFlag(fe(cx(5)))])],
    check:R => R.waspBack,

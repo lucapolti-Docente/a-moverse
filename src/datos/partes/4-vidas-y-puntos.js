@@ -107,8 +107,8 @@ export const LEVELS4 = [
   {id:'p4-over', name:'Game over', short:'Game over',
    intro:{title:'¿Vidas igual a 0?',
      text:'“=” es un bloque verde de Operadores: pregunta si dos números son iguales. “¿vidas = 0?” se contesta sí o no, y se pone en el hueco de un “si”, como las preguntas celestes.',
-     example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('Perdiste'), stopB())))], note:'Si las vidas llegan a 0: dice “Perdiste” y se termina todo.'},
-   goal:'Con 0 vidas el juego sigue como si nada. Programá el final en el programa vacío del bichito: si vidas = 0 → decir “Perdiste” → detener todos. Probalo: dejate picar 3 veces.',
+     example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB())))], note:'Si las vidas llegan a 0: dice “¡Se terminó!” y se termina todo.'},
+   goal:'Con 0 vidas el juego sigue como si nada. Programá el final en el programa vacío del bichito: si vidas = 0 → decir “¡Se terminó!” → detener todos. Probalo: dejate picar 3 veces.',
    palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'], showEq:true,
    sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe())]), WASP('Avispa', 190, 140, () => [hatFlag(waitB(1), fe(ptoB('Bichito'), mv(4)))]), COIN(60, -60, () => [COIN_S(true, true)])],
    check:R => R.gameOver && hasEqRule('vidas', 0),
@@ -159,7 +159,7 @@ export const LEVELS4 = [
   {id:'p4-todo', name:'Todo junto', short:'Todo junto',
    intro:{title:'Las reglas del juego',
      text:'Un solo programa puede tener las dos reglas: una para perder y otra para ganar. Las dos adentro del mismo “por siempre”.',
-     example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('Perdiste'), stopB()), iff(eqB('puntos', 10), sayB('¡Ganaste!'), stopB())))]},
+     example:() => [hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('puntos', 10), sayB('¡Ganaste!'), stopB())))]},
    goal:'Moneda, corazón y avispa ya están programados. Armá “las reglas del juego” en un solo programa del bichito: si vidas = 0, perdés; si puntos = 10, ganás. ¡Y ganá!',
    palette:['if','eq','say','stop'], resetOnFlag:true, start:{x:-190,y:-140}, stars:[], vars:{puntos:0, vidas:3}, varNames:['vidas','puntos'],
    sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe())]),
@@ -174,7 +174,7 @@ export const LEVELS4 = [
    learn:'Un juego completo: objetos que dan puntos y vidas, enemigos que las quitan, y reglas que dicen cuándo ganás y cuándo perdés.'},
   {id:'p4-cierre', name:'Cierre: vidas y puntos', short:'Cierre', mode:'cierre', goal:'Mirá los programas de cada personaje y respondé.',
    palette:[], stars:[], start:{x:-190,y:-140}, resetOnFlag:true, vars:{puntos:0, vidas:3},
-   sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(eqB('vidas', 0), sayB('Perdiste'), stopB()), iff(eqB('puntos', 10), sayB('¡Ganaste!'), stopB())))]),
+   sprites:[BUG(-190,-140, () => [MOVE_S(), LIFE_S({wait:true}), hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()), iff(eqB('puntos', 10), sayB('¡Ganaste!'), stopB())))]),
      WASP('Avispa', 190, 140, () => [hatFlag(waitB(2), fe(ptoB('Bichito'), mv(3)))]), COIN(60, -60, () => [COIN_S(true, true)]), HEART(-60, 110, () => [HEART_S()])],
    quiz:[
      {q:'¿Qué es una variable?', opts:[

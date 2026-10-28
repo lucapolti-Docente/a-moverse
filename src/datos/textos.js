@@ -56,8 +56,8 @@ export const MSJ = {
   relojVuela: '¡El reloj vuela! Suma 30 por segundo porque el “por siempre” da 30 vueltas por segundo. Poné “esperar 1 segundos” antes de sumar.',
   relojSube: '¡El reloj sube! Para que cuente para atrás, cambiá “sumar a tiempo 1” por −1.',
   tiempoPasoCero: '¡El tiempo ya pasó el 0 y el juego sigue! Falta la regla: si tiempo = 0 → decir “Se acabó el tiempo” → detener todos.',
-  vidasDeGolpe: '¡Perdiste un montón de vidas de golpe! El “por siempre” resta en cada vuelta mientras la avispa te toca. Poné “esperar 1 segundos” después de restar.',
-  sinVidasSigue: '¡Te quedaste sin vidas y el juego sigue como si nada! Falta la regla: si vidas = 0 → decir “Perdiste” → detener todos.',
+  vidasDeGolpe: '¡¡Se terminó! un montón de vidas de golpe! El “por siempre” resta en cada vuelta mientras la avispa te toca. Poné “esperar 1 segundos” después de restar.',
+  sinVidasSigue: '¡Te quedaste sin vidas y el juego sigue como si nada! Falta la regla: si vidas = 0 → decir “¡Se terminó!” → detener todos.',
   pasastePuntos: '¡Pasaste los 10 puntos y el juego sigue! Falta la regla: si puntos = 10 → decir “¡Ganaste!” → detener todos.',
 
   // atacar

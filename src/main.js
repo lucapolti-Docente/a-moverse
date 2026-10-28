@@ -1,3 +1,8 @@
+import '@fontsource/fredoka/latin-500.css';
+import '@fontsource/fredoka/latin-600.css';
+import '@fontsource/fredoka/latin-700.css';
+import '@fontsource/atkinson-hyperlegible/latin-400.css';
+import '@fontsource/atkinson-hyperlegible/latin-700.css';
 import './estilos/estilos.css';
 import { conectarMotor } from './interfaz/conectar.js';
 import { ponerTextos } from './interfaz/textos-pantalla.js';

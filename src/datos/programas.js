@@ -32,7 +32,7 @@ export const HEART_S = () => hatFlag(fe(iff(toO('Bichito'), chV('vidas', 1), rnd
 export const LIFE_S = (opts = {}) => Object.assign(hatFlag(setV('vidas', 3), fe(iff(toO('Avispa'), chV('vidas', -1), ...(opts.goto ? [gotoB(-190, -140)] : []), ...(opts.wait ? [waitB(1)] : [])))),
   opts.open ? {} : {fold:'si me pica la avispa, pierdo una vida'});
 
-export const OVER_S = (open) => Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('Perdiste'), stopB()))), open ? {} : {fold:'si me quedo sin vidas, pierdo'});
+export const OVER_S = (open) => Object.assign(hatFlag(fe(iff(eqB('vidas', 0), sayB('¡Se terminó!'), stopB()))), open ? {} : {fold:'si me quedo sin vidas, pierdo'});
 
 export const WIN_S = () => hatFlag(fe(iff(eqB('puntos', 10), sayB('¡Ganaste!'), stopB())));
 
