@@ -37,20 +37,16 @@ export const SOLUCIONES = {
   /* ---------- Parte 2 ---------- */
   'p2-1': { programa: () => [MOVE_S(), GOAL_S(false)], acciones: [['bandera'], ['ir', 'meta']] },
   'p2-2': { programa: () => [MOVE_S(), GOAL_S(true)], acciones: [['bandera'], ['ir', 'meta']] },
-  'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-195, -140))))], acciones: [['bandera'], ['ir', 'meta']] },
+  'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-195, -140))))], acciones: [['bandera'], ['tener', 'right', 8], ['ir', 'meta']] },
   'p2-4': { programa: () => [MOVE_S(), hatFlag(fe(iff(tc('wall'), cx(-10))))], acciones: [['bandera'], ['ir', 'estrellas']] },
   'p2-dentro': {
-    programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('wall'), cx(-10))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))))],
-    acciones: [['bandera'], ['ir', 'estrellas']]
+    programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('wall'), cx(-10))), iff(kp('left'), cx(-10), iff(tc('wall'), cx(10))), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))))],
+    acciones: [['bandera'], ['tener', 'left', 12], ['ir', 'estrellas']]
   },
   'p2-5': { programa: () => [MOVEW_S()], acciones: [['bandera'], ['ir', 'estrellas']] },
   'p2-barro': {
-    programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('mud'), cx(-5))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))))],
-    acciones: [['bandera'], ['ir', 'estrellas']]
-  },
-  'p2-hielo': {
-    programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('ice'), cx(10))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10)))), GOAL_S(true)],
-    acciones: [['bandera'], ['tener', 'right', 40]]
+    programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('mud'), cx(-5)), iff(tc('ice'), cx(10))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10)))), GOAL_S(true)],
+    acciones: [['bandera'], ['tener', 'right', 60]]
   },
   'p2-6': {
     programa: () => [Object.assign(hatFlag(MOVE_FULL()), {fold:'x'}), hatFlag(fe(iff(tc('lava'), gotoB(-200, -150)))), GOAL_S(true)],
@@ -250,10 +246,9 @@ export const SOLUCIONES = {
 const MOVE_SOLO = () => hatFlag(fe(iff(kp('right'), cx(10)), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10))));
 export const ALTERNATIVAS = {
   2: { programa: () => [hatFlag(repB(10, mv(30)))], acciones: [['bandera'], ['esperar', 60]] },
-  'p2-barro': { programa: () => [MOVE_SOLO(), hatFlag(fe(iff(kp('right'), iff(tc('mud'), cx(-5)))))], acciones: [['bandera'], ['ir', 'estrellas']] },
-  'p2-hielo': { programa: () => [MOVE_SOLO(), hatFlag(fe(iff(kp('right'), iff(tc('ice'), cx(10))))), GOAL_S(true)], acciones: [['bandera'], ['tener', 'right', 40]] },
+  'p2-barro': { programa: () => [hatFlag(fe(iff(kp('right'), cx(10), iff(tc('mud'), cx(-5))), iff(kp('left'), cx(-10)), iff(kp('up'), cy(10)), iff(kp('down'), cy(-10)))), hatFlag(fe(iff(tc('ice'), cx(10)))), GOAL_S(true)], acciones: [['bandera'], ['tener', 'right', 60]] },
   'p2-4': { programa: () => [MOVE_S(), hatFlag(fe(iff(tc('wall'), cx(-10)))), hatFlag(fe(iff(tc('wall'), cy(0))))], acciones: [['bandera'], ['ir', 'estrellas']] },
-  'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-180, -140))))], acciones: [['bandera'], ['ir', 'meta']] },
+  'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-180, -140))))], acciones: [['bandera'], ['tener', 'right', 8], ['ir', 'meta']] },
   'p3-3': { sprites: { Bichito: () => [MOVE_S(), hatFlag(fe(iff(toO('Avispa'), sayB('¡Ay!'), stopB())))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]] },
   'p3-5': { sprites: { Avispa: () => [hatFlag(fe(ptoB('Bichito'), mv(2), mv(1)))] }, acciones: [['bandera'], ['ir', 'estrellas', { esquivar: true }]] },
   'p3-7': { sprites: { Bichito: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(toO('Avispa'), stopB()))), hatFlag(fe(iff(toO('Avispa 2'), stopB())))] }, acciones: [['bandera'], ['ir', 'meta', { esquivar: true }]] },
@@ -268,5 +263,8 @@ export const ALTERNATIVAS = {
 
 /* Programas que NO tienen que ganar: el nivel pide una idea y esto la saltea. */
 export const NO_GANAN = {
+  'p2-3': { programa: () => [MOVE_S(), GOAL_S(true), hatFlag(fe(iff(tc('lava'), gotoB(-195, -140))))], acciones: [['bandera'], ['ir', 'meta']], dice: 'probá la lava' },
+  'p2-dentro': { acciones: [['bandera'], ['tener', 'left', 12], ['ir', 'estrellas']], dice: 'se metió en la pared' },
+  'p2-barro': { acciones: [['bandera'], ['tener', 'right', 80]], dice: 'Caminando normal no llegás' },
   2: { programa: () => [hatFlag(mv(300))], acciones: [['bandera'], ['esperar', 60]], dice: 'se salteó estrellas' }
 };

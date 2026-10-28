@@ -6,7 +6,7 @@ import { ARROWS, WASD } from './bloques.js';
 import { createEngine } from './motor.js';
 import { cosNames } from './nombres.js';
 import { allBlocks, has, ifOutsideForever, walk } from './recorrer.js';
-import { hasEqRule, nested, progOf, scan, starsDone, wallRule } from './reglas.js';
+import { hasEqRule, hasRule, nested, progOf, scan, starsDone, wallRule } from './reglas.js';
 
 const say = (t, bien) => avisos.decir(t, bien);
 const SND = new Proxy({}, { get: (_, nombre) => () => avisos.sonar(nombre) });
@@ -186,7 +186,7 @@ export const hooks = {
     if ((s.x >= 224 || s.x <= -224) && s.name === 'Avispa' && Math.abs(ad - 90) < 1) S.R.hBounce = (S.R.hBounce || 0) + 1;
     if (S.L.id === 'p3-2' && !scan(s.program, b => b.type === 'move')) say(MSJ.rebotoSumarX);
   },
-  goto(t){ if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },
+  goto(t){ if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'lava')){ S.R.lavaFunciona = true; SND.lava(); burst(t.sprite.x, t.sprite.y, '#E5322D'); } },
   say(t){ if (S.L.id === 'p5-mayor'){ if ((S.VARS.semillas ?? 0) > 3) S.R.saidGt = true; if ((S.VARS.semillas ?? 0) < 1) S.R.saidLt = true; } if (touchAt(t.sprite.x, t.sprite.y, BODY_R, 'goal')) S.R.saidOnGoal = true; if (S.L.id === 'p4-igual' && S.VARS.puntos === 5) S.R.said5 = true; },
   stop(t){
     if (S.P.rasgos.finPorNivel){ S.R.stopNivel = S.VARS.nivel ?? null; if (S.R.stopNivel == null) S.R.stopNivel = 0; }
@@ -228,7 +228,7 @@ export function afterStep(){
       if (S.R.tStart == null && (s.x !== s.sx || s.y !== s.sy)) S.R.tStart = S.engine.time;
       if (S.R.tStart != null && !S.R.stopOnGoal && S.engine.time - S.R.tStart > S.L.timeLimit){
         s.x = s.sx; s.y = s.sy; S.R.tStart = null; SND.oops();
-        say(nested(['right','d'], 'ice', x => x.type === 'cx' && Number(x.n) > 0) ? MSJ.hieloOtraVez : MSJ.hieloFalta);
+        say(nested(['right','d'], 'ice', x => x.type === 'cx' && Number(x.n) > 0) || hasRule('ice', x => x.type === 'cx' && Number(x.n) > 0) ? MSJ.hieloOtraVez : MSJ.hieloFalta);
       }
     }
     if (S.L.mudSlideHint){

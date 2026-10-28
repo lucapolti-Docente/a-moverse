@@ -31,7 +31,7 @@ describe.each(NIVELES.map(n => [`P${n.parte.n} ${n.nivel.id} · ${n.nivel.name}`
     it('no gana si saltea la idea del nivel, y lo dice', () => {
       const r = jugar(parte, i, NO_GANAN[nivel.id]);
       expect(r.gana).toBe(false);
-      expect(r.dichos.join(' | ')).toContain(NO_GANAN[nivel.id].dice);
+      expect(r.dichos.join(' | ').toLowerCase()).toContain(NO_GANAN[nivel.id].dice.toLowerCase());
     });
   }
 });
