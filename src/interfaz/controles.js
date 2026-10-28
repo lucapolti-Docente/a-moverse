@@ -1,0 +1,100 @@
+import { S } from '../estado.js';
+import { say } from './aviso.js';
+import { $ } from './dom.js';
+import { renderExplore } from './explorar-cierre.js';
+import { go, showPart } from './menu.js';
+import { flagPressed as banderaMotor, keyDown as teclaMotor, keyUp, resetLevel } from '../motor/partida.js';
+import { SND, ac } from '../sonido.js';
+import { guardarRef, leerRef } from '../guardado.js';
+
+/* El motor no toca la pantalla: acá se prende el audio y se suelta el foco, como en el original. */
+export function flagPressed(){
+  ac(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  banderaMotor();
+}
+export function keyDown(k){
+  if (S.L.mode !== 'explore') ac();
+  teclaMotor(k);
+}
+
+export const DOMKEY = {ArrowRight:'right', ArrowLeft:'left', ArrowUp:'up', ArrowDown:'down', KeyW:'w', KeyA:'a', KeyS:'s', KeyD:'d', Space:'space', ' ':'space'};
+
+export const domKey = e => DOMKEY[e.key] || DOMKEY[e.code];
+
+let padMode = 'arrows';
+
+export const PADKEY = {arrows:{up:'up', left:'left', down:'down', right:'right'}, wasd:{up:'w', left:'a', down:'s', right:'d'}};
+
+export const padKey = dir => PADKEY[padMode][dir];
+
+export function setPadMode(m){
+  if (S.engine){ S.engine.releaseAll(); }
+  padMode = m;
+  (() => {
+  const b = $('#spaceBtn'); let on = false;
+  b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch(_){} on = true; b.classList.add('on'); keyDown('space'); });
+  const up = () => { if (on && S.engine) keyUp('space'); on = false; b.classList.remove('on'); };
+  b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+  b.addEventListener('contextmenu', e => e.preventDefault());
+})();
+document.querySelectorAll('#pad button').forEach(b => {
+    if (!b.dataset.svg) b.dataset.svg = b.innerHTML;
+    b.innerHTML = m === 'wasd' ? `<span class="padl">${padKey(b.dataset.k).toUpperCase()}</span>` : b.dataset.svg;
+    b.setAttribute('aria-label', m === 'wasd' ? 'Tecla ' + padKey(b.dataset.k).toUpperCase() : 'Flecha ' + {up:'arriba', left:'izquierda', down:'abajo', right:'derecha'}[b.dataset.k]);
+  });
+  const t = $('#padMode'); t.textContent = m === 'wasd' ? 'Pad: W A S D' : 'Pad: flechas';
+  padSync();
+}
+
+export function padSync(){ document.querySelectorAll('#pad button').forEach(b => b.classList.toggle('on', !!S.engine && S.engine.held.has(padKey(b.dataset.k)))); }
+
+export function applyRef(){
+  const b = $('#refBtn');
+  b.setAttribute('aria-pressed', String(S.showRef));
+  b.setAttribute('aria-label', S.showRef ? 'Ocultar referencias (reglas y flechitas)' : 'Mostrar referencias (reglas y flechitas)');
+  b.title = S.showRef ? 'Ocultar reglas y flechitas' : 'Mostrar reglas y flechitas';
+  document.body.classList.toggle('noref', !S.showRef);
+}
+
+export function iniciarControles(){
+  $('#padMode').onclick = () => { setPadMode(padMode === 'wasd' ? 'arrows' : 'wasd'); SND.pop(); };
+  addEventListener('keydown', e => {
+    const k = domKey(e);
+    if (!k || !$('#startScreen').hidden || !$('#winModal').hidden || !$('#introModal').hidden) return;
+    // en un cuadro de texto (decir, nombre de variable) las teclas escriben; en un número o un menú ▾, las flechas manejan al bichito
+    if (e.target.matches && e.target.matches('textarea, input[type=text], .mkname')) return;
+    if (e.target.matches && e.target.matches('input, select')) e.target.blur();
+    e.preventDefault(); if (e.repeat) return;   // no usamos la repetición del navegador: la simula el motor
+    keyDown(k);
+  });
+  addEventListener('keyup', e => { const k = domKey(e); if (k && S.engine) keyUp(k); });
+  addEventListener('blur', () => { if (S.engine){ S.engine.releaseAll(); padSync(); } });
+  (() => {
+    const b = $('#spaceBtn'); let on = false;
+    b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch(_){} on = true; b.classList.add('on'); keyDown('space'); });
+    const up = () => { if (on && S.engine) keyUp('space'); on = false; b.classList.remove('on'); };
+    b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+    b.addEventListener('contextmenu', e => e.preventDefault());
+  })();
+  document.querySelectorAll('#pad button').forEach(b => {
+    let k = null;
+    b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch(_){} k = padKey(b.dataset.k); keyDown(k); });
+    const up = () => { if (k && S.engine && S.engine.held.has(k)) keyUp(k); k = null; };
+    b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+    b.addEventListener('contextmenu', e => e.preventDefault());
+  });
+  $('#flagBtn').onclick = flagPressed;
+  $('#stopBtn').onclick = () => { S.engine.stop(); };
+  $('#resetBtn').onclick = () => { resetLevel(); if (S.L.mode === 'explore'){ S.exploreIdx = 0; S.stars.forEach(s => s.got = false); renderExplore(); } };
+  $('#prev').onclick = () => go(S.li - 1);
+  $('#next').onclick = () => go(S.li + 1);
+  $('#home').onclick = () => showPart(S.P);
+  S.showRef = leerRef();
+  $('#refBtn').onclick = () => {
+    S.showRef = !S.showRef; applyRef(); SND.pop();
+    guardarRef(S.showRef);
+    say(S.showRef ? 'Referencias prendidas: reglas y flechitas.' : 'Referencias apagadas. Las prendés con el botón “Reglas”.');
+  };
+  applyRef();
+  $('#snd').onclick = () => { S.muted = !S.muted; $('#sndWave').style.display = S.muted ? 'none' : ''; $('#snd').setAttribute('aria-label', S.muted ? 'Sonido apagado' : 'Sonido'); };
+}

@@ -31,6 +31,8 @@ for (const [tam, viewport] of Object.entries(PANTALLAS)) {
     informe.pantallas.push(`${nombre}-${tam}`);
   };
 
+  // el original tiene todo global; la versión nueva lo expone en window.amoverse
+  await pag.evaluate(() => { const a = window.amoverse; if (a) Object.assign(window, { PARTS: a.PARTS, go: a.go, showPart: a.showPart, showParts: a.showParts }); });
   await foto('menu-partes');
   const partes = await pag.evaluate(() => PARTS.map(p => ({ n: p.n, niveles: p.levels.length, cierre: p.levels.findIndex(l => l.mode === 'cierre') })));
   for (const p of partes) {
